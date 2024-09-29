@@ -8,7 +8,7 @@ import {
   saveLanguageToLocalStorage,
   getRefreshTokenFromLocalStorage
 } from './auth'
-import languages from 'src/constants/languages'
+import languages from '@/constants/languages'
 import { refreshAccessToken } from '@/apis/auth.api'
 import { toast } from 'react-toastify'
 

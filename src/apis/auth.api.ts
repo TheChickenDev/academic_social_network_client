@@ -1,7 +1,7 @@
 import { User } from '@/types/user.type'
 import { SuccessResponse } from '@/types/utils.type'
-import http from 'src/utils/http'
-import { ForgotPasswordFormData, LoginFormData, ResetPasswordFormData } from 'src/utils/rules'
+import http from '@/utils/http'
+import { ForgotPasswordFormData, GoogleLoginFormData, LoginFormData, ResetPasswordFormData } from 'src/utils/rules'
 
 type AuthResponse = {
   access_token: string
@@ -15,6 +15,10 @@ export const registerAccount = (body: FormData) => {
 
 export const login = (body: LoginFormData) => {
   return http.post<SuccessResponse<AuthResponse>>('user/login', body)
+}
+
+export const loginGoogle = (body: GoogleLoginFormData) => {
+  return http.post<SuccessResponse<AuthResponse>>('user/login-google', body)
 }
 
 export const logout = () => {
