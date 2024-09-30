@@ -10,6 +10,7 @@ import { Navigate, Outlet, useRoutes } from 'react-router-dom'
 import DefaultLayout from '@/components/DefaultLayout'
 import paths from '@/constants/paths'
 import { AppContext } from '@/contexts/app.context'
+import Posts from '@/pages/Posts'
 
 const ProtectedRoute = () => {
   const { isAuthenticated } = useContext(AppContext)
@@ -26,7 +27,7 @@ const routes: RouteObject[] = [
     path: paths.home,
     element: (
       <DefaultLayout>
-        <div>Home</div>
+        <Posts />
       </DefaultLayout>
     ),
     index: true

@@ -7,11 +7,8 @@ export interface SuccessResponse<data> {
 export interface JWTPayload {
   exp: number
   iat: number
-  id: string
+  username: string
   isAdmin: boolean
-  email: string
+  fullName: string
   avatar: string
-  name: string
-  phone: string
-  address: string
 }

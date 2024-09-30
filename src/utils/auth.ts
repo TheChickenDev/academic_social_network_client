@@ -41,6 +41,4 @@ export const getLanguageFromLocalStorage = (): string => {
 export const removeDataFromLocalStorage = () => {
   localStorage.removeItem('access_token')
   localStorage.removeItem('refresh_token')
-  localStorage.removeItem('darkTheme')
-  localStorage.removeItem('language')
 }

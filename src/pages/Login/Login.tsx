@@ -15,6 +15,7 @@ import { saveAccessTokenToLocalStorage, saveRefreshTokenToLocalStorage } from '@
 import { toast } from 'react-toastify'
 import { useGoogleLogin } from '@react-oauth/google'
 import axios from 'axios'
+import { decodeJWT } from '@/utils/utils'
 
 const formSchema = z.object({
   username: z.string().min(1, {
@@ -36,7 +37,7 @@ export default function Login() {
     }
   })
 
-  const { setIsAuthenticated } = useContext(AppContext)
+  const { setIsAuthenticated, setFullName, setAvatar } = useContext(AppContext)
   const [googleResponse, setGoogleResponse] = useState<{
     access_token: string
     expires_in: number
@@ -59,7 +60,10 @@ export default function Login() {
       onSuccess: (response) => {
         const status = response.status
         if (status === 200) {
+          const user = decodeJWT(response.data.data?.access_token)
           setIsAuthenticated(true)
+          setFullName?.(user ? (user.fullName ?? '') : '')
+          setAvatar?.(user?.avatar ?? '')
           saveAccessTokenToLocalStorage(response.data.data?.access_token)
           saveRefreshTokenToLocalStorage(response.data.data?.refresh_token)
           navigate(paths.home)
@@ -105,8 +109,10 @@ export default function Login() {
             }
             googleLoginMutation.mutate(body, {
               onSuccess: (response) => {
-                console.log(response)
+                const user = decodeJWT(response.data.data?.access_token)
                 setIsAuthenticated(true)
+                setFullName?.(user?.fullName ?? '')
+                setAvatar?.(user?.avatar ?? '')
                 saveAccessTokenToLocalStorage(response.data.data?.access_token)
                 saveRefreshTokenToLocalStorage(response.data.data?.refresh_token)
                 navigate(paths.home)
