@@ -18,6 +18,7 @@ import { useTranslation } from 'react-i18next'
 import { removeDataFromLocalStorage } from '@/utils/auth'
 import { ChevronDown } from 'lucide-react'
 import classNames from 'classnames'
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 
 export default function Header() {
   const navigate = useNavigate()
@@ -37,8 +38,8 @@ export default function Header() {
   }
 
   return (
-    <div className='container mx-auto px-4 md:px-6 lg:px-8'>
-      <header className='fixed top-0 left-0 right-0 flex h-20 w-full shrink-0 justify-between items-center px-4 md:px-6 bg-white dark:bg-background-dark'>
+    <div className='container'>
+      <header className='fixed top-0 left-0 right-0 z-50 flex h-20 w-full shrink-0 justify-between items-center px-2 lg:px-12 bg-white dark:bg-background-dark'>
         <Link to={paths.home} className='mr-6'>
           <svg
             className='dark:fill-white'
@@ -103,7 +104,10 @@ export default function Header() {
             <>
               <DropdownMenu>
                 <DropdownMenuTrigger className='outline-none flex justify-center items-center border rounded-full p-1'>
-                  <img src={avatar ?? avatarImg} alt='Avatar' className='h-8 w-8 rounded-full' />
+                  <Avatar>
+                    <AvatarImage src={avatar ?? avatarImg} />
+                    <AvatarFallback>Avatar</AvatarFallback>
+                  </Avatar>
                   <ChevronDown size={20} />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>

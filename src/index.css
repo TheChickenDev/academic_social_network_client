@@ -1,3 +1,6 @@
+@import url('https://lolstatic-a.akamaihd.net/webfonts/live/css/lol/index.css');
+@import url('https://s.lolstatic.com/awesomefonts/1.0.0/lol-fonts.css');
+@import url('https://lolstatic-a.akamaihd.net/webfonts/live/css/fonts/neuefruitegermodern.css');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -63,4 +66,8 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+body {
+  font-family: 'Speigel', 'Helvetica', 'Arial', sans-serif;
 }

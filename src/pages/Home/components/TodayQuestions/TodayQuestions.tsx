@@ -1,3 +1,4 @@
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 
@@ -51,7 +52,7 @@ export default function TodayQuestions() {
   return (
     <div className='mt-4 p-2 text-sm border border-gray-300 outline-none rounded-md bg-white dark:bg-background-dark'>
       <h2 className='text-xl font-semibold'>{t('today-questions')}</h2>
-      <div className=''>
+      <div>
         {questions.map((q, index) => (
           <div
             key={q.id}
@@ -77,7 +78,10 @@ export default function TodayQuestions() {
               ))}
             </div>
             <div className='mt-2 flex items-center justify-start gap-1'>
-              <img src={q.avatar} alt='Avatar' className='h-8 w-8 rounded-full' />
+              <Avatar>
+                <AvatarImage src={q.avatar} />
+                <AvatarFallback>Avatar</AvatarFallback>
+              </Avatar>
               <p className='font-bold text-sm'>{q.user}</p>
               <svg width='12' height='12' viewBox='0 0 10 10' fill='none' xmlns='http://www.w3.org/2000/svg'>
                 <path

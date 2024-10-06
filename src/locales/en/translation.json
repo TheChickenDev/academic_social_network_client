@@ -16,12 +16,17 @@
   "popular-tags": "Popular tags",
   "today-questions": "Today's questions",
   "asked-at": "Asked at",
-  "answers": "Answers",
+  "answers": "answers",
   "introduction.text1": "Discover,",
   "introduction.text2": "Connect, and grow.",
   "introduction.text3": "Your journey starts here.",
   "join-us": "Join us",
   "privacy-terms": "Privacy & Terms",
   "about": "About",
-  "help-center": "Help Center"
+  "help-center": "Help Center",
+  "newest": "Newest",
+  "oldest": "Oldest",
+  "most-liked": "Most liked",
+  "filter": "Filter",
+  "order": "Order"
 }

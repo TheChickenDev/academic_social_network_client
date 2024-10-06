@@ -16,12 +16,17 @@
   "popular-tags": "Thẻ phổ biến",
   "today-questions": "Câu hỏi hôm nay",
   "asked-at": "Hỏi vào",
-  "answers": "Trả lời",
+  "answers": "câu trả lời",
   "introduction.text1": "Khám phá,",
   "introduction.text2": "Kết nối, và phát triển.",
   "introduction.text3": "Hành trình bắt đầu từ đây.",
   "join-us": "Tham gia",
   "privacy-terms": "Điều khoản",
   "about": "Về chúng tôi",
-  "help-center": "Trợ giúp"
+  "help-center": "Trợ giúp",
+  "newest": "Mới nhất",
+  "oldest": "Cũ nhất",
+  "most-liked": "Nhiều lượt thích nhất",
+  "filter": "Bộ lọc",
+  "order": "Sắp xếp"
 }
