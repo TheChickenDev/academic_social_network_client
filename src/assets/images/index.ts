@@ -1,5 +1,7 @@
-import logo from './logo.png'
+import logo from './logo.svg'
 import defaultAvatar from './defaultAvatar.png'
+import introduction from './introduction.png'
 
-export const logoImg = logo
+export const logoSVG = logo
 export const avatarImg = defaultAvatar
+export const introductionImg = introduction

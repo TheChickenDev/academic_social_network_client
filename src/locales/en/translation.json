@@ -8,5 +8,20 @@
   "contribute-ideas": "Contribute ideas",
   "sign-out": "Sign out",
   "sign-in": "Sign in",
-  "sign-up": "Sign up"
+  "sign-up": "Sign up",
+  "home": "Home",
+  "community": "Community",
+  "message": "Message",
+  "search": "Search",
+  "popular-tags": "Popular tags",
+  "today-questions": "Today's questions",
+  "asked-at": "Asked at",
+  "answers": "Answers",
+  "introduction.text1": "Discover,",
+  "introduction.text2": "Connect, and grow.",
+  "introduction.text3": "Your journey starts here.",
+  "join-us": "Join us",
+  "privacy-terms": "Privacy & Terms",
+  "about": "About",
+  "help-center": "Help Center"
 }

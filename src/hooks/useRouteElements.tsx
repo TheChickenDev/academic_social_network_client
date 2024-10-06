@@ -10,7 +10,9 @@ import { Navigate, Outlet, useRoutes } from 'react-router-dom'
 import DefaultLayout from '@/components/DefaultLayout'
 import paths from '@/constants/paths'
 import { AppContext } from '@/contexts/app.context'
-import Posts from '@/pages/Posts'
+import Home from '@/pages/Home'
+import Message from '@/pages/Message'
+import Community from '@/pages/Community'
 
 const ProtectedRoute = () => {
   const { isAuthenticated } = useContext(AppContext)
@@ -27,10 +29,18 @@ const routes: RouteObject[] = [
     path: paths.home,
     element: (
       <DefaultLayout>
-        <Posts />
+        <Home />
       </DefaultLayout>
     ),
     index: true
+  },
+  {
+    path: paths.community,
+    element: (
+      <DefaultLayout>
+        <Community />
+      </DefaultLayout>
+    )
   },
   {
     path: '',
@@ -63,6 +73,14 @@ const routes: RouteObject[] = [
         element: (
           <DefaultLayout>
             <Profile />
+          </DefaultLayout>
+        )
+      },
+      {
+        path: paths.message,
+        element: (
+          <DefaultLayout>
+            <Message />
           </DefaultLayout>
         )
       }
