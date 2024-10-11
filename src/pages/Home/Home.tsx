@@ -3,6 +3,7 @@ import PopularTags from './components/PopularTags'
 import TodayQuestions from './components/TodayQuestions'
 import Posts from './components/Posts'
 import Introduction from './components/Introduction'
+import PostUp from './components/AskQuestion'
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
           <TodayQuestions />
         </div>
         <div className='flex-initial w-1/2'>
+          <PostUp />
           <Posts />
         </div>
         <div className='flex-initial w-1/4'>

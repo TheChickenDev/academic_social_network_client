@@ -101,30 +101,26 @@ export default function Header() {
           <ModeToggle />
           <LanguageToggle />
           {isAuthenticated ? (
-            <>
-              <DropdownMenu>
-                <DropdownMenuTrigger className='outline-none flex justify-center items-center border rounded-full p-1'>
-                  <Avatar>
-                    <AvatarImage src={avatar ?? avatarImg} />
-                    <AvatarFallback>Avatar</AvatarFallback>
-                  </Avatar>
-                  <ChevronDown size={20} />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuLabel>{fullName || 'My account'}</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>{t('personal-page')}</DropdownMenuItem>
-                  <DropdownMenuItem>{t('contribute-ideas')}</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleSignOutClick()}>{t('sign-out')}</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </>
+            <DropdownMenu>
+              <DropdownMenuTrigger className='h-10 outline-none flex justify-center items-center border rounded-full p-1'>
+                <Avatar className='w-8 h-8'>
+                  <AvatarImage src={avatar ?? avatarImg} />
+                  <AvatarFallback>Avatar</AvatarFallback>
+                </Avatar>
+                <ChevronDown size={20} />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>{fullName || 'My account'}</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>{t('personal-page')}</DropdownMenuItem>
+                <DropdownMenuItem>{t('contribute-ideas')}</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleSignOutClick()}>{t('sign-out')}</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : (
-            <>
-              <Button className='justify-self-end' onClick={() => handleSignInClick()}>
-                {t('sign-in')}
-              </Button>
-            </>
+            <Button className='justify-self-end' onClick={() => handleSignInClick()}>
+              {t('sign-in')}
+            </Button>
           )}
         </div>
       </header>

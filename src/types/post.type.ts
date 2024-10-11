@@ -1,16 +1,10 @@
-export interface Content {
-  content: string
-  type: 'text' | 'code' | 'image' | string
-  language: string | null
-}
-
 export interface CommentProps {
   userName: string
   userAvatar: string
   date: string
   numberOfLikes: number
   numberOfDislikes: number
-  contents: Content[]
+  content: string
 }
 
 export interface PostProps {
@@ -22,6 +16,6 @@ export interface PostProps {
   numberOfLikes: number
   numberOfDislikes: number
   numberOfComments: number
-  contents: Content[]
+  content: string
   comments: CommentProps[]
 }

@@ -7,7 +7,7 @@ export default function Introduction() {
   const { t } = useTranslation()
   return (
     <div className='relative'>
-      <div className='absolute top-20 left-5 font-bold text-transparent bg-clip-text bg-gradient-to-r from-black to-gray-400'>
+      <div className='absolute top-20 left-5 font-bold text-transparent bg-clip-text bg-gradient-to-r from-black dark:text-white to-gray-400'>
         <p className='text-3xl'>{t('introduction.text1')}</p>
         <p className='mt-2 text-2xl'>{t('introduction.text2')}</p>
         <p className='mt-2 text-md'>{t('introduction.text3')}</p>

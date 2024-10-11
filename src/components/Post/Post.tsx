@@ -17,10 +17,13 @@ export default function Post({
   numberOfLikes,
   numberOfDislikes,
   numberOfComments,
-  contents,
+  content,
   comments
 }: PostProps) {
   const { t } = useTranslation()
+
+  const codeBlockRegex = /```(\w*)\n([\s\S]*?)```/g
+  const linkBlockRegex = /\[([^\]]+)\]\(([^)]+)\)/g
 
   return (
     <div className='rounded-md border border-gray-300 p-4 text-black dark:text-white bg-white dark:bg-background-dark'>
@@ -64,25 +67,24 @@ export default function Post({
         </div>
       </div>
       <div className='pt-2'>
-        {contents.map((content, index) => {
-          {
-            switch (content.type) {
-              case 'text':
-                return (
-                  <p key={index} className='pt-2'>
-                    {content.content}
-                  </p>
-                )
-              case 'code':
-                return (
-                  <div key={index} className='pt-2'>
-                    <CodeSnippet codeBlock={content.content} language={content.language || ''} />
-                  </div>
-                )
-              case 'image':
-                return <img key={index} className='pt-2' src={content.content} alt='Post image' />
+        {content.split(/(```\w*\n[\s\S]*?```|\[[^\]]+\]\([^)]+\))/g).map((part, index) => {
+          if (codeBlockRegex.test(part)) {
+            const match = part.match(/```(\w*)\n([\s\S]*?)```/) ?? ''
+            const language = match[1].trim()
+            const code = match[2].trim()
+            return <CodeSnippet key={index} codeBlock={code} language={language} />
+          } else if (linkBlockRegex.test(part)) {
+            const match = part.match(/\[([^\]]+)\]\(([^)]+)\)/)
+            if (match) {
+              const [, text, url] = match
+              return (
+                <a key={index} href={url} className='text-blue-500 underline'>
+                  {text}
+                </a>
+              )
             }
           }
+          return <span key={index}>{part}</span>
         })}
       </div>
       <div className='border-t pt-4'>
@@ -107,7 +109,7 @@ export default function Post({
               date={date}
               numberOfLikes={comment.numberOfLikes}
               numberOfDislikes={comment.numberOfDislikes}
-              contents={comment.contents}
+              content={comment.content}
             />
           </div>
         ))}
