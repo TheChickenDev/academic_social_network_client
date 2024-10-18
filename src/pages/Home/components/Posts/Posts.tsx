@@ -76,7 +76,7 @@ const post: PostProps = {
 export default function Posts() {
   return (
     <div className='space-y-4'>
-      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => (
+      {[1].map((item) => (
         <Post
           key={item}
           title={post.title}

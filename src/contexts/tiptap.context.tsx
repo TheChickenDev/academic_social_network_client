@@ -1,6 +1,7 @@
 import { createContext, ReactNode } from 'react'
 import { useEditor } from '@tiptap/react'
 import TextStyle, { TextStyleOptions } from '@tiptap/extension-text-style'
+import { Color } from '@tiptap/extension-color'
 import ListItem from '@tiptap/extension-list-item'
 import StarterKit from '@tiptap/starter-kit'
 import TextAlign from '@tiptap/extension-text-align'
@@ -27,7 +28,7 @@ const TiptapContext = createContext<TiptapContextType>({
 function TiptapProvider({ children }: TiptapContextProviderProps) {
   const editor = useEditor({
     extensions: [
-      // Color.configure({ types: [TextStyle.name, ListItem.name] }),
+      Color.configure({ types: [TextStyle.name, ListItem.name] }),
       TextStyle.configure({ types: [ListItem.name] } as Partial<TextStyleOptions>),
       StarterKit.configure({
         bulletList: {
@@ -67,36 +68,7 @@ function TiptapProvider({ children }: TiptapContextProviderProps) {
         class: 'm-2 focus:outline-none'
       }
     },
-    content: `<p>Hello World! 🌎️</p><pre><code>ul {
-    list-style: disc;
-  }
-  ol {
-    list-style: decimal;
-  }
-
-  ul,
-  ol {
-    padding: 0 1rem;
-  }
-
-  h1 {
-    font-size: 2em;
-  }
-  h2 {
-    font-size: 1.5em;
-  }
-  h3 {
-    font-size: 1.17em;
-  }
-  h4 {
-    font-size: 1em;
-  }
-  h5 {
-    font-size: 0.83em;
-  }
-  h6 {
-    font-size: 0.67em;
-  }</code></pre>`
+    content: ``
   })
 
   return (

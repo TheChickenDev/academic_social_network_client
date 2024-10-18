@@ -5,7 +5,7 @@ const tags = ['reactjs', 'java', 'javascript', 'typescript', 'nodejs', 'css', 'h
 export default function PopularTags() {
   const { t } = useTranslation()
   return (
-    <div className='mt-4 p-2 text-sm border border-gray-300 outline-none rounded-md bg-white dark:bg-background-dark'>
+    <div className='mt-4 p-2 text-sm border border outline-none rounded-md bg-white dark:bg-dark-primary'>
       <h2 className='text-xl font-semibold mb-2'>{t('popular-tags')}</h2>
       <div className='flex flex-wrap gap-2'>
         {tags.map((tag, index) => (

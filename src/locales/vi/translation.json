@@ -52,5 +52,11 @@
   "password-min": "Mật khẩu phải chứa ít nhất 8 ký tự",
   "password-max": "Mật khẩu không được chứa quá 255 ký tự",
   "password-invalid": "Mật khẩu phải bao gồm ít nhất một chữ cái viết thường, một chữ cái viết hoa, một số và một ký tự đặc biệt!",
-  "password-not-match": "Mật khẩu nhập lại không khớp"
+  "password-not-match": "Mật khẩu nhập lại không khớp",
+  "ask-question": "Đặt câu hỏi",
+  "reading-focus": "Tập trung đọc",
+  "post-question": "Đăng câu hỏi",
+  "preview": "Xem trước",
+  "cancel": "Hủy",
+  "edit": "Chỉnh sửa"
 }

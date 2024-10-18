@@ -50,7 +50,7 @@ export default function TodayQuestions() {
   const { t } = useTranslation()
 
   return (
-    <div className='mt-4 p-2 text-sm border border-gray-300 outline-none rounded-md bg-white dark:bg-background-dark'>
+    <div className='mt-4 p-2 text-sm border border outline-none rounded-md bg-white dark:bg-dark-primary'>
       <h2 className='text-xl font-semibold'>{t('today-questions')}</h2>
       <div>
         {questions.map((q, index) => (

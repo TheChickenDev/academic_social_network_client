@@ -52,5 +52,11 @@
   "password-min": "Password must be at least 8 characters long",
   "password-max": "Password must not exceed 255 characters",
   "password-invalid": "'Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character!'",
-  "password-not-match": "Confirm password does not match"
+  "password-not-match": "Confirm password does not match",
+  "ask-question": "Ask question",
+  "reading-focus": "Reading-focus",
+  "post-question": "Post question",
+  "preview": "Preview",
+  "cancel": "Cancel",
+  "edit": "Edit"
 }

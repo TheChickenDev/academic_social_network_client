@@ -39,7 +39,7 @@ export default function Header() {
 
   return (
     <div className='container'>
-      <header className='fixed top-0 left-0 right-0 z-50 flex h-20 w-full shrink-0 justify-between items-center px-2 lg:px-12 bg-white dark:bg-background-dark'>
+      <header className='fixed border-b top-0 left-0 right-0 z-50 flex h-20 w-full shrink-0 justify-between items-center px-2 lg:px-12 bg-white dark:bg-dark-primary'>
         <Link to={paths.home} className='mr-6'>
           <svg
             className='dark:fill-white'
@@ -65,7 +65,7 @@ export default function Header() {
             className={classNames(
               'group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900 dark:text-white dark:hover:bg-gray-800',
               {
-                'text-black dark:bg-gray-800': location.pathname === paths.home,
+                'text-black dark:bg-dark-secondary': location.pathname === paths.home,
                 'text-gray-400': location.pathname !== paths.home
               }
             )}
@@ -77,7 +77,7 @@ export default function Header() {
             className={classNames(
               'group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900 dark:text-white dark:hover:bg-gray-800',
               {
-                'text-black dark:bg-gray-800': location.pathname === paths.community,
+                'text-black dark:bg-dark-secondary': location.pathname === paths.community,
                 'text-gray-400': location.pathname !== paths.community
               }
             )}
@@ -89,7 +89,7 @@ export default function Header() {
             className={classNames(
               'group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900 dark:text-white dark:hover:bg-gray-800',
               {
-                'text-black dark:bg-gray-800': location.pathname === paths.message,
+                'text-black dark:bg-dark-secondary': location.pathname === paths.message,
                 'text-gray-400': location.pathname !== paths.message
               }
             )}
