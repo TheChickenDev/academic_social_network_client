@@ -7,27 +7,26 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
+import programmingLanguages from '@/constants/editor'
 import React from 'react'
 
 function EditorCodeBlockSelectLanguage({
   defaultLanguage,
-  updateAttributes,
-  extension
+  updateAttributes
 }: {
   defaultLanguage: string
   updateAttributes: (attrs: { language: string }) => void
-  extension: { options: { lowlight: { listLanguages: () => string[] } } }
 }) {
   return (
-    <Select onValueChange={(value) => updateAttributes({ language: value })} defaultValue={defaultLanguage}>
-      <SelectTrigger>
-        <SelectValue placeholder='Auto' />
+    <Select onValueChange={(value) => updateAttributes({ language: value })}>
+      <SelectTrigger className='editor-code-block-select-language'>
+        <SelectValue placeholder={defaultLanguage || 'Auto'} />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
           <SelectLabel>Language</SelectLabel>
           <SelectItem value='null'>Auto</SelectItem>
-          {extension.options.lowlight.listLanguages().map((lang: string, index: number) => (
+          {programmingLanguages.map((lang: string, index: number) => (
             <SelectItem key={index} value={lang}>
               {lang}
             </SelectItem>

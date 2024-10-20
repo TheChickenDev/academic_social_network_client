@@ -3,28 +3,30 @@ import { Button } from '@/components/ui/button'
 import { Editor } from '@tiptap/core'
 import { Copy, CopyCheck } from 'lucide-react'
 import { toast } from 'react-toastify'
+import { useTranslation } from 'react-i18next'
 
 function EditorCodeBlockCopy({ editor }: { editor: Editor }) {
   const [copied, setCopied] = useState(false)
+  const { t } = useTranslation()
   const handleCopy = () => {
     navigator.clipboard
       .writeText(editor.getHTML())
       .then(() => {
         setCopied(true)
         setTimeout(() => setCopied(false), 2000) // Reset after 2 seconds
-        toast.success('Code copied to clipboard')
+        toast.success(t('code-copied'))
       })
       .catch(() => {
-        toast.error('Failed to copy code to clipboard')
+        toast.error(t('code-copied-fail'))
       })
   }
 
   return (
     <Button
       onClick={handleCopy}
-      className='absolute top-2 right-6 bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-700'
+      className='absolute top-0 right-0 bg-blue-500 px-3 text-white rounded hover:bg-blue-700 editor-code-block-copy'
     >
-      {copied ? <CopyCheck /> : <Copy />}
+      {copied ? <CopyCheck size={16} /> : <Copy size={16} />}
     </Button>
   )
 }

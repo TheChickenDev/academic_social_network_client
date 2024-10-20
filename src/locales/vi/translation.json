@@ -58,5 +58,7 @@
   "post-question": "Đăng câu hỏi",
   "preview": "Xem trước",
   "cancel": "Hủy",
-  "edit": "Chỉnh sửa"
+  "edit": "Chỉnh sửa",
+  "code-coppied": "Mã nguồn đã được sao chép vào bảng nhớ tạm!",
+  "code-coppied-fail": "Sao chép mã nguồn thất bại!"
 }

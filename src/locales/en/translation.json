@@ -58,5 +58,7 @@
   "post-question": "Post question",
   "preview": "Preview",
   "cancel": "Cancel",
-  "edit": "Edit"
+  "edit": "Edit",
+  "code-coppied": "Code coppied to clipboard!",
+  "copy-copiied-fail": "Failed to copy code to clipboard!"
 }
