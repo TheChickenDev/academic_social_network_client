@@ -177,7 +177,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
       emptyIndicator,
       maxSelected = Number.MAX_SAFE_INTEGER,
       onMaxSelected,
-      hidePlaceholderWhenSelected,
+      hidePlaceholderWhenSelected = true,
       disabled,
       groupBy,
       className,
@@ -429,9 +429,9 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
       >
         <div
           className={cn(
-            'min-h-10 rounded-md border border-input text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
+            'min-h-9 h-9 rounded-md border border-input shadow-sm text-sm ring-offset-background focus-within:ring-1 focus-within:ring-ring focus-within:ring-offset-1',
             {
-              'px-3 py-2': selected.length !== 0,
+              'px-3 py-1.5': selected.length !== 0,
               'cursor-text': !disabled && selected.length !== 0
             },
             className

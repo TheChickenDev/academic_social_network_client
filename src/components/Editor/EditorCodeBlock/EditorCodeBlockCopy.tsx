@@ -26,7 +26,7 @@ function EditorCodeBlockCopy({ editor }: { editor: Editor }) {
       onClick={handleCopy}
       className='absolute top-0 right-0 bg-blue-500 px-3 text-white rounded hover:bg-blue-700 editor-code-block-copy'
     >
-      {copied ? <CopyCheck size={16} /> : <Copy size={16} />}
+      {copied ? <CopyCheck size={16} className='dark:text-black' /> : <Copy size={16} className='dark:text-black' />}
     </Button>
   )
 }

@@ -241,7 +241,7 @@ function EditorToolbar() {
   }
 
   return (
-    <div className='flex items-center justify-around flex-wrap gap-1 bg-black p-2 text-white w-full'>
+    <div className='flex items-center justify-around flex-wrap gap-1 rounded-t-md bg-black p-2 text-white w-full'>
       <input
         type='color'
         onInput={(event: any) => editor?.chain().focus().setColor(event.target.value).run()}

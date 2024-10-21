@@ -60,5 +60,18 @@
   "cancel": "Cancel",
   "edit": "Edit",
   "code-coppied": "Code coppied to clipboard!",
-  "copy-copiied-fail": "Failed to copy code to clipboard!"
+  "copy-copiied-fail": "Failed to copy code to clipboard!",
+  "no-data-found": "No data found",
+  "question.title": "Question title",
+  "question.title.placeholder": "Enter your question title",
+  "question.title.description": "Your title should summarize the problem.",
+  "question.title.required": "Title is required.",
+  "question.tag": "Question tags",
+  "question.tag.placeholder": "Choose tags",
+  "question.tag.description": "Choose up to 5 tags to describe what your question is about.",
+  "question.problem": "Problem details",
+  "question.problem.description": "Include the problem and expand on what you put in the title. Minimum 20 characters.",
+  "question.problem.required": "Please enter at least 20 characters.",
+  "question.mode": "Post in private mode",
+  "question.mode.description": "Private mode allows you to proactively control who can see your posts."
 }

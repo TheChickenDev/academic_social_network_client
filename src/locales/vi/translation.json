@@ -60,5 +60,18 @@
   "cancel": "Hủy",
   "edit": "Chỉnh sửa",
   "code-coppied": "Mã nguồn đã được sao chép vào bảng nhớ tạm!",
-  "code-coppied-fail": "Sao chép mã nguồn thất bại!"
+  "code-coppied-fail": "Sao chép mã nguồn thất bại!",
+  "no-data-found": "Không tìm thấy dữ liệu",
+  "question.title": "Tiêu đề",
+  "question.title.placeholder": "Nhập tiêu đề của bạn ở đây",
+  "question.title.description": "Tiêu đề của bạn nên tóm tắt vấn đề.",
+  "question.title.required": "Tiêu đề không được để trống.",
+  "question.tag": "Thẻ đính kèm",
+  "question.tag.placeholder": "Chọn thẻ",
+  "question.tag.description": "Thêm tối đa 5 thẻ để mô tả vấn đề của bạn.",
+  "question.problem": "Mô tả vấn đề",
+  "question.problem.description": "Bao gồm vấn đề và mở rộng nội dung bạn đưa vào tiêu đề. Tối thiểu 20 ký tự.",
+  "question.problem.required": "Vui lòng nhập ít nhất 20 ký tự.",
+  "question.mode": "Chế độ riêng tư",
+  "question.mode.description": "Chế độ riêng tư cho phép bạn kiểm soát những ai có thể xem bài đăng của bạn."
 }

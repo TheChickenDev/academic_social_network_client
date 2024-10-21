@@ -1,4 +1,4 @@
-import { EditorProvider, ReactNodeViewRenderer } from '@tiptap/react'
+import { EditorProvider, JSONContent, ReactNodeViewRenderer } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
 import { all, createLowlight } from 'lowlight'
@@ -23,9 +23,10 @@ import {
 import { Button } from '@/components/ui/button'
 import classNames from 'classnames'
 import './TextEditor.scss'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import MultipleSelector, { Option as MultiSelectItem } from '@/components/ui/multi-select'
+import { Input } from '@/components/ui/input'
 
 const extensions = [
   StarterKit.configure({
@@ -76,11 +77,45 @@ export default function AskQuestion() {
   const { t } = useTranslation()
   const [showPreview, setShowPreview] = useState<boolean>(false)
   const [selectedTags, setSelectedTags] = useState<MultiSelectItem[]>([])
-  const [editorContent, setEditorContent] = useState<string>('')
+  const [editorContent, setEditorContent] = useState<JSONContent>({})
+  const contentErrorRef = useRef<HTMLParagraphElement>(null)
+  const [questionTitle, setQuestionTitle] = useState<string>('')
+  const titleRef = useRef<HTMLInputElement>(null)
+  const titleErrorRef = useRef<HTMLParagraphElement>(null)
 
   const handleSubmitPost = () => {
-    console.log('selectedTags', selectedTags)
-    console.log('editorContent', editorContent)
+    let isValid = true
+    if (titleErrorRef.current && !questionTitle) {
+      titleRef.current?.focus()
+      titleErrorRef.current.innerText = t('question.title.required')
+      titleErrorRef.current.classList.add('text-red-500')
+      titleErrorRef.current.classList.remove('text-gray-500')
+      isValid = false
+    }
+
+    if (
+      contentErrorRef.current &&
+      (editorContent.content ?? []).reduce((acc, curr) => {
+        let l = acc
+        curr.content?.forEach((c) => {
+          l += c.text?.length ?? 0
+        })
+        return l
+      }, 0) < 20
+    ) {
+      contentErrorRef.current.innerText = t('question.problem.required')
+      contentErrorRef.current.classList.add('text-red-500')
+      contentErrorRef.current.classList.remove('text-gray-500')
+      isValid = false
+    }
+
+    console.log(isValid)
+
+    if (isValid) {
+      console.log('Title:', questionTitle)
+      console.log('Tags:', selectedTags)
+      console.log('Content:', editorContent)
+    }
   }
 
   return (
@@ -92,27 +127,52 @@ export default function AskQuestion() {
         <DialogHeader>
           <DialogTitle>{t('ask-question')}</DialogTitle>
         </DialogHeader>
-        <div>
-          <MultipleSelector
-            onChange={(tags) => setSelectedTags(tags)}
-            defaultOptions={OPTIONS}
-            placeholder='Select frameworks you like...'
-            emptyIndicator={
-              <p className='text-center text-lg leading-10 text-gray-600 dark:text-gray-400'>no results found.</p>
-            }
-          />
+        <div className='md:flex justify-between items-center block gap-3'>
+          <div className='md:w-1/2' ref={titleRef}>
+            <p className='font-semibold'>{t('question.title')}</p>
+            <Input
+              type='text'
+              placeholder={t('question.title.placeholder')}
+              value={questionTitle}
+              onChange={(e) => setQuestionTitle(e.target.value)}
+            />
+            <p className='text-sm text-gray-500' ref={titleErrorRef}>
+              {t('question.title.description')}
+            </p>
+          </div>
+          <div className='md:w-1/2'>
+            <p className='font-semibold'>{t('question.tag')}</p>
+            <MultipleSelector
+              onChange={(tags) => setSelectedTags(tags)}
+              maxSelected={5}
+              defaultOptions={OPTIONS}
+              placeholder={t('question.tag.placeholder')}
+              emptyIndicator={
+                <p className='text-center text-lg leading-10 text-gray-600 dark:text-gray-400'>{t('no-data-found')}</p>
+              }
+            />
+            <p className='text-sm text-gray-500'>{t('question.tag.description')}</p>
+          </div>
         </div>
-        <div className='border-2 border-black rounded-md overflow-hidden dark:bg-dark-secondary'>
+        <div>
+          <p className='font-semibold'>{t('question.problem')}</p>
+          <p className='text-sm text-gray-500' ref={contentErrorRef}>
+            {t('question.problem.description')}
+          </p>
           <EditorProvider
             extensions={extensions}
             editable={!showPreview}
             slotBefore={showPreview ? '' : <EditorToolbar />}
-            onUpdate={(e) => setEditorContent(e.editor.getHTML())}
+            onUpdate={(e) => setEditorContent(e.editor.getJSON())}
             editorProps={{
               attributes: {
-                class: classNames('focus:outline-none p-2 max-h-96 min-h-48 overflow-auto', {
-                  'preview-mode': showPreview
-                }),
+                class: classNames(
+                  'rounded-b-md outline-none p-2 max-h-96 min-h-48 overflow-auto dark:bg-dark-secondary',
+                  {
+                    'preview-mode': showPreview,
+                    'border-2 border-black': !showPreview
+                  }
+                ),
                 spellCheck: 'false'
               }
             }}
