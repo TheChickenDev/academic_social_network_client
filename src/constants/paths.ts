@@ -6,7 +6,8 @@ const paths = {
   register: '/register',
   forgotPassword: '/forgot-password',
   resetPassword: '/reset-password/:token',
-  profile: '/profile'
+  profile: '/profile',
+  post: '/post'
 } as const
 
 export default paths

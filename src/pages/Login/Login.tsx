@@ -29,16 +29,16 @@ export default function Login() {
     email: z
       .string()
       .min(1, {
-        message: t('email-required')
+        message: t('login.emailRequired')
       })
-      .max(255, { message: t('email-max') })
-      .email({ message: t('email-invalid') }),
+      .max(255, { message: t('login.emailMax') })
+      .email({ message: t('login.emailInvalid') }),
     password: z
       .string()
       .min(1, {
-        message: t('password-required')
+        message: t('login.passwordRequired')
       })
-      .max(255, { message: t('password-max') })
+      .max(255, { message: t('login.passwordMax') })
   })
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -148,7 +148,7 @@ export default function Login() {
         </div>
       </div>
       <div className='md:w-1/2 w-full bg-white xl:px-36 lg:px-8 px-4 flex flex-col justify-center'>
-        <h2 className='text-3xl font-bold mb-2'>{t('sign-in')}</h2>
+        <h2 className='text-3xl font-bold mb-2'>{t('login.title')}</h2>
         <p className='text-gray-600 mb-4'>{t('login.subtitle')}</p>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-2 mb-4'>
@@ -159,7 +159,7 @@ export default function Login() {
                 <FormItem>
                   <FormLabel>{t('email')}</FormLabel>
                   <FormControl>
-                    <Input placeholder={t('enter-email')} {...field} />
+                    <Input placeholder={t('login.enterEmail')} {...field} />
                   </FormControl>
                   <FormMessage className='italic' />
                 </FormItem>
@@ -173,7 +173,11 @@ export default function Login() {
                   <FormLabel>{t('password')}</FormLabel>
                   <FormControl>
                     <div className='relative'>
-                      <Input placeholder={t('enter-password')} type={showPassword ? 'text' : 'password'} {...field} />
+                      <Input
+                        placeholder={t('login.enterPassword')}
+                        type={showPassword ? 'text' : 'password'}
+                        {...field}
+                      />
                       <button
                         type='button'
                         className='absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5'
@@ -188,12 +192,12 @@ export default function Login() {
               )}
             />
             <Button type='submit' className='bg-[#f50963] text-white w-full' disabled={loginMutation.isPending}>
-              {loginMutation.isPending ? <Spinner size='24' /> : t('sign-in-with-email')}
+              {loginMutation.isPending ? <Spinner size='24' /> : t('login.signIn')}
             </Button>
           </form>
           <div className='flex items-center mb-4'>
             <div className='flex-grow h-px bg-gray-300' />
-            <span className='mx-4 text-sm text-gray-500'>{t('or-continue-with')}</span>
+            <span className='mx-4 text-sm text-gray-500'>{t('login.orContinueWith')}</span>
             <div className='flex-grow h-px bg-gray-300' />
           </div>
           <Button
@@ -223,20 +227,20 @@ export default function Login() {
           </Button>
           <div className='text-center'>
             <p className='text-grey-dark text-sm'>
-              {t('dont-have-account')}&nbsp;
+              {t('login.dontHaveAccount')}&nbsp;
               <Link to={paths.register} className='no-underline text-blue font-bold'>
                 {t('sign-up')}
               </Link>
               .
             </p>
             <p className='text-grey-dark text-sm'>
-              {t('forgot-password')}&nbsp;
+              {t('login.forgotPassword')}&nbsp;
               <Link to={paths.register} className='no-underline text-blue font-bold'>
-                {t('reset-password')}
+                {t('login.resetPassword')}
               </Link>
               .
             </p>
-            <p className='text-xs text-gray-500 mt-1'>{t('accept-terms')}</p>
+            <p className='text-xs text-gray-500 mt-1'>{t('login.acceptTerms')}</p>
           </div>
         </Form>
       </div>

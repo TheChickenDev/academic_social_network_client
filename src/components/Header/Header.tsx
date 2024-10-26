@@ -70,7 +70,7 @@ export default function Header() {
               }
             )}
           >
-            {t('home')}
+            {t('pages.home')}
           </Link>
           <Link
             to={paths.community}
@@ -82,7 +82,7 @@ export default function Header() {
               }
             )}
           >
-            {t('community')}
+            {t('pages.community')}
           </Link>
           <Link
             to={paths.message}
@@ -94,7 +94,19 @@ export default function Header() {
               }
             )}
           >
-            {t('message')}
+            {t('pages.message')}
+          </Link>
+          <Link
+            to={paths.message}
+            className={classNames(
+              'group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900 dark:text-white dark:hover:bg-gray-800',
+              {
+                'text-black dark:bg-dark-secondary': location.pathname === paths.message,
+                'text-gray-400': location.pathname !== paths.message
+              }
+            )}
+          >
+            {t('pages.notification')}
           </Link>
         </div>
         <div className='flex items-center gap-2'>
@@ -119,7 +131,7 @@ export default function Header() {
             </DropdownMenu>
           ) : (
             <Button className='justify-self-end' onClick={() => handleSignInClick()}>
-              {t('sign-in')}
+              {t('action.signIn')}
             </Button>
           )}
         </div>

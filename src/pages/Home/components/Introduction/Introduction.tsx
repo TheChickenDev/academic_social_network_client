@@ -11,15 +11,15 @@ export default function Introduction() {
         <p className='text-3xl'>{t('introduction.text1')}</p>
         <p className='mt-2 text-2xl'>{t('introduction.text2')}</p>
         <p className='mt-2 text-md'>{t('introduction.text3')}</p>
-        <Button className='mt-4'>{t('join-us')}</Button>
+        <Button className='mt-4'>{t('introduction.joinUs')}</Button>
       </div>
       <div className='rounded-md overflow-hidden border'>
         <img className='block w-full h-full' src={introductionImg} alt='Introduction' />
       </div>
       <div className='mt-6 flex justify-around items-center text-xs font-semibold'>
-        <Link to={'#'}>{t('privacy-terms')}</Link>
-        <Link to={'#'}>{t('about')}</Link>
-        <Link to={'#'}>{t('help-center')}</Link>
+        <Link to={'#'}>{t('introduction.privacyTerms')}</Link>
+        <Link to={'#'}>{t('introduction.about')}</Link>
+        <Link to={'#'}>{t('introduction.helpCenter')}</Link>
       </div>
       <div className='mt-2 flex justify-center items-center gap-2'>
         <svg

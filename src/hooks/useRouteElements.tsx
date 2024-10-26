@@ -13,6 +13,7 @@ import { AppContext } from '@/contexts/app.context'
 import Home from '@/pages/Home'
 import Message from '@/pages/Message'
 import Community from '@/pages/Community'
+import PostEditor from '@/pages/PostEditor'
 
 const ProtectedRoute = () => {
   const { isAuthenticated } = useContext(AppContext)
@@ -81,6 +82,14 @@ const routes: RouteObject[] = [
         element: (
           <DefaultLayout>
             <Message />
+          </DefaultLayout>
+        )
+      },
+      {
+        path: paths.post,
+        element: (
+          <DefaultLayout>
+            <PostEditor />
           </DefaultLayout>
         )
       }

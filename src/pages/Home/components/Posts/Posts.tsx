@@ -3,10 +3,7 @@ import { PostProps } from '@/types/post.type'
 import Post from '@/components/Post'
 
 const content = `
-This is text content
-This is link content [link](https://www.google.com)
-\`\`\`css
-.custom-pre {
+<h1>heading 1</h1><h4 style="text-align: center">heading 4</h4><pre><code class="language-css">.custom-pre {
   padding: 16px;
   border-radius: 8px;
   overflow: auto;
@@ -24,15 +21,14 @@ This is link content [link](https://www.google.com)
 }
 
 .custom-token {
-  font-family: 'Fira Code', monospaceajdfjkalsfdhjlkdsahflkahsflhaslkjfhlahflahsfjklhasjkfdhlajkshdfjlkaghfkjagsfjka;
+  font-family: 'Fira Code', monospaceajdfjkalsfdhjlkdsahflfhasfkjhsjkfhsjhfsfkkahsflhaslkjfhlahflahsfjklhasjkfdhlajkshdfjlkaghfkjagsfjka;
 }
 
 .custom-pre-code {
   padding: 16px;
   border-radius: 8px;
   overflow: auto;
-}
-\`\`\`
+}</code></pre>
 `
 
 const post: PostProps = {
@@ -77,19 +73,7 @@ export default function Posts() {
   return (
     <div className='space-y-4'>
       {[1].map((item) => (
-        <Post
-          key={item}
-          title={post.title}
-          tags={post.tags}
-          userName={post.userName}
-          userAvatar={post.userAvatar}
-          date={post.date}
-          numberOfLikes={post.numberOfLikes}
-          numberOfDislikes={post.numberOfDislikes}
-          numberOfComments={post.numberOfComments}
-          content={post.content}
-          comments={post.comments}
-        />
+        <Post key={item} post={post} />
       ))}
     </div>
   )
