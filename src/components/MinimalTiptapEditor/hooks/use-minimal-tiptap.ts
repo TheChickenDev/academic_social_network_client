@@ -1,4 +1,4 @@
-import * as React from 'react'
+import { useCallback } from 'react'
 import type { Editor } from '@tiptap/core'
 import type { Content, UseEditorOptions } from '@tiptap/react'
 import { StarterKit } from '@tiptap/starter-kit'
@@ -100,15 +100,15 @@ const createExtensions = (placeholder: string) => [
     allowBase64: true,
     allowedMimeTypes: ['image/*'],
     maxFileSize: 5 * 1024 * 1024,
-    onDrop: (editor, files, pos) => {
-      files.forEach(async (file) => {
-        const src = await fileToBase64(file)
-        editor.commands.insertContentAt(pos, {
-          type: 'image',
-          attrs: { src }
-        })
-      })
-    },
+    // onDrop: (editor, files, pos) => {
+    //   files.forEach(async (file) => {
+    //     const src = await fileToBase64(file)
+    //     editor.commands.insertContentAt(pos, {
+    //       type: 'image',
+    //       attrs: { src }
+    //     })
+    //   })
+    // },
     onPaste: (editor, files) => {
       files.forEach(async (file) => {
         const src = await fileToBase64(file)
@@ -150,12 +150,12 @@ export const useMinimalTiptapEditor = ({
 }: UseMinimalTiptapEditorProps) => {
   const throttledSetValue = useThrottle((value: Content) => onUpdate?.(value), throttleDelay)
 
-  const handleUpdate = React.useCallback(
+  const handleUpdate = useCallback(
     (editor: Editor) => throttledSetValue(getOutput(editor, output)),
     [output, throttledSetValue]
   )
 
-  const handleCreate = React.useCallback(
+  const handleCreate = useCallback(
     (editor: Editor) => {
       if (value && editor.isEmpty) {
         editor.commands.setContent(value)
@@ -164,7 +164,7 @@ export const useMinimalTiptapEditor = ({
     [value]
   )
 
-  const handleBlur = React.useCallback((editor: Editor) => onBlur?.(getOutput(editor, output)), [output, onBlur])
+  const handleBlur = useCallback((editor: Editor) => onBlur?.(getOutput(editor, output)), [output, onBlur])
 
   const editor = useEditor({
     extensions: createExtensions(placeholder),

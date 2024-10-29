@@ -67,11 +67,11 @@ export const ImageViewBlock: React.FC<NodeViewProps> = ({ editor, node, selected
     ? parseFloat(getComputedStyle(containerRef.current).getPropertyValue('--editor-width'))
     : Infinity
 
-  const { isLink, onView, onDownload, onCopy, onCopyLink, onRemoveImg } = useImageActions({
+  const { isLink, onView, onDownload, onRemoveImg } = useImageActions({
     editor,
     node,
     src: imageState.src,
-    onViewClick: isZoomed => setImageState(prev => ({ ...prev, isZoomed }))
+    onViewClick: (isZoomed) => setImageState((prev) => ({ ...prev, isZoomed }))
   })
 
   const { currentWidth, currentHeight, updateDimensions, initiateResize, isResizing } = useDragResize({
@@ -95,7 +95,7 @@ export const ImageViewBlock: React.FC<NodeViewProps> = ({ editor, node, selected
         width: img.naturalWidth,
         height: img.naturalHeight
       }
-      setImageState(prev => ({
+      setImageState((prev) => ({
         ...prev,
         naturalSize: newNaturalSize,
         imageLoaded: true
@@ -108,14 +108,14 @@ export const ImageViewBlock: React.FC<NodeViewProps> = ({ editor, node, selected
       })
 
       if (!initialWidth) {
-        updateDimensions(state => ({ ...state, width: newNaturalSize.width }))
+        updateDimensions((state) => ({ ...state, width: newNaturalSize.width }))
       }
     },
     [initialWidth, updateAttributes, updateDimensions]
   )
 
   const handleImageError = React.useCallback(() => {
-    setImageState(prev => ({ ...prev, error: true, imageLoaded: true }))
+    setImageState((prev) => ({ ...prev, error: true, imageLoaded: true }))
   }, [])
 
   const handleResizeStart = React.useCallback(
@@ -138,21 +138,21 @@ export const ImageViewBlock: React.FC<NodeViewProps> = ({ editor, node, selected
 
   React.useEffect(() => {
     const handleImage = async () => {
-      const imageExtension = editor.options.extensions.find(ext => ext.name === 'image')
+      const imageExtension = editor.options.extensions.find((ext) => ext.name === 'image')
       const { uploadFn } = imageExtension?.options ?? {}
 
       if (initSrc.startsWith('blob:')) {
         if (!uploadFn) {
           try {
             const base64 = await blobUrlToBase64(initSrc)
-            setImageState(prev => ({ ...prev, src: base64 }))
+            setImageState((prev) => ({ ...prev, src: base64 }))
             updateAttributes({ src: base64 })
           } catch {
-            setImageState(prev => ({ ...prev, error: true }))
+            setImageState((prev) => ({ ...prev, error: true }))
           }
         } else {
           try {
-            setImageState(prev => ({ ...prev, isServerUploading: true }))
+            setImageState((prev) => ({ ...prev, isServerUploading: true }))
 
             const response = await fetch(initSrc)
             const blob = await response.blob()
@@ -164,7 +164,7 @@ export const ImageViewBlock: React.FC<NodeViewProps> = ({ editor, node, selected
             const url: UploadReturnType = await uploadFn(file, editor)
             const normalizedData = normalizeUploadResponse(url)
 
-            setImageState(prev => ({
+            setImageState((prev) => ({
               ...prev,
               ...normalizedData,
               isServerUploading: false
@@ -172,7 +172,7 @@ export const ImageViewBlock: React.FC<NodeViewProps> = ({ editor, node, selected
 
             updateAttributes(normalizedData)
           } catch {
-            setImageState(prev => ({
+            setImageState((prev) => ({
               ...prev,
               error: true,
               isServerUploading: false
@@ -186,9 +186,9 @@ export const ImageViewBlock: React.FC<NodeViewProps> = ({ editor, node, selected
   }, [editor, fileName, fileType, initSrc, updateAttributes])
 
   return (
-    <NodeViewWrapper ref={containerRef} data-drag-handle className="relative text-center leading-none">
+    <NodeViewWrapper ref={containerRef} data-drag-handle className='relative text-center leading-none'>
       <div
-        className="group/node-image relative mx-auto rounded-md object-contain"
+        className='group/node-image relative mx-auto rounded-md object-contain'
         style={{
           maxWidth: `min(${maxWidth}px, 100%)`,
           width: currentWidth,
@@ -201,24 +201,24 @@ export const ImageViewBlock: React.FC<NodeViewProps> = ({ editor, node, selected
             'outline outline-2 outline-offset-1 outline-primary': selected || isResizing
           })}
         >
-          <div className="h-full contain-paint">
-            <div className="relative h-full">
+          <div className='h-full contain-paint'>
+            <div className='relative h-full'>
               {!imageState.imageLoaded && !imageState.error && (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Spinner className="size-7" />
+                <div className='absolute inset-0 flex items-center justify-center'>
+                  <Spinner className='size-7' />
                 </div>
               )}
 
               {imageState.error && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <InfoCircledIcon className="size-8 text-destructive" />
-                  <p className="mt-2 text-sm text-muted-foreground">Failed to load image</p>
+                <div className='absolute inset-0 flex flex-col items-center justify-center'>
+                  <InfoCircledIcon className='size-8 text-destructive' />
+                  <p className='mt-2 text-sm text-muted-foreground'>Failed to load image</p>
                 </div>
               )}
 
               <ControlledZoom
                 isZoomed={imageState.isZoomed}
-                onZoomChange={() => setImageState(prev => ({ ...prev, isZoomed: false }))}
+                onZoomChange={() => setImageState((prev) => ({ ...prev, isZoomed: false }))}
               >
                 <img
                   className={cn('h-auto rounded object-contain transition-shadow', {
@@ -263,7 +263,7 @@ export const ImageViewBlock: React.FC<NodeViewProps> = ({ editor, node, selected
 
           {imageState.error && (
             <ActionWrapper>
-              <ActionButton icon={<TrashIcon className="size-4" />} tooltip="Remove image" onClick={onRemoveImg} />
+              <ActionButton icon={<TrashIcon className='size-4' />} onClick={onRemoveImg} />
             </ActionWrapper>
           )}
 
@@ -273,8 +273,7 @@ export const ImageViewBlock: React.FC<NodeViewProps> = ({ editor, node, selected
               isLink={isLink}
               onView={onView}
               onDownload={onDownload}
-              onCopy={onCopy}
-              onCopyLink={onCopyLink}
+              onRemoveImg={onRemoveImg}
             />
           )}
         </div>

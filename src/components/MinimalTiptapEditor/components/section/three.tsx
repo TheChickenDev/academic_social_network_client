@@ -53,7 +53,7 @@ const COLORS: ColorPalette[] = [
     label: 'Palette 3',
     inverse: 'hsl(var(--foreground))',
     colors: [
-      { cssVar: 'hsl(var(--background))', label: 'White', darkLabel: 'Black' },
+      { cssVar: 'var(--mt-accent-gray-subtler)', label: 'Gray subtle' },
       { cssVar: 'var(--mt-accent-blue-subtler)', label: 'Blue subtle' },
       { cssVar: 'var(--mt-accent-teal-subtler)', label: 'Teal subtle' },
       { cssVar: 'var(--mt-accent-green-subtler)', label: 'Green subtle' },
@@ -174,7 +174,7 @@ export const SectionThree: React.FC<SectionThreeProps> = ({ editor, size, varian
             <path d='m6 16 6-12 6 12' />
             <path d='M8 12h8' />
           </svg>
-          <CaretDownIcon className='size-5' />
+          <CaretDownIcon className='size-5 dark:text-white' />
         </ToolbarButton>
       </PopoverTrigger>
       <PopoverContent align='start' className='w-full'>

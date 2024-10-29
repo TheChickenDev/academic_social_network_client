@@ -57,7 +57,7 @@ const LinkEditPopover = ({ editor, size, variant }: LinkEditPopoverProps) => {
           size={size}
           variant={variant}
         >
-          <Link2Icon className='size-5' />
+          <Link2Icon className='size-5 dark:text-white' />
         </ToolbarButton>
       </PopoverTrigger>
       <PopoverContent className='w-full min-w-80' align='end' side='bottom'>

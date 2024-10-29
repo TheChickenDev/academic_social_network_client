@@ -1,5 +1,3 @@
-import { EditorProvider, JSONContent } from '@tiptap/react'
-import EditorToolbar from '@/components/Editor/EditorToolbar'
 import {
   Dialog,
   DialogContent,
@@ -10,12 +8,17 @@ import {
   DialogClose
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { useRef, useState } from 'react'
+import { useContext, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import MultipleSelector, { Option as MultiSelectItem } from '@/components/ui/multi-select'
+import MultipleSelector, { MultipleSelectorRef, Option as MultiSelectItem } from '@/components/ui/multi-select'
 import { Input } from '@/components/ui/input'
-import { Content } from '@tiptap/react'
+import { Content, JSONContent } from '@tiptap/react'
 import { MinimalTiptapEditor } from '@/components/MinimalTiptapEditor'
+import { contentMaxLength, contentMinLength, titleMaxLength, titleMinLength } from '@/constants/post'
+import { useMutation } from '@tanstack/react-query'
+import { createPost } from '@/apis/post.api'
+import { toast } from 'react-toastify'
+import { AppContext } from '@/contexts/app.context'
 
 const OPTIONS: MultiSelectItem[] = [
   { label: 'nextjs', value: 'Nextjs' },
@@ -31,59 +34,95 @@ const OPTIONS: MultiSelectItem[] = [
   { label: 'Astro', value: 'astro' }
 ]
 
-export default function AskQuestion() {
+export default function PostEditor() {
   const { t } = useTranslation()
   const [selectedTags, setSelectedTags] = useState<MultiSelectItem[]>([])
   const [editorContent, setEditorContent] = useState<Content>('')
-  const contentErrorRef = useRef<HTMLParagraphElement>(null)
-  const [questionTitle, setQuestionTitle] = useState<string>('')
+  const [postTitle, setPostTitle] = useState<string>('')
   const titleRef = useRef<HTMLInputElement>(null)
-  const titleErrorRef = useRef<HTMLParagraphElement>(null)
+  const tagsRef = useRef<MultipleSelectorRef>(null)
 
-  const handleSubmitPost = () => {
-    let isValid = true
-    if (titleErrorRef.current && !questionTitle) {
+  const { fullName, avatar, email } = useContext(AppContext)
+
+  const postMutation = useMutation({
+    mutationFn: (body: FormData) => createPost(body)
+  })
+
+  const extractText = (node: JSONContent) => {
+    let text = ''
+
+    if (node.type === 'text') {
+      text += node.text
+    }
+
+    if (node.content) {
+      node.content.forEach((child) => {
+        text += extractText(child)
+      })
+    }
+
+    return text
+  }
+
+  const handleSubmit = () => {
+    if (!postTitle || postTitle.length < titleMinLength || postTitle.length > titleMaxLength) {
       titleRef.current?.focus()
-      titleErrorRef.current.innerText = t('question.title.required')
-      titleErrorRef.current.classList.add('text-red-500')
-      titleErrorRef.current.classList.remove('text-gray-500')
-      isValid = false
+      toast.warning(t('post.titleError'))
+      return
     }
 
-    if (contentErrorRef.current && editorContent) {
-      contentErrorRef.current.innerText = t('question.problem.required')
-      contentErrorRef.current.classList.add('text-red-500')
-      contentErrorRef.current.classList.remove('text-gray-500')
-      isValid = false
+    if (!selectedTags.length) {
+      tagsRef.current?.focus()
+      toast.warning(t('post.tagError'))
+      return
     }
 
-    console.log(isValid)
+    const l = extractText(editorContent as JSONContent).length
 
-    if (isValid) {
-      console.log('Title:', questionTitle)
-      console.log('Tags:', selectedTags)
-      console.log('Content:', editorContent)
+    if (l < contentMinLength || l > contentMaxLength) {
+      toast.warning(t('post.descriptionError'))
+      return
     }
+
+    const data = new FormData()
+    data.append('title', postTitle)
+    data.append('tags', JSON.stringify(selectedTags))
+    data.append('ownerName', fullName ?? '')
+    data.append('ownerAvatar', avatar ?? '')
+    data.append('ownerEmail', email ?? '')
+    data.append('content', JSON.stringify(editorContent))
+
+    postMutation.mutate(data, {
+      onSuccess: (response) => {
+        const status = response.status
+        if (status === 201) {
+          toast.success(t('post.createSuccessful'))
+        } else toast.error('post.createFailed')
+      },
+      onError: () => {
+        toast.error('post.createFailed')
+      }
+    })
   }
 
   return (
     <div className='min-h-screen px-2 md:px-6 lg:px-12 bg-background-light dark:bg-dark-primary'>
       <div className='md:flex justify-between items-center block gap-3 pt-24'>
-        <div className='md:w-1/2' ref={titleRef}>
+        <div className='md:w-1/2'>
           <p className='font-semibold mb-2'>{t('post.title')}</p>
           <Input
+            ref={titleRef}
             type='text'
             placeholder={t('post.titlePlaceholder')}
-            value={questionTitle}
-            onChange={(e) => setQuestionTitle(e.target.value)}
+            value={postTitle}
+            onChange={(e) => setPostTitle(e.target.value)}
           />
-          <p className='text-sm text-gray-500 mt-2' ref={titleErrorRef}>
-            {t('post.titleDescription')}
-          </p>
+          <p className='text-sm text-gray-500 mt-2'>{t('post.titleDescription')}</p>
         </div>
-        <div className='md:w-1/2'>
+        <div className='md:w-1/2 md:mt-0 mt-4'>
           <p className='font-semibold mb-2'>{t('post.tag')}</p>
           <MultipleSelector
+            ref={tagsRef}
             onChange={(tags) => setSelectedTags(tags)}
             maxSelected={5}
             defaultOptions={OPTIONS}
@@ -97,15 +136,13 @@ export default function AskQuestion() {
       </div>
       <div className='mt-4'>
         <p className='font-semibold'>{t('post.description')}</p>
-        <p className='text-sm text-gray-500 mb-1' ref={contentErrorRef}>
-          {t('post.descriptionDescription')}
-        </p>
+        <p className='text-sm text-gray-500 mb-1'>{t('post.descriptionDescription')}</p>
         <MinimalTiptapEditor
           value={editorContent}
           onChange={setEditorContent}
           className='w-full'
           editorContentClassName='p-2'
-          output='html'
+          output='json'
           placeholder={t('post.descriptionPlaceholder')}
           autofocus={false}
           editable={true}
@@ -125,7 +162,7 @@ export default function AskQuestion() {
               value={editorContent}
               className='w-full'
               editorContentClassName='p-2'
-              output='html'
+              output='json'
               placeholder='Type your description here...'
               autofocus={false}
               editable={false}
@@ -136,7 +173,7 @@ export default function AskQuestion() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-        <Button onClick={() => handleSubmitPost()}>{t('action.post')}</Button>
+        <Button onClick={() => handleSubmit()}>{t('action.post')}</Button>
       </div>
     </div>
   )

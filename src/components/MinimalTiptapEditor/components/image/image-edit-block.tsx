@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { useTranslation } from 'react-i18next'
+import { blobUrlToBase64 } from '../../utils'
 
 interface ImageEditBlockProps {
   editor: Editor
@@ -47,7 +48,9 @@ export const ImageEditBlock: React.FC<ImageEditBlockProps> = ({ editor, close })
       e.stopPropagation()
 
       if (link) {
-        editor.commands.setImages([{ src: link }])
+        blobUrlToBase64(link).then((base64) => {
+          editor.commands.setImages([{ src: base64 }])
+        })
         close()
       }
     },

@@ -29,14 +29,6 @@ export const useImageActions = ({ editor, node, src, onViewClick }: UseImageActi
     editor.commands.downloadImage({ src: node.attrs.src, alt: node.attrs.alt })
   }, [editor.commands, node.attrs.alt, node.attrs.src])
 
-  const onCopy = React.useCallback(() => {
-    editor.commands.copyImage({ src: node.attrs.src })
-  }, [editor.commands, node.attrs.src])
-
-  const onCopyLink = React.useCallback(() => {
-    editor.commands.copyLink({ src: node.attrs.src })
-  }, [editor.commands, node.attrs.src])
-
   const onRemoveImg = React.useCallback(() => {
     editor.commands.command(({ tr, dispatch }) => {
       const { selection } = tr
@@ -52,5 +44,5 @@ export const useImageActions = ({ editor, node, src, onViewClick }: UseImageActi
     })
   }, [editor.commands])
 
-  return { isLink, onView, onDownload, onCopy, onCopyLink, onRemoveImg }
+  return { isLink, onView, onDownload, onRemoveImg }
 }

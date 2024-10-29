@@ -49,7 +49,7 @@ export default function Login() {
     }
   })
 
-  const { setIsAuthenticated, setFullName, setAvatar } = useContext(AppContext)
+  const { setIsAuthenticated, setEmail, setFullName, setAvatar } = useContext(AppContext)
   const [googleResponse, setGoogleResponse] = useState<{
     access_token: string
     expires_in: number
@@ -74,7 +74,8 @@ export default function Login() {
         if (status === 200) {
           const user = decodeJWT(response.data.data?.access_token)
           setIsAuthenticated(true)
-          setFullName?.(user ? (user.fullName ?? '') : '')
+          setEmail?.(user?.email ?? '')
+          setFullName?.(user?.fullName ?? '')
           setAvatar?.(user?.avatar ?? '')
           saveAccessTokenToLocalStorage(response.data.data?.access_token)
           saveRefreshTokenToLocalStorage(response.data.data?.refresh_token)

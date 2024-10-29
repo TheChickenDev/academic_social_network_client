@@ -124,9 +124,9 @@ export default function Header() {
               <DropdownMenuContent>
                 <DropdownMenuLabel>{fullName || 'My account'}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>{t('personal-page')}</DropdownMenuItem>
-                <DropdownMenuItem>{t('contribute-ideas')}</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleSignOutClick()}>{t('sign-out')}</DropdownMenuItem>
+                <DropdownMenuItem>{t('pages.profile')}</DropdownMenuItem>
+                <DropdownMenuItem>{t('pages.contributeIdeas')}</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleSignOutClick()}>{t('action.signOut')}</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (

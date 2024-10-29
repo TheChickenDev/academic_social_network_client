@@ -101,6 +101,10 @@
     "insertElement": "Thêm phần tử",
     "codeBlock": "Khối mã nguồn",
     "blockquote": "Trích dẫn",
-    "horizontalRule": "Đường chia"
+    "horizontalRule": "Đường chia",
+    "viewImage": "Xem hình ảnh",
+    "downloadImage": "Tải hình ảnh",
+    "copyImageToClipboard": "Sao chép hình ảnh",
+    "copyImageLink": "Sao chép liên kết hình ảnh"
   }
 }

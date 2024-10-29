@@ -1,6 +1,7 @@
 export interface CommentProps {
-  userName: string
-  userAvatar: string
+  ownerName: string
+  ownerAvatar: string
+  ownerEmail: string
   date: string
   numberOfLikes: number
   numberOfDislikes: number
@@ -10,8 +11,9 @@ export interface CommentProps {
 export interface PostProps {
   title: string
   tags: string[]
-  userName: string
-  userAvatar: string
+  ownerName: string
+  ownerAvatar: string
+  ownerEmail: string
   date: string
   numberOfLikes: number
   numberOfDislikes: number

@@ -3,14 +3,7 @@ import type { Editor } from '@tiptap/react'
 import type { FormatAction } from '../../types'
 import type { toggleVariants } from '@/components/ui/toggle'
 import type { VariantProps } from 'class-variance-authority'
-import {
-  CodeIcon,
-  DotsHorizontalIcon,
-  FontBoldIcon,
-  FontItalicIcon,
-  StrikethroughIcon,
-  TextNoneIcon
-} from '@radix-ui/react-icons'
+import { CodeIcon, DotsHorizontalIcon, FontBoldIcon, FontItalicIcon, TextNoneIcon } from '@radix-ui/react-icons'
 import { ToolbarSection } from '../toolbar-section'
 import { useTranslation } from 'react-i18next'
 
@@ -39,15 +32,15 @@ const formatActions: TextStyle[] = [
     canExecute: (editor) => editor.can().chain().focus().toggleItalic().run() && !editor.isActive('codeBlock'),
     shortcuts: ['mod', 'I']
   },
-  {
-    value: 'strikethrough',
-    label: 'Strikethrough',
-    icon: <StrikethroughIcon className='size-5' />,
-    action: (editor) => editor.chain().focus().toggleStrike().run(),
-    isActive: (editor) => editor.isActive('strike'),
-    canExecute: (editor) => editor.can().chain().focus().toggleStrike().run() && !editor.isActive('codeBlock'),
-    shortcuts: ['mod', 'shift', 'S']
-  },
+  // {
+  //   value: 'strikethrough',
+  //   label: 'Strikethrough',
+  //   icon: <StrikethroughIcon className='size-5' />,
+  //   action: (editor) => editor.chain().focus().toggleStrike().run(),
+  //   isActive: (editor) => editor.isActive('strike'),
+  //   canExecute: (editor) => editor.can().chain().focus().toggleStrike().run() && !editor.isActive('codeBlock'),
+  //   shortcuts: ['mod', 'shift', 'S']
+  // },
   {
     value: 'code',
     label: 'Code',

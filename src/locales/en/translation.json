@@ -13,7 +13,9 @@
     "home": "Home",
     "community": "Community",
     "message": "Message",
-    "notification": "Notification"
+    "notification": "Notification",
+    "profile": "Profile",
+    "contributeIdeas": "Contribute ideas"
   },
   "components": {
     "popularTags": "Popular tags",
@@ -83,12 +85,17 @@
     "title": "Title",
     "titlePlaceholder": "Type your post's title here...",
     "titleDescription": "Your title should be a short description of your post.",
+    "titleError": "Title must be at least 5 and at most 100 characters",
     "tag": "Tag(s)",
     "tagPlaceholder": "Choose tag(s) for your post...",
     "tagDescription": "Choose up to 5 tags to describe what your post is about.",
+    "tagError": "You must choose at least one tag",
     "description": "Description",
     "descriptionPlaceholder": "Type your post's description here...",
-    "descriptionDescription": "Introduce the problem and expand on what your put in the title. Minimum 20 characters."
+    "descriptionDescription": "Introduce the problem and expand on what your put in the title. Minimum 20 and maximum 2000 characters.",
+    "descriptionError": "Description must be at least 20 and at most 2000 characters",
+    "createSuccessful": "Your post has been created successfully!",
+    "createFailed": "An error occurred while creating your post. Please try again later."
   },
   "minimalEditor": {
     "description": "Type your content here...",
@@ -114,7 +121,11 @@
     "insertElement": "Insert element",
     "codeBlock": "Code block",
     "blockquote": "Blockquote",
-    "horizontalRule": "Divider"
+    "horizontalRule": "Divider",
+    "viewImage": "View image",
+    "downloadImage": "Download image",
+    "copyImageToClipboard": "Copy image to clipboard",
+    "copyImageLink": "Copy image link"
   },
   "filter": {
     "title": "Filter",

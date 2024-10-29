@@ -64,6 +64,7 @@
     --mt-accent-red: #c9372c;
     --mt-accent-purple: #8270db;
 
+    --mt-accent-gray-subtler: #bfc7d5;
     --mt-accent-blue-subtler: #cce0ff;
     --mt-accent-teal-subtler: #c6edfb;
     --mt-accent-green-subtler: #baf3db;
@@ -134,6 +135,7 @@
     --mt-accent-red: #e2483d;
     --mt-accent-purple: #8f7ee7;
 
+    --mt-accent-gray-subtler: #9eb1c2;
     --mt-accent-blue-subtler: #09326c;
     --mt-accent-teal-subtler: #164555;
     --mt-accent-green-subtler: #164b35;
@@ -172,12 +174,6 @@ body {
 
 .minimal-tiptap-editor .ProseMirror > div.editor {
   @apply block flex-1 whitespace-pre-wrap;
-}
-
-.minimal-tiptap-editor .ProseMirror .block-node:not(:last-child),
-.minimal-tiptap-editor .ProseMirror .list-node:not(:last-child),
-.minimal-tiptap-editor .ProseMirror .text-node:not(:last-child) {
-  @apply mb-2.5;
 }
 
 .minimal-tiptap-editor .ProseMirror ol,
