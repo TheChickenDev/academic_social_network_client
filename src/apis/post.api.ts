@@ -3,9 +3,13 @@ import { SuccessResponse } from '@/types/utils.type'
 import http from '@/utils/http'
 
 export const createPost = (body: PostProps) => {
-  return http.post<SuccessResponse<PostProps>>('post', body)
+  return http.post<SuccessResponse<PostProps>>('posts', body)
 }
 
 export const getPosts = (params: PostQuery) => {
-  return http.get<SuccessResponse<PostProps[]>>('post', { params })
+  return http.get<SuccessResponse<PostProps[]>>('posts', { params })
+}
+
+export const getPostsById = (id: string) => {
+  return http.get<SuccessResponse<PostProps>>(`posts/${id}`)
 }

@@ -11,15 +11,15 @@ type AuthResponse = {
 }
 
 export const registerAccount = (body: FormData) => {
-  return http.post<SuccessResponse<AuthResponse>>('user/register', body)
+  return http.post<SuccessResponse<AuthResponse>>('users/register', body)
 }
 
 export const login = (body: LoginFormData) => {
-  return http.post<SuccessResponse<AuthResponse>>('user/login', body)
+  return http.post<SuccessResponse<AuthResponse>>('users/login', body)
 }
 
 export const loginGoogle = (body: GoogleLoginFormData) => {
-  return http.post<SuccessResponse<AuthResponse>>('user/login-google', body)
+  return http.post<SuccessResponse<AuthResponse>>('users/login-google', body)
 }
 
 export const getGoogleInfo = (access_token: string) => {
@@ -32,17 +32,17 @@ export const getGoogleInfo = (access_token: string) => {
 }
 
 export const logout = () => {
-  return http.post<SuccessResponse<null>>('user/logout')
+  return http.post<SuccessResponse<null>>('users/logout')
 }
 
 export const refreshAccessToken = () => {
-  return http.post<SuccessResponse<string>>('user/refresh-token')
+  return http.post<SuccessResponse<string>>('users/refresh-token')
 }
 
 export const forgotPassword = (body: ForgotPasswordFormData) => {
-  return http.post<SuccessResponse<string>>('user/forgot-password', body)
+  return http.post<SuccessResponse<string>>('users/forgot-password', body)
 }
 
 export const resetPassword = (body: ResetPasswordFormData) => {
-  return http.patch<SuccessResponse<null>>('user/reset-password', body)
+  return http.patch<SuccessResponse<null>>('users/reset-password', body)
 }

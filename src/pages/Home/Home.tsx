@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import paths from '@/constants/paths'
 
 export default function Home() {
   const { t } = useTranslation()
@@ -17,7 +18,7 @@ export default function Home() {
   const navigate = useNavigate()
 
   const handlePostAction = () => {
-    navigate('/post')
+    navigate(paths.postEditor)
   }
 
   return (

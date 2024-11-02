@@ -8,14 +8,23 @@ import { PostProps } from '@/types/post.type'
 import PostComment from '../PostComment'
 import { MinimalTiptapEditor } from '../MinimalTiptapEditor'
 import { convertISODateToLocaleString } from '@/utils/utils'
+import { Link, useNavigate } from 'react-router-dom'
+import paths from '@/constants/paths'
 
-export default function Post({ post }: { post: PostProps }) {
+export default function Post({ post, details = false }: { post: PostProps; details: boolean }) {
   const { t } = useTranslation()
+  const navigate = useNavigate()
 
   return (
     <div className='rounded-md border border-gray-300 p-4 text-black dark:text-white bg-white dark:bg-dark-primary'>
       <div className='border-b pb-4'>
-        <p className='text-2xl'>{post.title}</p>
+        {details ? (
+          <p className='text-2xl'>{post.title}</p>
+        ) : (
+          <Link to={post._id ? paths.postDetails.replace(':id', post._id) : '#'} className='text-2xl'>
+            {post.title}
+          </Link>
+        )}
         <div className='mt-4 flex flex-wrap gap-2'>
           {post.tags.map((tag, index) => {
             return (
@@ -44,49 +53,57 @@ export default function Post({ post }: { post: PostProps }) {
       <div className='mt-4'>
         <MinimalTiptapEditor
           value={post.content}
-          output='json'
-          placeholder=''
           autofocus={false}
           editable={false}
           editorClassName='focus:outline-none'
         />
       </div>
-      <div className='flex justify-between items-center py-4'>
+      <div className='flex justify-between items-center mt-4'>
         <div className='flex gap-2'>
           <Button variant='outline' className='flex items-center'>
-            <ThumbsUp className='mr-1' />
             <span>{post.numberOfLikes}</span>
+            <ThumbsUp className='ml-2' />
           </Button>
           <Button variant='outline' className='flex items-center'>
-            <ThumbsDown className='mr-1' />
             <span>{post.numberOfDislikes}</span>
+            <ThumbsDown className='ml-2' />
           </Button>
-          <Button variant='outline' className='flex items-center'>
-            <MessageCircle className='mr-1' />
+        </div>
+        {(post.numberOfComments ?? 0 > 0) && !details ? (
+          <Button
+            variant='outline'
+            className='flex items-center'
+            onClick={() => navigate(post._id ? paths.postDetails.replace(':id', post._id) : '#')}
+          >
             <span>{post.numberOfComments}</span>
+            <MessageCircle className='ml-2' />
           </Button>
-        </div>
-        <Button>{t('action.answer')}</Button>
+        ) : (
+          ''
+        )}
       </div>
-      <div className='border-t pt-4'>
-        <div className='flex justify-between items-center gap-4'>
-          <p className='text-xl font-bold'>{`${post.numberOfComments} ` + t('answers')}</p>
-          <Select>
-            <SelectTrigger className='w-fit'>
-              <SelectValue placeholder={t('filter.newest')} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value='newest'>{t('filter.newest')}</SelectItem>
-              <SelectItem value='oldest'>{t('filter.oldest')}</SelectItem>
-              <SelectItem value='mostLiked'>{t('filter.mostLiked')}</SelectItem>
-            </SelectContent>
-          </Select>
+      {details ? (
+        <div className='border-t mt-4'>
+          <div className='flex justify-between items-center gap-4 mt-4'>
+            <p className='text-xl font-bold'>{`${post.numberOfComments} ` + t('answers')}</p>
+            <Select>
+              <SelectTrigger className='w-fit'>
+                <SelectValue placeholder={t('filter.newest')} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value='newest'>{t('filter.newest')}</SelectItem>
+                <SelectItem value='oldest'>{t('filter.oldest')}</SelectItem>
+                <SelectItem value='mostLiked'>{t('filter.mostLiked')}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          {post.comments?.map((comment, index) => {
+            return <PostComment key={index} comment={{ ...comment }} reply={false} />
+          })}
         </div>
-        {post.comments?.map((comment, index) => {
-          console.log(comment)
-          return <PostComment key={index} comment={{ ...comment }} />
-        })}
-      </div>
+      ) : (
+        ''
+      )}
     </div>
   )
 }

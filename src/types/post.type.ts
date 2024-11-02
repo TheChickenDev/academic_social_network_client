@@ -1,15 +1,30 @@
 import { Option } from '@/components/ui/multi-select'
 
-export interface CommentProps {
+export interface ReplyProps {
   _id?: string
+  postId: string
+  commentId: string
   ownerName: string
   ownerAvatar: string
   ownerEmail: string
   createdAt?: string
+  updatedAt?: string
   numberOfLikes?: number
   numberOfDislikes?: number
   content: string
-  answers?: Omit<CommentProps, 'answers'>[]
+}
+export interface CommentProps {
+  _id?: string
+  postId: string
+  ownerName: string
+  ownerAvatar: string
+  ownerEmail: string
+  createdAt?: string
+  updatedAt?: string
+  numberOfLikes?: number
+  numberOfDislikes?: number
+  content: string
+  replies?: ReplyProps[]
 }
 
 export interface PostProps {
@@ -20,6 +35,7 @@ export interface PostProps {
   ownerAvatar: string
   ownerEmail: string
   createdAt?: string
+  updatedAt?: string
   numberOfLikes?: number
   numberOfDislikes?: number
   numberOfComments?: number
@@ -28,7 +44,9 @@ export interface PostProps {
 }
 
 export interface PostQuery {
-  page: number
-  limit: number
+  _id?: string
+  commentFilter?: string
+  page?: number
+  limit?: number
   ownerEmail?: string
 }

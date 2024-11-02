@@ -104,7 +104,8 @@
     "descriptionError": "Description must be at least 20 and at most 2000 characters",
     "createSuccessful": "Your post has been created successfully!",
     "createFailed": "An error occurred while creating your post. Please try again later.",
-    "createdAt": "Created at"
+    "createdAt": "Created at",
+    "updatedAt": "Updated at"
   },
   "minimalEditor": {
     "description": "Type your content here...",
@@ -156,6 +157,9 @@
     "signOut": "Sign out",
     "signIn": "Sign in",
     "signUp": "Sign up",
-    "feedback": "Feedback"
+    "feedback": "Feedback",
+    "like": "Like",
+    "dislike": "Dislike",
+    "reply": "Reply"
   }
 }

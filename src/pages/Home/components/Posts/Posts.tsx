@@ -22,7 +22,7 @@ export default function Posts() {
           </div>
         </div>
       ) : (
-        data?.data?.data.map((item) => <Post key={item._id} post={item} />)
+        data?.data?.data.map((item) => <Post key={item._id} post={item} details={false} />)
       )}
     </div>
   )
