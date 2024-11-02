@@ -10,3 +10,10 @@ export const getUserInfoFromJWT = (): JWTPayload | null => {
   if (!token) return null
   return decodeJWT(token)
 }
+
+export const convertISODateToLocaleString = (date: string | undefined): string => {
+  const parsedDate = new Date(date ?? '')
+  const timeString = parsedDate.toLocaleTimeString()
+  const dateString = parsedDate.toLocaleDateString()
+  return `${timeString} ${dateString}`
+}

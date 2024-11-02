@@ -10,7 +10,7 @@ import {
 } from './auth'
 import languages from '@/constants/languages'
 import { refreshAccessToken } from '@/apis/auth.api'
-import { toast } from 'react-toastify'
+import { toast } from 'sonner'
 
 const formDataUrl = ['user/update', 'user/register']
 

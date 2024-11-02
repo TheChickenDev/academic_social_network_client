@@ -4,7 +4,7 @@ import { useTheme } from '@/components/ThemeProvider'
 import { useTranslation } from 'react-i18next'
 
 export default function ModeToggle() {
-  const { setTheme } = useTheme()
+  const { theme, setTheme } = useTheme()
   const { t } = useTranslation()
 
   return (
@@ -16,9 +16,15 @@ export default function ModeToggle() {
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end'>
-        <DropdownMenuItem onClick={() => setTheme('light')}>{t('lightMode')}</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('dark')}>{t('darkMode')}</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('system')}>{t('systemMode')}</DropdownMenuItem>
+        <DropdownMenuItem className={theme === 'light' ? 'text-red-600' : ''} onClick={() => setTheme('light')}>
+          {t('lightMode')}
+        </DropdownMenuItem>
+        <DropdownMenuItem className={theme === 'dark' ? 'text-red-600' : ''} onClick={() => setTheme('dark')}>
+          {t('darkMode')}
+        </DropdownMenuItem>
+        <DropdownMenuItem className={theme === 'system' ? 'text-red-600' : ''} onClick={() => setTheme('system')}>
+          {t('systemMode')}
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )

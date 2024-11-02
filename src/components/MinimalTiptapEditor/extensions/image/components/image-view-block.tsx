@@ -198,7 +198,7 @@ export const ImageViewBlock: React.FC<NodeViewProps> = ({ editor, node, selected
       >
         <div
           className={cn('relative flex h-full cursor-default flex-col items-center gap-2 rounded', {
-            'outline outline-2 outline-offset-1 outline-primary': selected || isResizing
+            'outline outline-2 outline-offset-1 outline-primary': editor.isEditable && (selected || isResizing)
           })}
         >
           <div className='h-full contain-paint'>
@@ -225,7 +225,7 @@ export const ImageViewBlock: React.FC<NodeViewProps> = ({ editor, node, selected
                     'opacity-0': !imageState.imageLoaded || imageState.error
                   })}
                   style={{
-                    maxWidth: `min(100%, ${maxWidth}px)`,
+                    maxWidth: '100%',
                     minWidth: `${MIN_WIDTH}px`,
                     maxHeight: MAX_HEIGHT
                   }}

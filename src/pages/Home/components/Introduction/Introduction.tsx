@@ -17,9 +17,15 @@ export default function Introduction() {
         <img className='block w-full h-full' src={introductionImg} alt='Introduction' />
       </div>
       <div className='mt-6 flex justify-around items-center text-xs font-semibold'>
-        <Link to={'#'}>{t('introduction.privacyTerms')}</Link>
-        <Link to={'#'}>{t('introduction.about')}</Link>
-        <Link to={'#'}>{t('introduction.helpCenter')}</Link>
+        <Link to={'#'} className='text-nowrap'>
+          {t('introduction.privacyTerms')}
+        </Link>
+        <Link to={'#'} className='text-nowrap'>
+          {t('introduction.about')}
+        </Link>
+        <Link to={'#'} className='text-nowrap'>
+          {t('introduction.helpCenter')}
+        </Link>
       </div>
       <div className='mt-2 flex justify-center items-center gap-2'>
         <svg

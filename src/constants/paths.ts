@@ -2,6 +2,7 @@ const paths = {
   home: '/',
   community: '/community',
   message: '/message',
+  notification: '/notification',
   login: '/login',
   register: '/register',
   forgotPassword: '/forgot-password',

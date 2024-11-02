@@ -12,12 +12,12 @@ export default function PostComment({ comment }: { comment: CommentProps }) {
     <div className='rounded-md border border-gray-300 p-4 text-black dark:text-white bg-white dark:bg-dark-primary'>
       <div className='mt-4 flex justify-start items-center border-b pb-4'>
         <Avatar>
-          <AvatarImage src={comment.userAvatar} />
-          <AvatarFallback>Avatar</AvatarFallback>
+          <AvatarImage src={comment.ownerAvatar} />
+          <AvatarFallback />
         </Avatar>
         <div>
-          <p className='font-semibold'>{comment.userName}</p>
-          <p className='text-xs text-gray-500'>{t('asked-at') + ` ${comment.date}`}</p>
+          <p className='font-semibold'>{comment.ownerName}</p>
+          <p className='text-xs text-gray-500'>{t('asked-at') + ` ${comment.createdAt}`}</p>
         </div>
       </div>
       <div>comment</div>

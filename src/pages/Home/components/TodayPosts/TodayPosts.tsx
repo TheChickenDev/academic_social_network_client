@@ -80,7 +80,7 @@ export default function TodayPosts() {
             <div className='mt-2 flex items-center justify-start gap-1'>
               <Avatar>
                 <AvatarImage src={q.avatar} />
-                <AvatarFallback>Avatar</AvatarFallback>
+                <AvatarFallback />
               </Avatar>
               <p className='font-bold text-sm'>{q.user}</p>
               <svg width='12' height='12' viewBox='0 0 10 10' fill='none' xmlns='http://www.w3.org/2000/svg'>

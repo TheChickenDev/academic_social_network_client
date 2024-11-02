@@ -1,6 +1,8 @@
 {
+  "language": "Language",
   "enLocale": "English",
   "viLocale": "Vietnamese",
+  "theme": "Theme",
   "lightMode": "Light",
   "darkMode": "Dark",
   "systemMode": "System",
@@ -9,6 +11,11 @@
   "confirmPassword": "Confirm password",
   "link": "Link",
   "image": "Image",
+  "header": {
+    "sheetTitle": "Discover, Connect, and Grow.",
+    "sheetSubtitle": "Your journey starts here.",
+    "joinUs": "Join us for free!"
+  },
   "pages": {
     "home": "Home",
     "community": "Community",
@@ -19,7 +26,8 @@
   },
   "components": {
     "popularTags": "Popular tags",
-    "todayPosts": "Today posts"
+    "todayPosts": "Today posts",
+    "discoverySpace": "Discovery Space"
   },
   "postProps": {
     "postedAt": "Posted at",
@@ -95,7 +103,8 @@
     "descriptionDescription": "Introduce the problem and expand on what your put in the title. Minimum 20 and maximum 2000 characters.",
     "descriptionError": "Description must be at least 20 and at most 2000 characters",
     "createSuccessful": "Your post has been created successfully!",
-    "createFailed": "An error occurred while creating your post. Please try again later."
+    "createFailed": "An error occurred while creating your post. Please try again later.",
+    "createdAt": "Created at"
   },
   "minimalEditor": {
     "description": "Type your content here...",
@@ -132,18 +141,21 @@
     "all": "All",
     "popular": "Popular",
     "newest": "Newest",
-    "oldest": "Oldest"
+    "oldest": "Oldest",
+    "mostLiked": "Most liked"
   },
   "action": {
     "save": "Save",
     "submit": "Submit",
     "post": "Post",
+    "answer": "Answer",
     "preview": "Preview",
     "cancel": "Cancel",
     "close": "Close",
     "edit": "Edit",
     "signOut": "Sign out",
     "signIn": "Sign in",
-    "signUp": "Sign up"
+    "signUp": "Sign up",
+    "feedback": "Feedback"
   }
 }

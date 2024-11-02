@@ -17,8 +17,9 @@ import { MinimalTiptapEditor } from '@/components/MinimalTiptapEditor'
 import { contentMaxLength, contentMinLength, titleMaxLength, titleMinLength } from '@/constants/post'
 import { useMutation } from '@tanstack/react-query'
 import { createPost } from '@/apis/post.api'
-import { toast } from 'react-toastify'
+import { toast } from 'sonner'
 import { AppContext } from '@/contexts/app.context'
+import { PostProps } from '@/types/post.type'
 
 const OPTIONS: MultiSelectItem[] = [
   { label: 'nextjs', value: 'Nextjs' },
@@ -45,7 +46,7 @@ export default function PostEditor() {
   const { fullName, avatar, email } = useContext(AppContext)
 
   const postMutation = useMutation({
-    mutationFn: (body: FormData) => createPost(body)
+    mutationFn: (body: PostProps) => createPost(body)
   })
 
   const extractText = (node: JSONContent) => {
@@ -84,25 +85,35 @@ export default function PostEditor() {
       return
     }
 
-    const data = new FormData()
-    data.append('title', postTitle)
-    data.append('tags', JSON.stringify(selectedTags))
-    data.append('ownerName', fullName ?? '')
-    data.append('ownerAvatar', avatar ?? '')
-    data.append('ownerEmail', email ?? '')
-    data.append('content', JSON.stringify(editorContent))
+    // const data = new FormData()
+    // data.append('title', postTitle)
+    // data.append('tags', JSON.stringify(selectedTags.map((tag) => tag.label)))
+    // data.append('ownerName', fullName ?? '')
+    // data.append('ownerAvatar', avatar ?? '')
+    // data.append('ownerEmail', email ?? '')
+    // data.append('content', JSON.stringify(editorContent))
 
-    postMutation.mutate(data, {
-      onSuccess: (response) => {
-        const status = response.status
-        if (status === 201) {
-          toast.success(t('post.createSuccessful'))
-        } else toast.error('post.createFailed')
+    postMutation.mutate(
+      {
+        title: postTitle,
+        tags: selectedTags,
+        ownerName: fullName ?? '',
+        ownerAvatar: avatar ?? '',
+        ownerEmail: email ?? '',
+        content: editorContent as string
       },
-      onError: () => {
-        toast.error('post.createFailed')
+      {
+        onSuccess: (response) => {
+          const status = response.status
+          if (status === 201) {
+            toast.success(t('post.createSuccessful'))
+          } else toast.error(t('post.createFailed'))
+        },
+        onError: () => {
+          toast.error(t('post.createFailed'))
+        }
       }
-    })
+    )
   }
 
   return (
@@ -140,7 +151,7 @@ export default function PostEditor() {
         <MinimalTiptapEditor
           value={editorContent}
           onChange={setEditorContent}
-          className='w-full'
+          className='h-auto min-h-48 rounded-md border border-input shadow-sm focus-within:border-primary'
           editorContentClassName='p-2'
           output='json'
           placeholder={t('post.descriptionPlaceholder')}
@@ -160,10 +171,8 @@ export default function PostEditor() {
             </DialogHeader>
             <MinimalTiptapEditor
               value={editorContent}
-              className='w-full'
-              editorContentClassName='p-2'
               output='json'
-              placeholder='Type your description here...'
+              placeholder=''
               autofocus={false}
               editable={false}
               editorClassName='focus:outline-none'

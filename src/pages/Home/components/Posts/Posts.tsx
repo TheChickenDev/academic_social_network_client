@@ -1,80 +1,29 @@
-import { avatarImg } from '@/assets/images'
-import { PostProps } from '@/types/post.type'
 import Post from '@/components/Post'
-
-const content = `
-<h1>heading 1</h1><h4 style="text-align: center">heading 4</h4><pre><code class="language-css">.custom-pre {
-  padding: 16px;
-  border-radius: 8px;
-  overflow: auto;
-}
-
-.custom-line {
-  display: flex;
-}
-
-.line-number {
-  width: 30px;
-  text-align: right;
-  margin-right: 10px;
-  color: #999;
-}
-
-.custom-token {
-  font-family: 'Fira Code', monospaceajdfjkalsfdhjlkdsahflfhasfkjhsjkfhsjhfsfkkahsflhaslkjfhlahflahsfjklhasjkfdhlajkshdfjlkaghfkjagsfjka;
-}
-
-.custom-pre-code {
-  padding: 16px;
-  border-radius: 8px;
-  overflow: auto;
-}</code></pre>
-`
-
-const post: PostProps = {
-  title: 'My First Post',
-  tags: ['React', 'JavaScript', 'Web Development'],
-  userName: 'John Doe',
-  userAvatar: avatarImg,
-  date: '2023-10-01',
-  numberOfLikes: 100,
-  numberOfDislikes: 10000,
-  numberOfComments: 100000,
-  content,
-  comments: [
-    {
-      userName: 'Jane Smith',
-      userAvatar: avatarImg,
-      date: '2023-10-02',
-      numberOfLikes: 10,
-      numberOfDislikes: 100,
-      content
-    },
-    {
-      userName: 'Jane Smith',
-      userAvatar: avatarImg,
-      date: '2023-10-02',
-      numberOfLikes: 10,
-      numberOfDislikes: 100,
-      content
-    },
-    {
-      userName: 'Jane Smith',
-      userAvatar: avatarImg,
-      date: '2023-10-02',
-      numberOfLikes: 10,
-      numberOfDislikes: 100,
-      content
-    }
-  ]
-}
+import { useQuery } from '@tanstack/react-query'
+import { getPosts } from '@/apis/post.api'
+import { useState } from 'react'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export default function Posts() {
+  const [page, setPage] = useState<number>(1)
+  const { isLoading, data } = useQuery({
+    queryKey: ['posts', page],
+    queryFn: () => getPosts({ page, limit: 10 })
+  })
+
   return (
     <div className='space-y-4'>
-      {[1].map((item) => (
-        <Post key={item} post={post} />
-      ))}
+      {isLoading ? (
+        <div className='flex flex-col space-y-3'>
+          <Skeleton className='w-full h-24 rounded-xl' />
+          <div className='space-y-2'>
+            <Skeleton className='h-4 w-full' />
+            <Skeleton className='h-4 w-4/5' />
+          </div>
+        </div>
+      ) : (
+        data?.data?.data.map((item) => <Post key={item._id} post={item} />)
+      )}
     </div>
   )
 }

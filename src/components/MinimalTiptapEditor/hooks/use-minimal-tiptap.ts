@@ -15,7 +15,8 @@ import {
   Color,
   UnsetAllMarks,
   ResetMarksOnEnter,
-  FileHandler
+  FileHandler,
+  CodeBlockWithCopyButton
 } from '../extensions'
 import { cn } from '@/lib/utils'
 import { fileToBase64, getOutput, randomId } from '../utils'
@@ -62,9 +63,9 @@ const createExtensions = (placeholder: string) => [
       // return src;
       return { id: randomId(), src }
     },
-    onImageRemoved({ id, src }) {
-      console.log('Image removed', { id, src })
-    },
+    // onImageRemoved({ id, src }) {
+    //   console.log('Image removed', { id, src })
+    // },
     onValidationError(errors) {
       errors.forEach((error) => {
         toast.error('Image validation error', {
@@ -138,6 +139,31 @@ const createExtensions = (placeholder: string) => [
   Placeholder.configure({ placeholder: () => placeholder })
 ]
 
+const createExtensionsForPreviewing = () => [
+  StarterKit.configure({
+    horizontalRule: false,
+    codeBlock: false,
+    paragraph: { HTMLAttributes: { class: 'text-node' } },
+    heading: { HTMLAttributes: { class: 'heading-node' } },
+    blockquote: { HTMLAttributes: { class: 'block-node' } },
+    bulletList: { HTMLAttributes: { class: 'list-node' } },
+    orderedList: { HTMLAttributes: { class: 'list-node' } },
+    code: { HTMLAttributes: { class: 'inline', spellcheck: 'false' } },
+    dropcursor: { width: 2, class: 'ProseMirror-dropcursor border' }
+  }),
+  Link,
+  Image,
+  FileHandler,
+  Color,
+  TextStyle,
+  Selection,
+  Typography,
+  UnsetAllMarks,
+  HorizontalRule,
+  ResetMarksOnEnter,
+  CodeBlockWithCopyButton
+]
+
 export const useMinimalTiptapEditor = ({
   value,
   output = 'html',
@@ -179,6 +205,37 @@ export const useMinimalTiptapEditor = ({
     onUpdate: ({ editor }) => handleUpdate(editor),
     onCreate: ({ editor }) => handleCreate(editor),
     onBlur: ({ editor }) => handleBlur(editor),
+    ...props
+  })
+
+  return editor
+}
+
+export const useMinimalTiptapEditorForPreviewing = ({
+  value,
+  editorClassName,
+  ...props
+}: UseMinimalTiptapEditorProps) => {
+  const handleCreate = useCallback(
+    (editor: Editor) => {
+      if (value && editor.isEmpty) {
+        editor.commands.setContent(value)
+      }
+    },
+    [value]
+  )
+
+  const editor = useEditor({
+    extensions: createExtensionsForPreviewing(),
+    editorProps: {
+      attributes: {
+        autocomplete: 'off',
+        autocorrect: 'off',
+        autocapitalize: 'off',
+        class: cn('focus:outline-none', editorClassName)
+      }
+    },
+    onCreate: ({ editor }) => handleCreate(editor),
     ...props
   })
 

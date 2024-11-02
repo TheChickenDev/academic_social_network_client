@@ -2,7 +2,7 @@ import * as React from 'react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { DotsHorizontalIcon, DownloadIcon, SizeIcon, TrashIcon } from '@radix-ui/react-icons'
+import { DotsHorizontalIcon, DownloadIcon, SizeIcon } from '@radix-ui/react-icons'
 
 interface ImageActionsProps {
   shouldMerge?: boolean
@@ -11,7 +11,7 @@ interface ImageActionsProps {
   onDownload?: () => void
   // onCopy?: () => void
   // onCopyLink?: () => void
-  onRemoveImg?: () => void
+  // onRemoveImg?: () => void
 }
 
 interface ActionButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -55,7 +55,7 @@ export const ActionButton = React.memo(
 
 ActionButton.displayName = 'ActionButton'
 
-type ActionKey = 'onView' | 'onDownload' | 'onRemoveImg'
+type ActionKey = 'onView' | 'onDownload'
 
 const ActionItems: Array<{
   key: ActionKey
@@ -63,10 +63,10 @@ const ActionItems: Array<{
   isLink?: boolean
 }> = [
   { key: 'onView', icon: <SizeIcon className='size-4' /> },
-  { key: 'onDownload', icon: <DownloadIcon className='size-4' /> },
+  { key: 'onDownload', icon: <DownloadIcon className='size-4' /> }
   // { key: 'onCopy', icon: <ClipboardCopyIcon className='size-4' /> },
   // { key: 'onCopyLink', icon: <Link2Icon className='size-4' />, isLink: true },
-  { key: 'onRemoveImg', icon: <TrashIcon className='size-4' /> }
+  // { key: 'onRemoveImg', icon: <TrashIcon className='size-4' /> }
 ]
 
 export const ImageActions: React.FC<ImageActionsProps> = React.memo(
