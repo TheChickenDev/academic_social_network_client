@@ -3,17 +3,22 @@ import ThemeProvider from '@/components/ThemeProvider'
 import LanguageProvider from '@/components/LanguageProvider'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { Toaster } from '@/components/ui/sonner'
+import { HelmetProvider } from 'react-helmet-async'
 
 function App() {
   const routes = useRouteElements()
 
   return (
-    <ThemeProvider defaultTheme='system' storageKey='vite-ui-theme'>
-      <LanguageProvider defaultLanguage='en' storageKey='vite-ui-language'>
-        <TooltipProvider>{routes}</TooltipProvider>
-        <Toaster />
-      </LanguageProvider>
-    </ThemeProvider>
+    <HelmetProvider>
+      <ThemeProvider>
+        <LanguageProvider>
+          <TooltipProvider>
+            <Toaster />
+            {routes}
+          </TooltipProvider>
+        </LanguageProvider>
+      </ThemeProvider>
+    </HelmetProvider>
   )
 }
 

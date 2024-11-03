@@ -19,6 +19,7 @@ import { useTranslation } from 'react-i18next'
 import Spinner from '@/components/Spinner'
 import Logo from '@/components/Logo'
 import { Eye, EyeOff } from 'lucide-react'
+import { Helmet } from 'react-helmet-async'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -137,10 +138,13 @@ export default function Login() {
 
   return (
     <div className='min-h-screen md:flex'>
-      <div className='md:w-1/2 w-full bg-black text-white lg:p-8 p-4 flex flex-col justify-between'>
+      <Helmet>
+        <title>{t('login.title')}</title>
+      </Helmet>
+      <div className='md:w-1/2 w-full bg-black dark:bg-white text-white dark:text-black lg:p-8 p-4 flex flex-col justify-between'>
         <div className='w-fit'>
           <Link to={paths.home}>
-            <Logo className='fill-white' />
+            <Logo className='fill-white dark:fill-black' />
           </Link>
         </div>
         <div>
@@ -148,7 +152,7 @@ export default function Login() {
           <h2 className='text-2xl font-semibold mt-4'>{t('login.text2')}</h2>
         </div>
       </div>
-      <div className='md:w-1/2 w-full bg-white xl:px-36 lg:px-8 px-4 flex flex-col justify-center'>
+      <div className='md:w-1/2 w-full xl:px-36 lg:px-8 px-4 flex flex-col justify-center'>
         <h2 className='text-3xl font-bold mb-2'>{t('login.title')}</h2>
         <p className='text-gray-600 mb-4'>{t('login.subtitle')}</p>
         <Form {...form}>
@@ -192,7 +196,7 @@ export default function Login() {
                 </FormItem>
               )}
             />
-            <Button type='submit' className='bg-[#f50963] text-white w-full' disabled={loginMutation.isPending}>
+            <Button type='submit' className='bg-[#f50963] w-full' disabled={loginMutation.isPending}>
               {loginMutation.isPending ? <Spinner size='24' /> : t('login.signIn')}
             </Button>
           </form>
@@ -230,7 +234,7 @@ export default function Login() {
             <p className='text-grey-dark text-sm'>
               {t('login.dontHaveAccount')}&nbsp;
               <Link to={paths.register} className='no-underline text-blue font-bold'>
-                {t('sign-up')}
+                {t('action.signUp')}
               </Link>
               .
             </p>

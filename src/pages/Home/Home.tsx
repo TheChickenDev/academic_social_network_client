@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import { Helmet } from 'react-helmet-async'
 import paths from '@/constants/paths'
 
 export default function Home() {
@@ -23,6 +24,9 @@ export default function Home() {
 
   return (
     <div className='min-h-screen px-2 md:px-6 lg:px-12 bg-background-light dark:bg-dark-primary'>
+      <Helmet>
+        <title>Home</title>
+      </Helmet>
       <div className='flex justify-between items-start gap-4 py-28'>
         <div className='md:block hidden w-1/4'>
           {readingFocus ? (

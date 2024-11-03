@@ -20,6 +20,7 @@ import Spinner from '@/components/Spinner'
 import Logo from '@/components/Logo'
 import { isValidInputPassword } from '@/utils/rules'
 import { Eye, EyeOff } from 'lucide-react'
+import { Helmet } from 'react-helmet-async'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -148,6 +149,9 @@ export default function Login() {
 
   return (
     <div className='min-h-screen md:flex'>
+      <Helmet>
+        <title>{t('register.title')}</title>
+      </Helmet>
       <div className='md:w-1/2 w-full bg-white xl:px-36 lg:px-8 px-4 flex flex-col justify-center'>
         <h2 className='text-3xl font-bold mb-2'>{t('register.title')}</h2>
         <p className='text-gray-600 mb-4'>{t('register.subtitle')}</p>

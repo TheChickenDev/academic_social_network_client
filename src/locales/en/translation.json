@@ -11,6 +11,9 @@
   "confirmPassword": "Confirm password",
   "link": "Link",
   "image": "Image",
+  "auth": {
+    "pleaseLogin": "Please login to continue"
+  },
   "header": {
     "sheetTitle": "Discover, Connect, and Grow.",
     "sheetSubtitle": "Your journey starts here.",
@@ -105,7 +108,13 @@
     "createSuccessful": "Your post has been created successfully!",
     "createFailed": "An error occurred while creating your post. Please try again later.",
     "createdAt": "Created at",
-    "updatedAt": "Updated at"
+    "updatedAt": "Updated at",
+    "noOneLiked": "No one liked this post yet!",
+    "noOneDisliked": "No one disliked this post yet!",
+    "andMore": "and {{count}} others...",
+    "alreadyLiked": "You already liked this post!",
+    "alreadyDisliked": "You already disliked this post!",
+    "actionFailed": "An error occurred while processing your action. Please try again later."
   },
   "minimalEditor": {
     "description": "Type your content here...",

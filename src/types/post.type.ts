@@ -1,5 +1,10 @@
 import { Option } from '@/components/ui/multi-select'
 
+export interface ActionInfo {
+  ownerName: string
+  ownerEmail: string
+}
+
 export interface ReplyProps {
   _id?: string
   postId: string
@@ -10,7 +15,9 @@ export interface ReplyProps {
   createdAt?: string
   updatedAt?: string
   numberOfLikes?: number
+  likes?: ActionInfo[]
   numberOfDislikes?: number
+  dislikes?: ActionInfo[]
   content: string
 }
 export interface CommentProps {
@@ -22,9 +29,12 @@ export interface CommentProps {
   createdAt?: string
   updatedAt?: string
   numberOfLikes?: number
+  likes?: ActionInfo[]
   numberOfDislikes?: number
-  content: string
+  dislikes?: ActionInfo[]
+  numberOfReplies?: number
   replies?: ReplyProps[]
+  content: string
 }
 
 export interface PostProps {
@@ -37,10 +47,12 @@ export interface PostProps {
   createdAt?: string
   updatedAt?: string
   numberOfLikes?: number
+  likes?: ActionInfo[]
   numberOfDislikes?: number
+  dislikes?: ActionInfo[]
   numberOfComments?: number
-  content: string
   comments?: CommentProps[]
+  content: string
 }
 
 export interface PostQuery {
