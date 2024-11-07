@@ -5,28 +5,70 @@ import { Button } from '../ui/button'
 import { useTranslation } from 'react-i18next'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
-import { ActionInfo, PostProps } from '@/types/post.type'
+import { ActionInfo, CommentProps, PostProps } from '@/types/post.type'
 import { MinimalTiptapEditor } from '../MinimalTiptapEditor'
 import { convertISODateToLocaleString } from '@/utils/utils'
 import { Link, useNavigate } from 'react-router-dom'
 import { useContext, useEffect, useState } from 'react'
 import { AppContext } from '@/contexts/app.context'
 import { toast } from 'sonner'
-import { useMutation } from '@tanstack/react-query'
-import { likePost, dislikePost } from '@/apis/post.api'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { likePost, dislikePost, submitComment } from '@/apis/post.api'
 import classNames from 'classnames'
 import PostComment from '../PostComment'
 import paths from '@/constants/paths'
+import { AxiosResponse } from 'axios'
+import { ScrollArea } from '../ui/scroll-area'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose
+} from '@/components/ui/dialog'
+import { Content, JSONContent } from '@tiptap/core'
+import { contentMaxLength, contentMinLength } from '@/constants/post'
 
 export default function Post({ post, details = false }: { post: PostProps; details: boolean }) {
   const { t } = useTranslation()
-  const { fullName, email, isAuthenticated } = useContext(AppContext)
+  const { fullName, avatar, email, isAuthenticated } = useContext(AppContext)
   const [postDetails, setPostDetails] = useState<PostProps>(post)
+  const [commentDialog, setCommentDialog] = useState<boolean>(false)
+  const [commentFilter, setCommentFilter] = useState<'newest' | 'oldest' | 'mostLiked' | string>('newest')
+  const [editorContent, setEditorContent] = useState<Content>('')
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const likeMutation = useMutation({
     mutationFn: (body: ActionInfo) => likePost(postDetails._id ?? '', body),
-    onSuccess: (data) => {
-      setPostDetails(data.data.data)
+    onSuccess: (response) => {
+      queryClient.setQueryData(['posts', 1], (oldData: AxiosResponse) => {
+        if (!oldData) return
+        return {
+          ...oldData,
+          data: {
+            ...oldData.data,
+            data: oldData.data.data.map((item: PostProps) => {
+              if (item._id === postDetails._id) {
+                return response.data.data
+              }
+              return item
+            })
+          }
+        }
+      })
+      queryClient.setQueryData(['post', postDetails._id], (oldData: AxiosResponse) => {
+        if (!oldData) return
+        return {
+          ...oldData,
+          data: {
+            ...oldData.data,
+            data: response.data.data
+          }
+        }
+      })
+      setPostDetails(response.data.data)
     },
     onError: () => {
       toast.error(t('post.actionFailed'))
@@ -34,12 +76,40 @@ export default function Post({ post, details = false }: { post: PostProps; detai
   })
   const dislikeMutation = useMutation({
     mutationFn: (body: ActionInfo) => dislikePost(postDetails._id ?? '', body),
-    onSuccess: (data) => {
-      setPostDetails(data.data.data)
+    onSuccess: (response) => {
+      queryClient.setQueryData(['posts', 1], (oldData: AxiosResponse) => {
+        if (!oldData) return
+        return {
+          ...oldData,
+          data: {
+            ...oldData.data,
+            data: oldData.data.data.map((item: PostProps) => {
+              if (item._id === postDetails._id) {
+                return response.data.data
+              }
+              return item
+            })
+          }
+        }
+      })
+      queryClient.setQueryData(['post', postDetails._id], (oldData: AxiosResponse) => {
+        if (!oldData) return
+        return {
+          ...oldData,
+          data: {
+            ...oldData.data,
+            data: response.data.data
+          }
+        }
+      })
+      setPostDetails(response.data.data)
     },
     onError: () => {
       toast.error(t('post.actionFailed'))
     }
+  })
+  const commentMutation = useMutation({
+    mutationFn: (body: CommentProps) => submitComment(body)
   })
 
   const handleLikeClick = () => {
@@ -70,9 +140,100 @@ export default function Post({ post, details = false }: { post: PostProps; detai
     dislikeMutation.mutate({ ownerName: fullName ?? '', ownerEmail: email ?? '' })
   }
 
+  const extractText = (node: JSONContent) => {
+    let text = ''
+
+    if (node.type === 'text') {
+      text += node.text
+    }
+
+    if (node.content) {
+      node.content.forEach((child) => {
+        text += extractText(child)
+      })
+    }
+
+    return text
+  }
+
+  const handleSubmit = () => {
+    const l = extractText(editorContent as JSONContent).length
+
+    if (l < contentMinLength || l > contentMaxLength) {
+      toast.warning(t('post.descriptionError'))
+      return
+    }
+    commentMutation.mutate(
+      {
+        postId: postDetails._id ?? '',
+        ownerName: fullName ?? '',
+        ownerAvatar: avatar ?? '',
+        ownerEmail: email ?? '',
+        content: editorContent as JSONContent
+      },
+      {
+        onSuccess: (response) => {
+          const status = response.status
+          if (status === 201) {
+            toast.success(t('post.commentSuccessful'))
+            queryClient.setQueryData(['post', postDetails._id], (oldData: AxiosResponse) => {
+              if (!oldData) return
+              setPostDetails({
+                ...postDetails,
+                comments: [...oldData.data.data.comments, response.data.data],
+                numberOfComments: oldData.data.data.numberOfComments + 1
+              })
+              return {
+                ...oldData,
+                data: {
+                  ...oldData.data,
+                  data: {
+                    ...response.data.data,
+                    comments: [...oldData.data.data.comments, response.data.data],
+                    numberOfComments: oldData.data.data.numberOfComments + 1
+                  }
+                }
+              }
+            })
+            setCommentDialog(false)
+            setEditorContent(null)
+          } else {
+            toast.error(t('post.createFailed'))
+          }
+        },
+        onError: () => {
+          toast.error(t('post.createFailed'))
+        }
+      }
+    )
+  }
+
   useEffect(() => {
-    console.log('postDetails', postDetails)
-  }, [postDetails])
+    switch (commentFilter) {
+      case 'oldest':
+        setPostDetails({
+          ...postDetails,
+          comments: postDetails.comments?.sort(
+            (a, b) => new Date(a.createdAt ?? '').getTime() - new Date(b.createdAt ?? '').getTime()
+          )
+        })
+        break
+      case 'mostLiked':
+        setPostDetails({
+          ...postDetails,
+          comments: postDetails.comments?.sort((a, b) => b.numberOfLikes ?? 0 - (a.numberOfLikes ?? 0))
+        })
+        break
+      default:
+        setPostDetails({
+          ...postDetails,
+          comments: postDetails.comments?.sort(
+            (a, b) => new Date(b.createdAt ?? '').getTime() - new Date(a.createdAt ?? '').getTime()
+          )
+        })
+        break
+    }
+  }, [commentFilter])
 
   return (
     <div className='rounded-md border border-gray-300 p-4 text-black dark:text-white bg-white dark:bg-dark-primary'>
@@ -107,7 +268,7 @@ export default function Post({ post, details = false }: { post: PostProps; detai
           <div>
             <p className='font-semibold'>{postDetails.ownerName}</p>
             <p className='text-xs text-gray-500'>
-              {t('postDetails.createdAt') + ` ${convertISODateToLocaleString(postDetails.createdAt)}`}
+              {t('post.createdAt') + ` ${convertISODateToLocaleString(postDetails.createdAt)}`}
             </p>
           </div>
         </div>
@@ -144,7 +305,7 @@ export default function Post({ post, details = false }: { post: PostProps; detai
                     </p>
                   ))}
                   {postDetails.likes.length > 10 ? (
-                    <p className='text-xs'>{t('postDetails.andMore', { count: postDetails.likes.length - 10 })}</p>
+                    <p className='text-xs'>{t('post.andMore', { count: postDetails.likes.length - 10 })}</p>
                   ) : (
                     ''
                   )}
@@ -152,7 +313,7 @@ export default function Post({ post, details = false }: { post: PostProps; detai
               ) : (
                 <div className='flex justify-center items-center gap-2'>
                   <Frown />
-                  <p>{t('postDetails.noOneLiked')}</p>
+                  <p>{t('post.noOneLiked')}</p>
                 </div>
               )}
             </HoverCardContent>
@@ -180,7 +341,7 @@ export default function Post({ post, details = false }: { post: PostProps; detai
               ) : (
                 <div className='flex justify-center items-center gap-2'>
                   <Smile />
-                  <p>{t('postDetails.noOneDisliked')}</p>
+                  <p>{t('post.noOneDisliked')}</p>
                 </div>
               )}
             </HoverCardContent>
@@ -195,14 +356,38 @@ export default function Post({ post, details = false }: { post: PostProps; detai
             <MessageCircle className='ml-2' />
           </Button>
         ) : (
-          ''
+          <Dialog onOpenChange={setCommentDialog} open={commentDialog}>
+            <DialogTrigger asChild>
+              <Button>{t('action.comment')}</Button>
+            </DialogTrigger>
+            <DialogContent aria-describedby={undefined}>
+              <DialogHeader>
+                <DialogTitle>{t('action.preview')}</DialogTitle>
+              </DialogHeader>
+              <MinimalTiptapEditor
+                value={editorContent}
+                onChange={setEditorContent}
+                className='h-auto rounded-md border border-input shadow-sm focus-within:border-primary'
+                editorContentClassName='p-2'
+                output='json'
+                placeholder={t('post.descriptionPlaceholder')}
+                autofocus={false}
+                editable={true}
+                editorClassName='focus:outline-none min-h-48 max-h-96 overflow-y-auto'
+              />
+              <DialogFooter className='gap-4'>
+                <DialogClose>{t('action.close')}</DialogClose>
+                <Button onClick={handleSubmit}>{t('action.submit')}</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         )}
       </div>
       {details ? (
         <div className='border-t mt-4'>
           <div className='flex justify-between items-center gap-4 mt-4'>
             <p className='text-xl font-bold'>{`${postDetails.numberOfComments} ` + t('answers')}</p>
-            <Select>
+            <Select onValueChange={(value) => setCommentFilter(value)} value={commentFilter}>
               <SelectTrigger className='w-fit'>
                 <SelectValue placeholder={t('filter.newest')} />
               </SelectTrigger>
@@ -213,9 +398,13 @@ export default function Post({ post, details = false }: { post: PostProps; detai
               </SelectContent>
             </Select>
           </div>
-          {postDetails.comments?.map((comment, index) => {
-            return <PostComment key={index} comment={{ ...comment }} reply={false} />
-          })}
+          <ScrollArea className='mt-2 h-96 max-h-screen'>
+            {postDetails.comments?.map((comment, index) => {
+              return (
+                <PostComment key={index} comment={{ ...comment }} isReply={false} setPostDetails={setPostDetails} />
+              )
+            })}
+          </ScrollArea>
         </div>
       ) : (
         ''

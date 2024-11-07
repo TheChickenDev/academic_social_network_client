@@ -14,7 +14,7 @@ export default function CopyButton({ content }: { content: string }) {
         setCopied(true)
         setTimeout(() => setCopied(false), 2000) // Reset after 2 seconds
         toast.success('Code copied to clipboard')
-        toast.success(t('code-copied'))
+        toast.success(t('minimalEditor.codeCopied'))
       })
       .catch(() => {
         toast.error('Failed to copy code to clipboard')

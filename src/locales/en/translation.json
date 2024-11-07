@@ -25,7 +25,8 @@
     "message": "Message",
     "notification": "Notification",
     "profile": "Profile",
-    "contributeIdeas": "Contribute ideas"
+    "contributeIdeas": "Contribute ideas",
+    "post": "Post"
   },
   "components": {
     "popularTags": "Popular tags",
@@ -106,6 +107,7 @@
     "descriptionDescription": "Introduce the problem and expand on what your put in the title. Minimum 20 and maximum 2000 characters.",
     "descriptionError": "Description must be at least 20 and at most 2000 characters",
     "createSuccessful": "Your post has been created successfully!",
+    "commentSuccessful": "Your comment has been posted successfully!",
     "createFailed": "An error occurred while creating your post. Please try again later.",
     "createdAt": "Created at",
     "updatedAt": "Updated at",
@@ -144,7 +146,8 @@
     "viewImage": "View image",
     "downloadImage": "Download image",
     "copyImageToClipboard": "Copy image to clipboard",
-    "copyImageLink": "Copy image link"
+    "copyImageLink": "Copy image link",
+    "codeCopied": "Code copied!"
   },
   "filter": {
     "title": "Filter",
@@ -169,6 +172,7 @@
     "feedback": "Feedback",
     "like": "Like",
     "dislike": "Dislike",
-    "reply": "Reply"
+    "reply": "Reply",
+    "comment": "Comment"
   }
 }

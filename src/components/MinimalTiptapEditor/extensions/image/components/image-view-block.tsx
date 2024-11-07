@@ -188,10 +188,10 @@ export const ImageViewBlock: React.FC<NodeViewProps> = ({ editor, node, selected
   return (
     <NodeViewWrapper ref={containerRef} data-drag-handle className='relative text-center leading-none'>
       <div
-        className='group/node-image relative mx-auto rounded-md object-contain'
+        className='group/node-image relative mx-auto my-2 rounded-md object-contain'
         style={{
           maxWidth: `min(${maxWidth}px, 100%)`,
-          width: currentWidth,
+          width: `min(${currentWidth}px, 100%)`,
           maxHeight: MAX_HEIGHT,
           aspectRatio: `${imageState.naturalSize.width} / ${imageState.naturalSize.height}`
         }}
@@ -273,7 +273,7 @@ export const ImageViewBlock: React.FC<NodeViewProps> = ({ editor, node, selected
               isLink={isLink}
               onView={onView}
               onDownload={onDownload}
-              onRemoveImg={onRemoveImg}
+              // onRemoveImg={onRemoveImg}
             />
           )}
         </div>

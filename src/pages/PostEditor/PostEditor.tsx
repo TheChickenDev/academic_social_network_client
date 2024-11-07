@@ -100,7 +100,7 @@ export default function PostEditor() {
         ownerName: fullName ?? '',
         ownerAvatar: avatar ?? '',
         ownerEmail: email ?? '',
-        content: editorContent as string
+        content: editorContent as JSONContent
       },
       {
         onSuccess: (response) => {

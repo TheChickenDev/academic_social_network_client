@@ -18,7 +18,7 @@ export interface ReplyProps {
   likes?: ActionInfo[]
   numberOfDislikes?: number
   dislikes?: ActionInfo[]
-  content: string
+  content: object
 }
 export interface CommentProps {
   _id?: string
@@ -34,7 +34,7 @@ export interface CommentProps {
   dislikes?: ActionInfo[]
   numberOfReplies?: number
   replies?: ReplyProps[]
-  content: string
+  content: object
 }
 
 export interface PostProps {
@@ -52,7 +52,7 @@ export interface PostProps {
   dislikes?: ActionInfo[]
   numberOfComments?: number
   comments?: CommentProps[]
-  content: string
+  content: object
 }
 
 export interface PostQuery {
