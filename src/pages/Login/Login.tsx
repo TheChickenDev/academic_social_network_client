@@ -119,6 +119,7 @@ export default function Login() {
               onSuccess: (response) => {
                 const user = decodeJWT(response.data.data?.access_token)
                 setIsAuthenticated(true)
+                setEmail?.(user?.email ?? '')
                 setFullName?.(user?.fullName ?? '')
                 setAvatar?.(user?.avatar ?? '')
                 saveAccessTokenToLocalStorage(response.data.data?.access_token)

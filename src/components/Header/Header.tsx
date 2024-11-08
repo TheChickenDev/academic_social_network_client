@@ -242,13 +242,22 @@ export default function Header() {
               {isAuthenticated && (
                 <>
                   <div>
-                    <button onClick={() => handleMobileMenuLinkClick(paths.post)} className={'w-full text-left py-3'}>
+                    <button
+                      onClick={() => handleMobileMenuLinkClick(paths.postEditor)}
+                      className={'w-full text-left py-3'}
+                    >
                       {t('action.post')}
                     </button>
-                    <button onClick={() => handleMobileMenuLinkClick(paths.post)} className={'w-full text-left py-3'}>
+                    <button
+                      onClick={() => handleMobileMenuLinkClick(paths.postEditor)}
+                      className={'w-full text-left py-3'}
+                    >
                       {t('components.todayPosts')}
                     </button>
-                    <button onClick={() => handleMobileMenuLinkClick(paths.post)} className={'w-full text-left py-3'}>
+                    <button
+                      onClick={() => handleMobileMenuLinkClick(paths.postEditor)}
+                      className={'w-full text-left py-3'}
+                    >
                       {t('components.discoverySpace')}
                     </button>
                   </div>
@@ -309,11 +318,11 @@ export default function Header() {
                   </button>
                 </CollapsibleContent>
               </Collapsible>
-              <button onClick={() => handleMobileMenuLinkClick(paths.post)} className={'w-full text-left py-3'}>
+              <button onClick={() => handleMobileMenuLinkClick(paths.postEditor)} className={'w-full text-left py-3'}>
                 {t('action.feedback')}
               </button>
               <button
-                onClick={() => handleMobileMenuLinkClick(paths.post)}
+                onClick={() => handleMobileMenuLinkClick(paths.postEditor)}
                 className={'w-full text-left py-3 text-red-500'}
               >
                 {t('action.signOut')}

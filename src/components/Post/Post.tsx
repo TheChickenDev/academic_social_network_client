@@ -3,13 +3,12 @@ import { ThumbsUp, ThumbsDown, MessageCircle, Smile, Frown } from 'lucide-react'
 import { AvatarImage } from '@radix-ui/react-avatar'
 import { Button } from '../ui/button'
 import { useTranslation } from 'react-i18next'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
 import { ActionInfo, CommentProps, PostProps } from '@/types/post.type'
 import { MinimalTiptapEditor } from '../MinimalTiptapEditor'
 import { convertISODateToLocaleString } from '@/utils/utils'
 import { Link, useNavigate } from 'react-router-dom'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
 import { AppContext } from '@/contexts/app.context'
 import { toast } from 'sonner'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -36,14 +35,14 @@ export default function Post({ post, details = false }: { post: PostProps; detai
   const { fullName, avatar, email, isAuthenticated } = useContext(AppContext)
   const [postDetails, setPostDetails] = useState<PostProps>(post)
   const [commentDialog, setCommentDialog] = useState<boolean>(false)
-  const [commentFilter, setCommentFilter] = useState<'newest' | 'oldest' | 'mostLiked' | string>('newest')
   const [editorContent, setEditorContent] = useState<Content>('')
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+
   const likeMutation = useMutation({
     mutationFn: (body: ActionInfo) => likePost(postDetails._id ?? '', body),
     onSuccess: (response) => {
-      queryClient.setQueryData(['posts', 1], (oldData: AxiosResponse) => {
+      queryClient.setQueryData(['posts'], (oldData: AxiosResponse) => {
         if (!oldData) return
         return {
           ...oldData,
@@ -68,7 +67,7 @@ export default function Post({ post, details = false }: { post: PostProps; detai
           }
         }
       })
-      setPostDetails(response.data.data)
+      setPostDetails({ ...response.data.data, comments: postDetails.comments })
     },
     onError: () => {
       toast.error(t('post.actionFailed'))
@@ -77,7 +76,7 @@ export default function Post({ post, details = false }: { post: PostProps; detai
   const dislikeMutation = useMutation({
     mutationFn: (body: ActionInfo) => dislikePost(postDetails._id ?? '', body),
     onSuccess: (response) => {
-      queryClient.setQueryData(['posts', 1], (oldData: AxiosResponse) => {
+      queryClient.setQueryData(['posts'], (oldData: AxiosResponse) => {
         if (!oldData) return
         return {
           ...oldData,
@@ -102,7 +101,7 @@ export default function Post({ post, details = false }: { post: PostProps; detai
           }
         }
       })
-      setPostDetails(response.data.data)
+      setPostDetails({ ...response.data.data, comments: postDetails.comments })
     },
     onError: () => {
       toast.error(t('post.actionFailed'))
@@ -180,7 +179,7 @@ export default function Post({ post, details = false }: { post: PostProps; detai
               if (!oldData) return
               setPostDetails({
                 ...postDetails,
-                comments: [...oldData.data.data.comments, response.data.data],
+                comments: [response.data.data, ...oldData.data.data.comments],
                 numberOfComments: oldData.data.data.numberOfComments + 1
               })
               return {
@@ -189,7 +188,7 @@ export default function Post({ post, details = false }: { post: PostProps; detai
                   ...oldData.data,
                   data: {
                     ...response.data.data,
-                    comments: [...oldData.data.data.comments, response.data.data],
+                    comments: [response.data.data, ...oldData.data.data.comments],
                     numberOfComments: oldData.data.data.numberOfComments + 1
                   }
                 }
@@ -207,33 +206,6 @@ export default function Post({ post, details = false }: { post: PostProps; detai
       }
     )
   }
-
-  useEffect(() => {
-    switch (commentFilter) {
-      case 'oldest':
-        setPostDetails({
-          ...postDetails,
-          comments: postDetails.comments?.sort(
-            (a, b) => new Date(a.createdAt ?? '').getTime() - new Date(b.createdAt ?? '').getTime()
-          )
-        })
-        break
-      case 'mostLiked':
-        setPostDetails({
-          ...postDetails,
-          comments: postDetails.comments?.sort((a, b) => b.numberOfLikes ?? 0 - (a.numberOfLikes ?? 0))
-        })
-        break
-      default:
-        setPostDetails({
-          ...postDetails,
-          comments: postDetails.comments?.sort(
-            (a, b) => new Date(b.createdAt ?? '').getTime() - new Date(a.createdAt ?? '').getTime()
-          )
-        })
-        break
-    }
-  }, [commentFilter])
 
   return (
     <div className='rounded-md border border-gray-300 p-4 text-black dark:text-white bg-white dark:bg-dark-primary'>
@@ -385,23 +357,21 @@ export default function Post({ post, details = false }: { post: PostProps; detai
       </div>
       {details ? (
         <div className='border-t mt-4'>
-          <div className='flex justify-between items-center gap-4 mt-4'>
-            <p className='text-xl font-bold'>{`${postDetails.numberOfComments} ` + t('answers')}</p>
-            <Select onValueChange={(value) => setCommentFilter(value)} value={commentFilter}>
-              <SelectTrigger className='w-fit'>
-                <SelectValue placeholder={t('filter.newest')} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value='newest'>{t('filter.newest')}</SelectItem>
-                <SelectItem value='oldest'>{t('filter.oldest')}</SelectItem>
-                <SelectItem value='mostLiked'>{t('filter.mostLiked')}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <ScrollArea className='mt-2 h-96 max-h-screen'>
-            {postDetails.comments?.map((comment, index) => {
+          <p className='text-xl font-bold mt-4'>{`${postDetails.numberOfComments} ` + t('answers')}</p>
+          <ScrollArea
+            className={classNames('mt-2', {
+              'h-screen': postDetails?.numberOfComments && postDetails.numberOfComments > 0
+            })}
+          >
+            {postDetails.comments?.map((comment) => {
               return (
-                <PostComment key={index} comment={{ ...comment }} isReply={false} setPostDetails={setPostDetails} />
+                <PostComment
+                  key={comment._id}
+                  comment={{ ...comment }}
+                  isReply={false}
+                  setPostDetails={setPostDetails}
+                />
+                // <div key={comment._id}></div>
               )
             })}
           </ScrollArea>

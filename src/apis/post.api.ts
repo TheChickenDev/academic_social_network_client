@@ -18,8 +18,16 @@ export const likePost = (id: string, body: ActionInfo) => {
   return http.post<SuccessResponse<PostProps>>(`posts/${id}/like`, body)
 }
 
+export const likeComment = (id: string, body: ActionInfo & { commentId: string }) => {
+  return http.post<SuccessResponse<CommentProps>>(`comments/${id}/like`, body)
+}
+
 export const dislikePost = (id: string, body: ActionInfo) => {
   return http.post<SuccessResponse<PostProps>>(`posts/${id}/dislike`, body)
+}
+
+export const dislikeComment = (id: string, body: ActionInfo & { commentId: string }) => {
+  return http.post<SuccessResponse<CommentProps>>(`comments/${id}/dislike`, body)
 }
 
 export const submitComment = (body: CommentProps) => {

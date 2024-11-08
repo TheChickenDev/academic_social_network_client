@@ -11,8 +11,9 @@ import {
 import languages from '@/constants/languages'
 import { refreshAccessToken } from '@/apis/auth.api'
 import { toast } from 'sonner'
+import { t } from 'i18next'
 
-const formDataUrl = ['user/update', 'user/register']
+// const formDataUrl = ['user/update', 'user/register']
 
 class HTTP {
   instance: AxiosInstance
@@ -31,10 +32,10 @@ class HTTP {
     })
     this.instance.interceptors.request.use(
       async (config) => {
-        this.access_token = getAccessTokenFromLocalStorage()
-        this.refresh_token = getRefreshTokenFromLocalStorage()
-        const contentType = formDataUrl.some((item) => config.url?.includes(item)) ? 'multipart/form-data' : ''
-        if (contentType) config.headers['Content-Type'] = contentType
+        // this.access_token = getAccessTokenFromLocalStorage()
+        // this.refresh_token = getRefreshTokenFromLocalStorage()
+        // const contentType = formDataUrl.some((item) => config.url?.includes(item)) ? 'multipart/form-data' : ''
+        // if (contentType) config.headers['Content-Type'] = contentType
         if (this.access_token && this.refresh_token) {
           config.headers['access_token'] = 'Bearer ' + this.access_token
           config.headers['refresh_token'] = 'Bearer ' + this.refresh_token
@@ -68,7 +69,7 @@ class HTTP {
           const refreshTokenResponse = await refreshAccessToken()
           const new_access_token = refreshTokenResponse.data.data
           if (!new_access_token) {
-            toast.error('Lỗi xác thực! Vui lòng thử lại sau!')
+            toast.error(t('auth.authenticationError'))
             return
           }
           saveAccessTokenToLocalStorage(new_access_token)

@@ -12,7 +12,8 @@
   "link": "Link",
   "image": "Image",
   "auth": {
-    "pleaseLogin": "Please login to continue"
+    "pleaseLogin": "Please login to continue",
+    "authenticaitonError": "Authentication error"
   },
   "header": {
     "sheetTitle": "Discover, Connect, and Grow.",
@@ -116,6 +117,8 @@
     "andMore": "and {{count}} others...",
     "alreadyLiked": "You already liked this post!",
     "alreadyDisliked": "You already disliked this post!",
+    "alreadyLikedComment": "You already liked this comment!",
+    "alreadyDislikedComment": "You already disliked this comment!",
     "actionFailed": "An error occurred while processing your action. Please try again later."
   },
   "minimalEditor": {
