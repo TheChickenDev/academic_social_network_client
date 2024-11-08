@@ -12,7 +12,12 @@ export default function PostDetails() {
   const params = useParams()
   const { isLoading, data } = useQuery({
     queryKey: ['post', params.id],
-    queryFn: () => getPostsById(params.id ?? '')
+    queryFn: async () => {
+      const response = await getPostsById(params.id ?? '')
+      return response.data.data
+    },
+    staleTime: 10 * 60 * 1000,
+    gcTime: 30 * 60 * 1000
   })
 
   return (
@@ -29,7 +34,7 @@ export default function PostDetails() {
           </div>
         </div>
       ) : (
-        <Post post={data?.data?.data as PostProps} details={true}></Post>
+        <Post post={data as PostProps} details={true}></Post>
       )}
     </div>
   )

@@ -1,11 +1,11 @@
-import { Avatar, AvatarFallback } from '../ui/avatar'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { AvatarImage } from '@radix-ui/react-avatar'
 import { useTranslation } from 'react-i18next'
 import { ActionInfo, CommentProps, PostProps, ReplyProps } from '@/types/post.type'
 import { convertISODateToLocaleString } from '@/utils/utils'
-import { MinimalTiptapEditor } from '../MinimalTiptapEditor'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { dislikeComment, likeComment, replyComment } from '@/apis/post.api'
+import { MinimalTiptapEditor } from '@/components//MinimalTiptapEditor'
+import { InfiniteData, useMutation, useQueryClient } from '@tanstack/react-query'
+import { dislikeComment, likeComment, replyComment } from '@/apis/comment.api'
 import { toast } from 'sonner'
 import { Dispatch, SetStateAction, useContext, useState } from 'react'
 import {
@@ -19,14 +19,14 @@ import {
 } from '@/components/ui/dialog'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
 import { Content, JSONContent } from '@tiptap/core'
-import { Button } from '../ui/button'
+import { Button } from '@/components//ui/button'
 import { contentMaxLength, contentMinLength } from '@/constants/post'
 import { AxiosResponse } from 'axios'
 import { AppContext } from '@/contexts/app.context'
 import classNames from 'classnames'
 import { Frown, Smile, ThumbsDown, ThumbsUp } from 'lucide-react'
 
-export default function PostComment({
+export default function Comment({
   comment,
   isReply = false,
   setPostDetails
@@ -46,31 +46,42 @@ export default function PostComment({
   const likeMutation = useMutation({
     mutationFn: (body: ActionInfo & { commentId: string }) => likeComment(commentDetails._id ?? '', body),
     onSuccess: (response) => {
-      queryClient.setQueryData(['post', commentDetails._id], (oldData: AxiosResponse) => {
-        if (!oldData) return
-        if (isReply) {
-          return {
-            ...oldData,
-            data: {
-              ...oldData.data,
-              replies: oldData.data.replies.map((item: ReplyProps) => {
-                if (item._id === commentDetails._id) {
-                  return response.data.data
-                }
-                return item
+      queryClient.setQueryData(
+        ['comments', commentDetails.postId],
+        (oldData: InfiniteData<CommentProps[], unknown>) => {
+          if (!oldData) return
+          if (isReply) {
+            return {
+              ...oldData,
+              pages: oldData.pages.map((page) => {
+                return page.map((item) => {
+                  if (item._id === (response.data.data as ReplyProps).commentId) {
+                    item.replies?.map((reply) => {
+                      if (reply._id === response.data.data._id) {
+                        return { ...response.data.data }
+                      }
+                      return reply
+                    })
+                  }
+                  return item
+                })
               })
             }
           }
-        }
-        return {
-          ...oldData,
-          data: {
-            ...oldData.data,
-            data: response.data.data
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page) => {
+              return page.map((item) => {
+                if (item._id === commentDetails._id) {
+                  return { ...response.data.data }
+                }
+                return item
+              })
+            })
           }
         }
-      })
-      setCommentDetails(response.data.data)
+      )
+      setCommentDetails({ ...response.data.data })
     },
     onError: () => {
       toast.error(t('post.actionFailed'))
@@ -188,23 +199,55 @@ export default function PostComment({
           const status = response.status
           if (status === 201) {
             toast.success(t('post.commentSuccessful'))
-            queryClient.setQueryData(['post', commentDetails.postId], (oldData: AxiosResponse) => {
-              if (!oldData) return
-              oldData.data.data.comments?.forEach((c: CommentProps) => {
-                if (c._id === commentDetails._id) {
-                  c.replies?.push(response.data.data)
+            queryClient.setQueryData(
+              ['comments', commentDetails.postId],
+              (oldData: InfiniteData<CommentProps[], unknown>) => {
+                if (!oldData) return
+                return {
+                  ...oldData,
+                  pages: oldData.pages.map((page) => {
+                    return page.map((item) => {
+                      if (item._id === commentDetails._id) {
+                        return {
+                          ...commentDetails,
+                          numberOfReplies: (commentDetails.numberOfReplies ?? 0) + 1,
+                          replies: [response.data.data, ...(commentDetails.replies ?? [])]
+                        }
+                      }
+                      return item
+                    })
+                  })
                 }
-              })
-              oldData.data.data.numberOfComments += 1
-              if (setPostDetails) {
-                setPostDetails(oldData.data.data)
               }
+            )
+            queryClient.setQueryData(['post', commentDetails.postId], (oldData: PostProps) => {
+              if (!oldData) return
+              if (setPostDetails) {
+                setPostDetails({ ...oldData, numberOfComments: (oldData.numberOfComments ?? 0) + 1 })
+              }
+              return { ...oldData, numberOfComments: (oldData.numberOfComments ?? 0) + 1 }
+            })
+            queryClient.setQueryData(['posts'], (oldData: InfiniteData<PostProps[], unknown>) => {
+              if (!oldData) return
               return {
-                ...oldData
+                ...oldData,
+                pages: oldData.pages.map((page) => {
+                  return page.map((item) => {
+                    if (item._id === commentDetails.postId) {
+                      return { ...item, numberOfComments: (item.numberOfComments ?? 0) + 1 }
+                    }
+                    return item
+                  })
+                })
               }
             })
             setCommentDialog(false)
             setEditorContent(null)
+            setCommentDetails({
+              ...commentDetails,
+              numberOfReplies: (commentDetails.numberOfReplies ?? 0) + 1,
+              replies: [response.data.data, ...(commentDetails.replies ?? [])]
+            })
           } else {
             toast.error(t('post.createFailed'))
           }
@@ -336,7 +379,7 @@ export default function PostComment({
         {commentDetails.replies && commentDetails.replies.length > 0 && (
           <div>
             {commentDetails.replies.map((reply) => (
-              <PostComment key={reply._id} comment={reply} isReply={true} />
+              <Comment key={reply._id} comment={reply} isReply={true} />
             ))}
           </div>
         )}

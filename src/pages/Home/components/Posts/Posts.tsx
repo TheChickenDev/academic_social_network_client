@@ -4,21 +4,26 @@ import { getPosts } from '@/apis/post.api'
 import { useEffect, useRef, useCallback } from 'react'
 import { PostProps } from '@/types/post.type'
 import { Skeleton } from '@/components/ui/skeleton'
-import { postQuery } from '@/constants/post'
+import { postDefaultQuery } from '@/constants/post'
 
 export default function Posts() {
   const loadMoreRef = useRef<HTMLDivElement | null>(null)
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError } = useInfiniteQuery({
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError } = useInfiniteQuery<PostProps[]>({
     queryKey: ['posts'],
-    queryFn: ({ pageParam = postQuery.page }) => getPosts({ page: pageParam as number, limit: postQuery.limit }),
+    queryFn: async ({ pageParam = postDefaultQuery.page }) => {
+      const response = await getPosts({ page: pageParam as number, limit: postDefaultQuery.limit })
+      return response.data.data
+    },
     initialPageParam: 1,
     getNextPageParam: (lastPage, pages) => {
-      if (lastPage.data.data.length === postQuery.limit) {
+      if (lastPage.length === postDefaultQuery.limit) {
         return pages.length + 1
       }
       return undefined
-    }
+    },
+    staleTime: 10 * 60 * 1000,
+    gcTime: 30 * 60 * 1000
   })
 
   const handleObserver = useCallback(
@@ -59,9 +64,7 @@ export default function Posts() {
 
   return (
     <div className='flex flex-col space-y-4'>
-      {data?.pages.map((page) =>
-        page.data.data.map((item: PostProps) => <Post key={item._id} post={item} details={false} />)
-      )}
+      {data?.pages?.map((page) => page.map((item: PostProps) => <Post key={item._id} post={item} details={false} />))}
       <div ref={loadMoreRef} />
       {isFetchingNextPage && (
         <div className='flex flex-col space-y-3'>

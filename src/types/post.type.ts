@@ -51,13 +51,19 @@ export interface PostProps {
   numberOfDislikes?: number
   dislikes?: ActionInfo[]
   numberOfComments?: number
-  comments?: CommentProps[]
   content: object
 }
 
 export interface PostQuery {
   _id?: string
-  commentFilter?: string
+  page?: number
+  limit?: number
+  ownerEmail?: string
+}
+
+export interface CommentQuery {
+  postId?: string
+  _id?: string
   page?: number
   limit?: number
   ownerEmail?: string

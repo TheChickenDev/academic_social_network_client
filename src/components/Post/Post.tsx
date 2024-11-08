@@ -8,16 +8,15 @@ import { ActionInfo, CommentProps, PostProps } from '@/types/post.type'
 import { MinimalTiptapEditor } from '../MinimalTiptapEditor'
 import { convertISODateToLocaleString } from '@/utils/utils'
 import { Link, useNavigate } from 'react-router-dom'
-import { useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { AppContext } from '@/contexts/app.context'
 import { toast } from 'sonner'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { likePost, dislikePost, submitComment } from '@/apis/post.api'
+import { InfiniteData, useMutation, useQueryClient } from '@tanstack/react-query'
+import { likePost, dislikePost } from '@/apis/post.api'
+import { submitComment } from '@/apis/comment.api'
 import classNames from 'classnames'
-import PostComment from '../PostComment'
 import paths from '@/constants/paths'
 import { AxiosResponse } from 'axios'
-import { ScrollArea } from '../ui/scroll-area'
 import {
   Dialog,
   DialogContent,
@@ -29,6 +28,7 @@ import {
 } from '@/components/ui/dialog'
 import { Content, JSONContent } from '@tiptap/core'
 import { contentMaxLength, contentMinLength } from '@/constants/post'
+import Comments from './components/Comments'
 
 export default function Post({ post, details = false }: { post: PostProps; details: boolean }) {
   const { t } = useTranslation()
@@ -39,35 +39,42 @@ export default function Post({ post, details = false }: { post: PostProps; detai
   const navigate = useNavigate()
   const queryClient = useQueryClient()
 
-  const likeMutation = useMutation({
-    mutationFn: (body: ActionInfo) => likePost(postDetails._id ?? '', body),
-    onSuccess: (response) => {
-      queryClient.setQueryData(['posts'], (oldData: AxiosResponse) => {
+  const setPostsCacheData = useCallback(
+    (response: AxiosResponse) => {
+      queryClient.setQueryData(['posts'], (oldData: InfiniteData<PostProps[], unknown>) => {
         if (!oldData) return
         return {
           ...oldData,
-          data: {
-            ...oldData.data,
-            data: oldData.data.data.map((item: PostProps) => {
+          pages: oldData.pages.map((page) => {
+            return page.map((item) => {
               if (item._id === postDetails._id) {
-                return response.data.data
+                return { ...response.data.data }
               }
               return item
             })
-          }
+          })
         }
       })
-      queryClient.setQueryData(['post', postDetails._id], (oldData: AxiosResponse) => {
+    },
+    [postDetails]
+  )
+
+  const setPostCacheData = useCallback(
+    (response: AxiosResponse) => {
+      queryClient.setQueryData(['post', postDetails._id], (oldData: PostProps) => {
         if (!oldData) return
-        return {
-          ...oldData,
-          data: {
-            ...oldData.data,
-            data: response.data.data
-          }
-        }
+        return { ...response.data.data }
       })
-      setPostDetails({ ...response.data.data, comments: postDetails.comments })
+    },
+    [postDetails]
+  )
+
+  const likeMutation = useMutation({
+    mutationFn: (body: ActionInfo) => likePost(postDetails._id ?? '', body),
+    onSuccess: (response) => {
+      setPostsCacheData(response)
+      setPostCacheData(response)
+      setPostDetails({ ...response.data.data })
     },
     onError: () => {
       toast.error(t('post.actionFailed'))
@@ -76,32 +83,9 @@ export default function Post({ post, details = false }: { post: PostProps; detai
   const dislikeMutation = useMutation({
     mutationFn: (body: ActionInfo) => dislikePost(postDetails._id ?? '', body),
     onSuccess: (response) => {
-      queryClient.setQueryData(['posts'], (oldData: AxiosResponse) => {
-        if (!oldData) return
-        return {
-          ...oldData,
-          data: {
-            ...oldData.data,
-            data: oldData.data.data.map((item: PostProps) => {
-              if (item._id === postDetails._id) {
-                return response.data.data
-              }
-              return item
-            })
-          }
-        }
-      })
-      queryClient.setQueryData(['post', postDetails._id], (oldData: AxiosResponse) => {
-        if (!oldData) return
-        return {
-          ...oldData,
-          data: {
-            ...oldData.data,
-            data: response.data.data
-          }
-        }
-      })
-      setPostDetails({ ...response.data.data, comments: postDetails.comments })
+      setPostsCacheData(response)
+      setPostCacheData(response)
+      setPostDetails({ ...response.data.data })
     },
     onError: () => {
       toast.error(t('post.actionFailed'))
@@ -175,27 +159,37 @@ export default function Post({ post, details = false }: { post: PostProps; detai
           const status = response.status
           if (status === 201) {
             toast.success(t('post.commentSuccessful'))
-            queryClient.setQueryData(['post', postDetails._id], (oldData: AxiosResponse) => {
+            queryClient.setQueryData(
+              ['comments', postDetails._id],
+              (oldData: InfiniteData<CommentProps[], unknown>) => {
+                if (!oldData) return
+                oldData.pages[0].unshift(response.data.data)
+                return {
+                  ...oldData
+                }
+              }
+            )
+            queryClient.setQueryData(['post', postDetails._id], (oldData: PostProps) => {
               if (!oldData) return
-              setPostDetails({
-                ...postDetails,
-                comments: [response.data.data, ...oldData.data.data.comments],
-                numberOfComments: oldData.data.data.numberOfComments + 1
-              })
+              return { ...postDetails, numberOfComments: (postDetails.numberOfComments ?? 0) + 1 }
+            })
+            queryClient.setQueryData(['posts'], (oldData: InfiniteData<PostProps[], unknown>) => {
+              if (!oldData) return
               return {
                 ...oldData,
-                data: {
-                  ...oldData.data,
-                  data: {
-                    ...response.data.data,
-                    comments: [response.data.data, ...oldData.data.data.comments],
-                    numberOfComments: oldData.data.data.numberOfComments + 1
-                  }
-                }
+                pages: oldData.pages.map((page) => {
+                  return page.map((item) => {
+                    if (item._id === postDetails._id) {
+                      return { ...postDetails, numberOfComments: (postDetails.numberOfComments ?? 0) + 1 }
+                    }
+                    return item
+                  })
+                })
               }
             })
             setCommentDialog(false)
             setEditorContent(null)
+            setPostDetails({ ...postDetails, numberOfComments: (postDetails.numberOfComments ?? 0) + 1 })
           } else {
             toast.error(t('post.createFailed'))
           }
@@ -221,7 +215,7 @@ export default function Post({ post, details = false }: { post: PostProps; detai
           </Link>
         )}
         <div className='mt-4 flex flex-wrap gap-2'>
-          {postDetails.tags.map((tag, index) => {
+          {postDetails.tags?.map((tag, index) => {
             return (
               <span
                 key={index}
@@ -355,30 +349,7 @@ export default function Post({ post, details = false }: { post: PostProps; detai
           </Dialog>
         )}
       </div>
-      {details ? (
-        <div className='border-t mt-4'>
-          <p className='text-xl font-bold mt-4'>{`${postDetails.numberOfComments} ` + t('answers')}</p>
-          <ScrollArea
-            className={classNames('mt-2', {
-              'h-screen': postDetails?.numberOfComments && postDetails.numberOfComments > 0
-            })}
-          >
-            {postDetails.comments?.map((comment) => {
-              return (
-                <PostComment
-                  key={comment._id}
-                  comment={{ ...comment }}
-                  isReply={false}
-                  setPostDetails={setPostDetails}
-                />
-                // <div key={comment._id}></div>
-              )
-            })}
-          </ScrollArea>
-        </div>
-      ) : (
-        ''
-      )}
+      {details && <Comments postDetails={postDetails} setPostDetails={setPostDetails} />}
     </div>
   )
 }

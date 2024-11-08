@@ -5,7 +5,12 @@ export const titleMinLength = 5
 export const tagsMaxLength = 5
 export const tagsMinLength = 0
 
-export const postQuery = {
+export const postDefaultQuery = {
+  page: 1,
+  limit: 10
+}
+
+export const commentDefaultQuery = {
   page: 1,
   limit: 10
 }
