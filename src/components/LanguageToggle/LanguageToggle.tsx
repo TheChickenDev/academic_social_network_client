@@ -1,6 +1,13 @@
 import { Languages } from 'lucide-react'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { useLanguage } from '@/components/LanguageProvider'
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
+import { useLanguage } from '@/hooks/useLanguage'
 import { useTranslation } from 'react-i18next'
 
 export default function LanguageToggle() {
@@ -14,13 +21,15 @@ export default function LanguageToggle() {
           <Languages className='h-[1.2rem] w-[1.2rem]' />
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align='end'>
-        <DropdownMenuItem onClick={() => setLanguage('en')} className={language === 'en' ? 'text-red-600' : ''}>
+      <DropdownMenuContent className='w-56'>
+        <DropdownMenuLabel>{t('theme')}</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuCheckboxItem checked={language === 'en'} onCheckedChange={() => setLanguage('en')}>
           {t('enLocale')}
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setLanguage('vi')} className={language === 'vi' ? 'text-red-600' : ''}>
+        </DropdownMenuCheckboxItem>
+        <DropdownMenuCheckboxItem checked={language === 'vi'} onCheckedChange={() => setLanguage('vi')}>
           {t('viLocale')}
-        </DropdownMenuItem>
+        </DropdownMenuCheckboxItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )

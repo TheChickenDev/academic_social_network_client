@@ -176,6 +176,13 @@
     "like": "Like",
     "dislike": "Dislike",
     "reply": "Reply",
-    "comment": "Comment"
+    "comment": "Comment",
+    "search": "Search"
+  },
+  "profile": {
+    "editProfile": "Edit my profile",
+    "posts": "Posts",
+    "introduction": "Introduction",
+    "friends": "Friends"
   }
 }

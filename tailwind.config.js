@@ -11,9 +11,10 @@ export default {
       },
       colors: {
         'background-light': '#f9fafb',
-        'dark-primary': '#0f1214',
-        'dark-secondary': '#16181c',
+        'dark-primary': '#111827',
+        'dark-secondary': '#111827',
         'button-dark': '#f9f9f9',
+        'button-dark-2': '#1f2937',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {

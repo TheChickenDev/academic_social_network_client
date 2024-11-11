@@ -1,9 +1,16 @@
 import { avatarImg } from '@/assets/images'
 import { getAccessTokenFromLocalStorage } from '@/utils/auth'
 import { getUserInfoFromJWT } from '@/utils/utils'
-import { createContext, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
+import i18n from '@/i18n'
 
 const userInfo = getUserInfoFromJWT()
+
+const themeStorageKey = 'vite-ui-theme'
+type Theme = 'dark' | 'light' | 'system'
+
+type Language = 'en' | 'vi'
+const languageStorageKey = 'vite-ui-language'
 
 interface AppContextInterface {
   isAuthenticated: boolean
@@ -15,6 +22,10 @@ interface AppContextInterface {
   setFullName?: React.Dispatch<React.SetStateAction<string>>
   avatar?: string
   setAvatar?: React.Dispatch<React.SetStateAction<string>>
+  theme: Theme
+  setTheme: (theme: Theme) => void
+  language: Language
+  setLanguage: (language: Language) => void
 }
 
 const initialAppContext: AppContextInterface = {
@@ -26,16 +37,46 @@ const initialAppContext: AppContextInterface = {
   fullName: userInfo?.fullName,
   setFullName: () => null,
   avatar: userInfo?.avatar ?? avatarImg,
-  setAvatar: () => null
+  setAvatar: () => null,
+  theme: localStorage.getItem(themeStorageKey) as Theme,
+  setTheme: () => null,
+  language: localStorage.getItem(languageStorageKey) as Language,
+  setLanguage: () => null
+}
+
+interface AppProviderProps {
+  children: React.ReactNode
+  defaultTheme?: Theme
+  defaultLanguage?: Language
 }
 
 export const AppContext = createContext<AppContextInterface>(initialAppContext)
 
-const AppProvider = ({ children }: { children: React.ReactNode }) => {
+const AppProvider = ({ children, defaultTheme = 'system', defaultLanguage = 'en' }: AppProviderProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(initialAppContext.isAuthenticated)
   const [email, setEmail] = useState<string>(initialAppContext.email ?? '')
   const [fullName, setFullName] = useState<string>(initialAppContext.fullName ?? '')
   const [avatar, setAvatar] = useState<string>(initialAppContext.avatar ?? '')
+  const [theme, setTheme] = useState<Theme>(() => defaultTheme)
+  const [language, setLanguage] = useState<Language>(defaultLanguage)
+
+  useEffect(() => {
+    const root = window.document.documentElement
+    root.classList.remove('light', 'dark')
+    if (theme === 'system') {
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+
+      root.classList.add(systemTheme)
+      return
+    }
+    root.classList.add(theme)
+    localStorage.setItem(themeStorageKey, theme)
+  }, [theme])
+
+  useEffect(() => {
+    i18n.changeLanguage(language)
+    localStorage.setItem(languageStorageKey, language)
+  }, [language])
 
   return (
     <AppContext.Provider
@@ -47,7 +88,11 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
         fullName,
         setFullName,
         avatar,
-        setAvatar
+        setAvatar,
+        theme,
+        setTheme,
+        language,
+        setLanguage
       }}
     >
       {children}

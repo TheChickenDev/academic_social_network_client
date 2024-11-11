@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button'
 import { useTranslation } from 'react-i18next'
 
 const tags = ['reactjs', 'java', 'javascript', 'typescript', 'nodejs', 'css', 'html']
@@ -9,12 +10,9 @@ export default function PopularTags() {
       <h2 className='text-xl font-semibold mb-2'>{t('components.popularTags')}</h2>
       <div className='flex flex-wrap gap-2'>
         {tags.map((tag, index) => (
-          <span
-            key={index}
-            className='inline-block bg-gray-100 rounded-sm text-md font-medium mr-2 px-3 py-1 dark:bg-blue-900'
-          >
+          <Button variant='outline' key={index} size='sm'>
             {tag}
-          </span>
+          </Button>
         ))}
       </div>
     </div>

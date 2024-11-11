@@ -26,8 +26,8 @@ export default function Search() {
           <input
             type='search'
             id='default-search'
-            className='block w-full px-4 py-2 ps-10 text-sm border border outline-none rounded-md bg-white dark:bg-dark-primary'
-            placeholder={t('search')}
+            className='block w-full px-4 py-2 ps-10 text-sm border outline-none rounded-md bg-white dark:bg-dark-primary'
+            placeholder={t('action.search')}
           />
         </div>
       </form>

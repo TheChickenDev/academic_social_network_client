@@ -202,7 +202,7 @@ export default function Post({ post, details = false }: { post: PostProps; detai
   }
 
   return (
-    <div className='rounded-md border border-gray-300 p-4 text-black dark:text-white bg-white dark:bg-dark-primary'>
+    <div className='rounded-md border p-4 text-black dark:text-white bg-white dark:bg-dark-primary'>
       <div className='border-b pb-4'>
         {details ? (
           <p className='text-2xl'>{postDetails.title}</p>

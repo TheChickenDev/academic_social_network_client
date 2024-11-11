@@ -21,9 +21,9 @@ import { removeDataFromLocalStorage } from '@/utils/auth'
 import { ChevronDown, Search, Menu } from 'lucide-react'
 import classNames from 'classnames'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
-import { useTheme } from '../ThemeProvider'
+import { useTheme } from '@/hooks/useTheme'
+import { useLanguage } from '@/hooks/useLanguage'
 import useWindowDimensions from '@/hooks/useWindowDimensions'
-import { useLanguage } from '../LanguageProvider'
 
 export default function Header() {
   const navigate = useNavigate()
