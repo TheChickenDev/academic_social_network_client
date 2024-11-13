@@ -29,6 +29,7 @@ import {
 import { Content, JSONContent } from '@tiptap/core'
 import { contentMaxLength, contentMinLength } from '@/constants/post'
 import Comments from './components/Comments'
+import Tag from '../Tag'
 
 export default function Post({ post, details = false }: { post: PostProps; details: boolean }) {
   const { t } = useTranslation()
@@ -216,14 +217,7 @@ export default function Post({ post, details = false }: { post: PostProps; detai
         )}
         <div className='mt-4 flex flex-wrap gap-2'>
           {postDetails.tags?.map((tag, index) => {
-            return (
-              <span
-                key={index}
-                className='inline-block bg-gray-100 rounded-sm text-md font-medium mr-2 px-3 py-1 dark:bg-blue-900'
-              >
-                {tag.label}
-              </span>
-            )
+            return <Tag key={index} tag={tag} />
           })}
         </div>
         <div className='mt-4 flex justify-start items-center gap-2'>

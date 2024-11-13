@@ -57,8 +57,8 @@ const AppProvider = ({ children, defaultTheme = 'system', defaultLanguage = 'en'
   const [email, setEmail] = useState<string>(initialAppContext.email ?? '')
   const [fullName, setFullName] = useState<string>(initialAppContext.fullName ?? '')
   const [avatar, setAvatar] = useState<string>(initialAppContext.avatar ?? '')
-  const [theme, setTheme] = useState<Theme>(() => defaultTheme)
-  const [language, setLanguage] = useState<Language>(defaultLanguage)
+  const [theme, setTheme] = useState<Theme>(() => initialAppContext.theme ?? defaultTheme)
+  const [language, setLanguage] = useState<Language>(initialAppContext.language ?? defaultLanguage)
 
   useEffect(() => {
     const root = window.document.documentElement

@@ -21,7 +21,6 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/h
 import { Content, JSONContent } from '@tiptap/core'
 import { Button } from '@/components//ui/button'
 import { contentMaxLength, contentMinLength } from '@/constants/post'
-import { AxiosResponse } from 'axios'
 import { AppContext } from '@/contexts/app.context'
 import classNames from 'classnames'
 import { Frown, Smile, ThumbsDown, ThumbsUp } from 'lucide-react'
@@ -56,12 +55,12 @@ export default function Comment({
               pages: oldData.pages.map((page) => {
                 return page.map((item) => {
                   if (item._id === (response.data.data as ReplyProps).commentId) {
-                    item.replies?.map((reply) => {
+                    item.replies = item.replies?.map((reply) => {
                       if (reply._id === response.data.data._id) {
-                        return { ...response.data.data }
+                        return { ...response.data.data } as ReplyProps
                       }
                       return reply
-                    })
+                    }) as ReplyProps[]
                   }
                   return item
                 })
@@ -91,31 +90,43 @@ export default function Comment({
   const dislikeMutation = useMutation({
     mutationFn: (body: ActionInfo & { commentId: string }) => dislikeComment(commentDetails._id ?? '', body),
     onSuccess: (response) => {
-      queryClient.setQueryData(['post', commentDetails._id], (oldData: AxiosResponse) => {
-        if (!oldData) return
-        if (isReply) {
-          return {
-            ...oldData,
-            data: {
-              ...oldData.data,
-              replies: oldData.data.replies.map((item: ReplyProps) => {
-                if (item._id === commentDetails._id) {
-                  return response.data.data
-                }
-                return item
+      console.log(commentDetails.postId)
+      queryClient.setQueryData(
+        ['comments', commentDetails.postId],
+        (oldData: InfiniteData<CommentProps[], unknown>) => {
+          if (!oldData) return
+          if (isReply) {
+            return {
+              ...oldData,
+              pages: oldData.pages.map((page) => {
+                return page.map((item) => {
+                  if (item._id === (response.data.data as ReplyProps).commentId) {
+                    item.replies = item.replies?.map((reply) => {
+                      if (reply._id === response.data.data._id) {
+                        return { ...response.data.data } as ReplyProps
+                      }
+                      return reply
+                    }) as ReplyProps[]
+                  }
+                  return item
+                })
               })
             }
           }
-        }
-        return {
-          ...oldData,
-          data: {
-            ...oldData.data,
-            data: response.data.data
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page) => {
+              return page.map((item) => {
+                if (item._id === commentDetails._id) {
+                  return { ...response.data.data }
+                }
+                return item
+              })
+            })
           }
         }
-      })
-      setCommentDetails(response.data.data)
+      )
+      setCommentDetails({ ...response.data.data })
     },
     onError: () => {
       toast.error(t('post.actionFailed'))
@@ -268,7 +279,7 @@ export default function Comment({
         </Avatar>
         {isReply ? <SubConnectingLine /> : ''}
       </div>
-      <div className='relative ml-2'>
+      <div className='relative ml-2 flex-1'>
         {commentDetails.replies && commentDetails.replies.length > 0 && <ConnectingLine />}
         <div>
           <p className='font-semibold'>{commentDetails.ownerName}</p>
@@ -283,74 +294,76 @@ export default function Comment({
             editable={false}
             editorClassName='focus:outline-none'
           />
-          <div className='flex gap-2 mt-2'>
-            <HoverCard>
-              <HoverCardTrigger asChild>
-                <Button
-                  variant='outline'
-                  onClick={handleLikeClick}
-                  className={classNames({
-                    'text-blue-600': !!commentDetails.likes?.find((item) => item.ownerEmail === email)
-                  })}
-                >
-                  <span>{commentDetails.numberOfLikes}</span>
-                  <ThumbsUp className='ml-2' />
-                </Button>
-              </HoverCardTrigger>
-              <HoverCardContent className='w-fit'>
-                {commentDetails.likes?.length ? (
-                  <>
-                    {commentDetails.likes.slice(0, 10).map((like) => (
-                      <p key={like.ownerEmail} className='text-xs'>
-                        {like.ownerName}
+          <div className='flex justify-between items-center'>
+            <div className='flex gap-2 mt-2'>
+              <HoverCard>
+                <HoverCardTrigger asChild>
+                  <Button
+                    variant='outline'
+                    onClick={handleLikeClick}
+                    className={classNames({
+                      'text-blue-600': !!commentDetails.likes?.find((item) => item.ownerEmail === email)
+                    })}
+                  >
+                    <span>{commentDetails.numberOfLikes}</span>
+                    <ThumbsUp className='ml-2' />
+                  </Button>
+                </HoverCardTrigger>
+                <HoverCardContent className='w-fit'>
+                  {commentDetails.likes?.length ? (
+                    <>
+                      {commentDetails.likes.slice(0, 10).map((like) => (
+                        <p key={like.ownerEmail} className='text-xs'>
+                          {like.ownerName}
+                        </p>
+                      ))}
+                      {commentDetails.likes.length > 10 ? (
+                        <p className='text-xs'>{t('post.andMore', { count: commentDetails.likes.length - 10 })}</p>
+                      ) : (
+                        ''
+                      )}
+                    </>
+                  ) : (
+                    <div className='flex justify-center items-center gap-2'>
+                      <Frown />
+                      <p>{t('post.noOneLiked')}</p>
+                    </div>
+                  )}
+                </HoverCardContent>
+              </HoverCard>
+              <HoverCard>
+                <HoverCardTrigger asChild>
+                  <Button
+                    variant='outline'
+                    onClick={handleDislikeClick}
+                    className={classNames({
+                      'text-red-600': !!commentDetails.dislikes?.find((item) => item.ownerEmail === email)
+                    })}
+                  >
+                    <span>{commentDetails.numberOfDislikes}</span>
+                    <ThumbsDown className='ml-2' />
+                  </Button>
+                </HoverCardTrigger>
+                <HoverCardContent className='w-fit'>
+                  {commentDetails.dislikes?.length ? (
+                    commentDetails.dislikes.map((dislike) => (
+                      <p key={dislike.ownerEmail} className='text-xs'>
+                        {dislike.ownerName}
                       </p>
-                    ))}
-                    {commentDetails.likes.length > 10 ? (
-                      <p className='text-xs'>{t('post.andMore', { count: commentDetails.likes.length - 10 })}</p>
-                    ) : (
-                      ''
-                    )}
-                  </>
-                ) : (
-                  <div className='flex justify-center items-center gap-2'>
-                    <Frown />
-                    <p>{t('post.noOneLiked')}</p>
-                  </div>
-                )}
-              </HoverCardContent>
-            </HoverCard>
-            <HoverCard>
-              <HoverCardTrigger asChild>
-                <Button
-                  variant='outline'
-                  onClick={handleDislikeClick}
-                  className={classNames({
-                    'text-red-600': !!commentDetails.dislikes?.find((item) => item.ownerEmail === email)
-                  })}
-                >
-                  <span>{commentDetails.numberOfDislikes}</span>
-                  <ThumbsDown className='ml-2' />
-                </Button>
-              </HoverCardTrigger>
-              <HoverCardContent className='w-fit'>
-                {commentDetails.dislikes?.length ? (
-                  commentDetails.dislikes.map((dislike) => (
-                    <p key={dislike.ownerEmail} className='text-xs'>
-                      {dislike.ownerName}
-                    </p>
-                  ))
-                ) : (
-                  <div className='flex justify-center items-center gap-2'>
-                    <Smile />
-                    <p>{t('post.noOneDisliked')}</p>
-                  </div>
-                )}
-              </HoverCardContent>
-            </HoverCard>
+                    ))
+                  ) : (
+                    <div className='flex justify-center items-center gap-2'>
+                      <Smile />
+                      <p>{t('post.noOneDisliked')}</p>
+                    </div>
+                  )}
+                </HoverCardContent>
+              </HoverCard>
+            </div>
             {!isReply && isAuthenticated && (
               <Dialog onOpenChange={setCommentDialog} open={commentDialog}>
                 <DialogTrigger asChild>
-                  <button className='text-gray-600 text-xs p-0 '>{t('action.reply')}</button>
+                  <Button variant='outline'>{t('action.reply')}</Button>
                 </DialogTrigger>
                 <DialogContent aria-describedby={undefined}>
                   <DialogHeader>
@@ -377,7 +390,7 @@ export default function Comment({
           </div>
         </div>
         {commentDetails.replies && commentDetails.replies.length > 0 && (
-          <div>
+          <div className='mt-2'>
             {commentDetails.replies.map((reply) => (
               <Comment key={reply._id} comment={reply} isReply={true} />
             ))}

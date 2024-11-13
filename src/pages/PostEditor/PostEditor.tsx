@@ -15,7 +15,7 @@ import { Input } from '@/components/ui/input'
 import { Content, JSONContent } from '@tiptap/react'
 import { MinimalTiptapEditor } from '@/components/MinimalTiptapEditor'
 import { contentMaxLength, contentMinLength, titleMaxLength, titleMinLength } from '@/constants/post'
-import { useMutation } from '@tanstack/react-query'
+import { InfiniteData, useMutation, useQueryClient } from '@tanstack/react-query'
 import { createPost } from '@/apis/post.api'
 import { toast } from 'sonner'
 import { AppContext } from '@/contexts/app.context'
@@ -44,6 +44,7 @@ export default function PostEditor() {
   const tagsRef = useRef<MultipleSelectorRef>(null)
 
   const { fullName, avatar, email } = useContext(AppContext)
+  const queryClient = useQueryClient()
 
   const postMutation = useMutation({
     mutationFn: (body: PostProps) => createPost(body)
@@ -107,6 +108,13 @@ export default function PostEditor() {
           const status = response.status
           if (status === 201) {
             toast.success(t('post.createSuccessful'))
+            queryClient.setQueryData(['posts'], (oldData: InfiniteData<PostProps[], unknown>) => {
+              if (!oldData) return
+              oldData.pages[0].unshift(response.data.data)
+              return {
+                ...oldData
+              }
+            })
           } else toast.error(t('post.createFailed'))
         },
         onError: () => {
@@ -117,7 +125,7 @@ export default function PostEditor() {
   }
 
   return (
-    <div className='min-h-screen px-2 md:px-6 lg:px-12 bg-background-light dark:bg-dark-primary'>
+    <div className='min-h-screen px-2 md:px-6 lg:px-12 bg-light-primary dark:bg-dark-primary'>
       <div className='md:flex justify-between items-center block gap-3 pt-24'>
         <div className='md:w-1/2'>
           <p className='font-semibold mb-2'>{t('post.title')}</p>

@@ -23,7 +23,7 @@ export default function Home() {
   }
 
   return (
-    <div className='min-h-screen px-2 md:px-6 lg:px-12 bg-background-light dark:bg-dark-primary'>
+    <div className='min-h-screen px-2 md:px-6 lg:px-12 bg-light-primary dark:bg-dark-primary'>
       <Helmet>
         <title>{t('pages.home')}</title>
       </Helmet>

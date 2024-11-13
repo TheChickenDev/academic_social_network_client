@@ -1,8 +1,11 @@
-import { Option } from '@/components/ui/multi-select'
-
 export interface ActionInfo {
   ownerName: string
   ownerEmail: string
+}
+
+export interface Tag {
+  label: string
+  value: string
 }
 
 export interface ReplyProps {
@@ -40,7 +43,7 @@ export interface CommentProps {
 export interface PostProps {
   _id?: string
   title: string
-  tags: Option[]
+  tags: Tag[]
   ownerName: string
   ownerAvatar: string
   ownerEmail: string

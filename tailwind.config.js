@@ -10,11 +10,11 @@ export default {
         sm: 'calc(var(--radius) - 4px)'
       },
       colors: {
-        'background-light': '#f9fafb',
+        'light-primary': '#f9fafb',
         'dark-primary': '#111827',
-        'dark-secondary': '#111827',
-        'button-dark': '#f9f9f9',
-        'button-dark-2': '#1f2937',
+        'dark-secondary': '#334155',
+        'button-dark': '#1f2937',
+        'button-light': '#f9f9f9',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {
