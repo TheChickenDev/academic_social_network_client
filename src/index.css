@@ -1,6 +1,3 @@
-// @import url('https://lolstatic-a.akamaihd.net/webfonts/live/css/lol/index.css');
-// @import url('https://s.lolstatic.com/awesomefonts/1.0.0/lol-fonts.css');
-// @import url('https://lolstatic-a.akamaihd.net/webfonts/live/css/fonts/neuefruitegermodern.css');
 @import './assets/styles/code.scss';
 @import './assets/styles/placeholder.scss';
 @import './assets/styles/lists.scss';
@@ -81,6 +78,14 @@
     --hljs-name: #259792;
     --hljs-selector-tag: #c8500f;
     --hljs-number: #3da067;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
   .dark {
     --background: 240 10% 3.9%;
@@ -97,7 +102,7 @@
     --muted-foreground: 240 5% 64.9%;
     --accent: 240 3.7% 15.9%;
     --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 100% 50%;
     --destructive-foreground: 0 0% 98%;
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
@@ -152,6 +157,14 @@
     --hljs-name: #5fc0a0;
     --hljs-selector-tag: #e8c785;
     --hljs-number: #b6e7b6;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
 @layer base {

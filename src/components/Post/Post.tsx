@@ -320,20 +320,20 @@ export default function Post({ post, details = false }: { post: PostProps; detai
             <DialogTrigger asChild>
               <Button>{t('action.comment')}</Button>
             </DialogTrigger>
-            <DialogContent aria-describedby={undefined}>
+            <DialogContent aria-describedby={undefined} className='block'>
               <DialogHeader>
-                <DialogTitle>{t('action.preview')}</DialogTitle>
+                <DialogTitle>{t('action.comment')}</DialogTitle>
               </DialogHeader>
               <MinimalTiptapEditor
                 value={editorContent}
                 onChange={setEditorContent}
-                className='h-auto rounded-md border border-input shadow-sm focus-within:border-primary'
+                className='h-auto min-h-48 rounded-md border border-input shadow-sm focus-within:border-primary my-4'
                 editorContentClassName='p-2'
                 output='json'
-                placeholder={t('post.descriptionPlaceholder')}
+                placeholder={t('post.commentPlaceholder')}
                 autofocus={false}
                 editable={true}
-                editorClassName='focus:outline-none min-h-48 max-h-96 overflow-y-auto'
+                editorClassName='focus:outline-none'
               />
               <DialogFooter className='gap-4'>
                 <DialogClose>{t('action.close')}</DialogClose>

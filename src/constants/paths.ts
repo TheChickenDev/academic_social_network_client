@@ -7,7 +7,7 @@ const paths = {
   register: '/register',
   forgotPassword: '/forgot-password',
   resetPassword: '/reset-password/:token',
-  profile: '/profile',
+  account: '/account',
   postEditor: '/posts',
   postDetails: '/posts/:id'
 } as const

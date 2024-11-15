@@ -160,7 +160,7 @@ export default function Header() {
               <DropdownMenuContent>
                 <DropdownMenuLabel>{fullName || 'My account'}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>{t('pages.profile')}</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate(paths.account)}>{t('pages.myAccount')}</DropdownMenuItem>
                 <DropdownMenuItem>{t('pages.contributeIdeas')}</DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleSignOutClick()}>{t('action.signOut')}</DropdownMenuItem>
               </DropdownMenuContent>
@@ -184,7 +184,7 @@ export default function Header() {
               <SheetTitle className='hidden'>Menu</SheetTitle>
               <SheetHeader className='text-left mb-4'>
                 {isAuthenticated ? (
-                  <Link to={paths.profile} className='flex justify-left items-center gap-4'>
+                  <Link to={paths.account} className='flex justify-left items-center gap-4'>
                     <Avatar>
                       <AvatarImage src={avatar} />
                       <AvatarFallback />

@@ -12,3 +12,7 @@ export const isValidInputPassword = (password: string): boolean => {
   })
   return haveNumber && haveLower && haveUpper && haveSpecial
 }
+
+export const isValidPhoneNumber = (phoneNumber: string): boolean => {
+  return /(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/.test(phoneNumber)
+}

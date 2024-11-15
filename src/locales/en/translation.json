@@ -25,9 +25,9 @@
     "community": "Community",
     "message": "Message",
     "notification": "Notification",
-    "profile": "Profile",
     "contributeIdeas": "Contribute ideas",
-    "post": "Post"
+    "post": "Post",
+    "myAccount": "My account"
   },
   "components": {
     "popularTags": "Popular tags",
@@ -105,6 +105,7 @@
     "tagError": "You must choose at least one tag",
     "description": "Description",
     "descriptionPlaceholder": "Type your post's description here...",
+    "commentPlaceholder": "Type your comment here...",
     "descriptionDescription": "Introduce the problem and expand on what your put in the title. Minimum 20 and maximum 2000 characters.",
     "descriptionError": "Description must be at least 20 and at most 2000 characters",
     "createSuccessful": "Your post has been created successfully!",
@@ -179,10 +180,43 @@
     "comment": "Comment",
     "search": "Search"
   },
-  "profile": {
-    "editProfile": "Edit my profile",
+  "myAccount": {
+    "createAPost": "Create a post",
+    "editProfile": "Edit profile",
+    "editProfileDescription": "Make changes to your profile here. Click save when you're done.",
     "posts": "Posts",
+    "points": "Points",
     "introduction": "Introduction",
-    "friends": "Friends"
+    "friends": "Friends",
+    "settings": "Settings",
+    "noRank": "No rank",
+    "noPhoneNumber": "No phone number",
+    "noEmail": "No email",
+    "noAddress": "No address",
+    "noDateOfBirth": "No date of birth",
+    "generalInformation": "General information",
+    "education": "Education",
+    "work": "Work",
+    "lastestActivities": "Lastest activities",
+    "at": "at",
+    "action": "Action",
+    "aboutMe": "About me",
+    "myGroups": "My groups",
+    "saveChanges": "Save changes",
+    "editProfileForm": {
+      "avatar": "Avatar",
+      "name": "Name",
+      "nameRequired": "Name is required",
+      "nameMax": "Name must not exceed 255 characters",
+      "phoneNumber": "Phone number",
+      "invalidPhoneNumber": "Invalid phone number",
+      "dob": "Date of birth",
+      "dobRequired": "Date of birth is required",
+      "address": "Address",
+      "addressRequired": "Address is required",
+      "addressMax": "Address must not exceed 255 characters",
+      "aboutMe": "About me",
+      "aboutMeMax": "About me must not exceed 2000 characters"
+    }
   }
 }

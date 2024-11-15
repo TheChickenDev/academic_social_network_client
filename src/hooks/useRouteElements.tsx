@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import ForgotPassword from '@/pages/ForgotPassword'
 import Login from '@/pages/Login'
-import Profile from '@/pages/Profile'
+import MyAccount from '@/pages/MyAccount'
 import Register from '@/pages/Register'
 import ResetPassword from '@/pages/ResetPassword'
 import { useContext } from 'react'
@@ -79,10 +79,10 @@ const routes: RouteObject[] = [
     element: <ProtectedRoute />,
     children: [
       {
-        path: paths.profile,
+        path: paths.account,
         element: (
           <DefaultLayout>
-            <Profile />
+            <MyAccount />
           </DefaultLayout>
         )
       },

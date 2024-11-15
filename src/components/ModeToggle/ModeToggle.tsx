@@ -24,7 +24,7 @@ export default function ModeToggle() {
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className='w-56'>
-          <DropdownMenuLabel>{t('language')}</DropdownMenuLabel>
+          <DropdownMenuLabel>{t('theme')}</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuCheckboxItem checked={theme === 'light'} onCheckedChange={() => setTheme('light')}>
             {t('lightMode')}

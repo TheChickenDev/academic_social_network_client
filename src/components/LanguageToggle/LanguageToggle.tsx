@@ -22,7 +22,7 @@ export default function LanguageToggle() {
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className='w-56'>
-        <DropdownMenuLabel>{t('theme')}</DropdownMenuLabel>
+        <DropdownMenuLabel>{t('language')}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuCheckboxItem checked={language === 'en'} onCheckedChange={() => setLanguage('en')}>
           {t('enLocale')}
