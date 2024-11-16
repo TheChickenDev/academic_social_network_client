@@ -169,7 +169,9 @@
     "preview": "Preview",
     "cancel": "Cancel",
     "close": "Close",
+    "add": "Add",
     "edit": "Edit",
+    "delete": "Delete",
     "signOut": "Sign out",
     "signIn": "Sign in",
     "signUp": "Sign up",
@@ -196,11 +198,17 @@
     "noDateOfBirth": "No date of birth",
     "generalInformation": "General information",
     "education": "Education",
+    "noEducation": "No education",
     "work": "Work",
+    "noWork": "No work",
+    "untilNow": "Until now",
     "lastestActivities": "Lastest activities",
     "at": "at",
     "action": "Action",
     "aboutMe": "About me",
+    "noAboutMe": "No description",
+    "gender": "Gender",
+    "noGender": "No gender",
     "myGroups": "My groups",
     "saveChanges": "Save changes",
     "editProfileForm": {
@@ -216,7 +224,28 @@
       "addressRequired": "Address is required",
       "addressMax": "Address must not exceed 255 characters",
       "aboutMe": "About me",
-      "aboutMeMax": "About me must not exceed 2000 characters"
+      "aboutMeMax": "About me must not exceed 2000 characters",
+      "updateSuccessful": "Your profile has been updated successfully!",
+      "updateFailed": "An error occurred while updating your profile. Please try again later.",
+      "updateDialogDescription": "Make changes to your profile here. Click save when you're done.",
+      "schoolNameMessage": "School name is required and must not exceed 255 characters",
+      "schoolName": "School",
+      "companyMessage": "Company name is required and must not exceed 255 characters",
+      "company": "Company",
+      "companyDescriptionMessage": "Description is required and must not exceed 255 characters",
+      "companyDescription": "Description",
+      "professionMessage": "Profession is required and must not exceed 255 characters",
+      "profession": "Profession",
+      "fromDateRequired": "From date is required",
+      "toDateRequired": "To date is required",
+      "fromDate": "From date",
+      "toDate": "To date",
+      "saved": "Saved!"
     }
+  },
+  "gender": {
+    "Male": "Male",
+    "Female": "Female",
+    "Other": "Other"
   }
 }

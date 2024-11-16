@@ -1,30 +1,22 @@
 import { PostProps } from './post.type'
 
 // job
-interface Job {
+export interface Job {
   profession: string
   company: string
   fromDate: Date
-  toDate: Date | 'until now'
+  toDate: Date
+  untilNow: boolean
   description: string
   isPrivate: boolean
 }
 
 // education
-interface Education {
+export interface Education {
   schoolName: string
   fromDate: Date
-  toDate: Date | 'until now'
-  isPrivate: boolean
-}
-
-// address
-interface Address {
-  country: string
-  province: string
-  district: string
-  street: string
-  zipCode: string
+  toDate: Date
+  untilNow: boolean
   isPrivate: boolean
 }
 
@@ -39,7 +31,7 @@ interface Contact {
 interface Introduction {
   jobs: Job[]
   educations: Education[]
-  address: Address
+  address: string
   contact: Contact
 }
 
@@ -53,6 +45,7 @@ export interface User {
   dateOfBirth: Date
   gender: 'Male' | 'Female' | 'Other' | ''
   introduction: Introduction
+  description: string
   points: number
   rank: string
   avatarImg: string

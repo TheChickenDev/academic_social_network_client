@@ -1,4 +1,14 @@
-import { FileUser, LayoutList, Bookmark, ContactRound, History, Settings, Github, BadgePlus } from 'lucide-react'
+import {
+  FileUser,
+  LayoutList,
+  Bookmark,
+  ContactRound,
+  History,
+  Settings,
+  Github,
+  BadgePlus,
+  UserRoundPen
+} from 'lucide-react'
 import {
   Sidebar,
   SidebarContent,
@@ -38,11 +48,11 @@ export function MyAccountSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   const { setOpen } = useSidebar()
   const { t } = useTranslation()
   const [userDetails, setUserDetails] = useState<(User & UserProfileData) | null>(null)
+  const [editMode, setEditMode] = useState<boolean>(false)
   const { email } = useContext(AppContext)
 
   useEffect(() => {
     getUser({ email: email ?? '' }).then((response) => {
-      console.log(response.data.data)
       setUserDetails(response.data.data)
     })
   }, [])
@@ -179,7 +189,7 @@ export function MyAccountSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
         </SidebarContent>
       </Sidebar>
       <SidebarInset>
-        <header className='sticky top-0 flex shrink-0 justify-between items-center gap-2 border-b p-4'>
+        <header className='sticky flex shrink-0 justify-between items-center gap-2 border-b p-4'>
           <div className='flex shrink-0 items-center'>
             <SidebarTrigger className='-ml-1' />
             <Separator orientation='vertical' className='mr-2 h-4' />
@@ -198,7 +208,16 @@ export function MyAccountSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
           <div>
             <div className='flex justify-center items-center gap-2'>
               {userDetails && activeItem === 'Profile' ? (
-                <EditProfileForm userDetails={userDetails} setUserDetails={setUserDetails} />
+                editMode ? (
+                  <Button variant='destructive' onClick={() => setEditMode(false)}>
+                    {t('action.cancel')}
+                  </Button>
+                ) : (
+                  <Button onClick={() => setEditMode(true)}>
+                    <UserRoundPen className='mr-2' />
+                    {t('myAccount.editProfile')}
+                  </Button>
+                )
               ) : activeItem === 'Posts' ? (
                 <Button>
                   <BadgePlus className='mr-2' />
@@ -210,7 +229,11 @@ export function MyAccountSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
         </header>
         <div className='p-4'>
           {activeItem === 'Profile' ? (
-            <Profile user={userDetails} />
+            editMode ? (
+              <EditProfileForm userDetails={userDetails} setUserDetails={setUserDetails} setEditMode={setEditMode} />
+            ) : (
+              <Profile user={userDetails} />
+            )
           ) : activeItem === 'Posts' ? (
             <Posts />
           ) : activeItem === 'Saved' ? (

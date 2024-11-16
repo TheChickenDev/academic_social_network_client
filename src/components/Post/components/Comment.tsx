@@ -90,7 +90,6 @@ export default function Comment({
   const dislikeMutation = useMutation({
     mutationFn: (body: ActionInfo & { commentId: string }) => dislikeComment(commentDetails._id ?? '', body),
     onSuccess: (response) => {
-      console.log(commentDetails.postId)
       queryClient.setQueryData(
         ['comments', commentDetails.postId],
         (oldData: InfiniteData<CommentProps[], unknown>) => {

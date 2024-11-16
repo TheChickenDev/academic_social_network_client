@@ -64,7 +64,7 @@ class HTTP {
       },
       async (error) => {
         const originalRequest = error.config
-        if (error.response.status === 401 && !originalRequest._retry) {
+        if (error.response?.status === 401 && !originalRequest._retry) {
           originalRequest._retry = true
           const refreshTokenResponse = await refreshAccessToken()
           const new_access_token = refreshTokenResponse.data.data

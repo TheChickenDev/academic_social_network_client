@@ -5,3 +5,7 @@ import http from '@/utils/http'
 export const getUser = (params: UserQuery) => {
   return http.get<SuccessResponse<User & UserProfileData>>('users', { params })
 }
+
+export const updateUser = (body: FormData) => {
+  return http.patch<SuccessResponse<User & UserProfileData>>('users', body)
+}

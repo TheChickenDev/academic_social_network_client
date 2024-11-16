@@ -86,14 +86,6 @@ export default function PostEditor() {
       return
     }
 
-    // const data = new FormData()
-    // data.append('title', postTitle)
-    // data.append('tags', JSON.stringify(selectedTags.map((tag) => tag.label)))
-    // data.append('ownerName', fullName ?? '')
-    // data.append('ownerAvatar', avatar ?? '')
-    // data.append('ownerEmail', email ?? '')
-    // data.append('content', JSON.stringify(editorContent))
-
     postMutation.mutate(
       {
         title: postTitle,

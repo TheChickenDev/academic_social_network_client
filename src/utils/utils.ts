@@ -14,6 +14,11 @@ export const getUserInfoFromJWT = (): JWTPayload | null => {
 export const convertISODateToLocaleString = (date: string | undefined): string => {
   const parsedDate = new Date(date ?? '')
   const timeString = parsedDate.toLocaleTimeString()
-  const dateString = parsedDate.toLocaleDateString()
+  const dateString = parsedDate.toString()
   return `${timeString} ${dateString}`
+}
+
+export const getValidYearForAgePicker = () => {
+  const eighteenYearsAgo = new Date()
+  return new Date(eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18))
 }
