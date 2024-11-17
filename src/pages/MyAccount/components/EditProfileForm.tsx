@@ -29,6 +29,7 @@ import { updateUser } from '@/apis/user.api'
 import EducationDialog from './EducationDialog'
 import WorkDialog from './WorkDialog'
 import { getValidYearForAgePicker } from '@/utils/utils'
+import Loading from '@/components/Loading'
 
 interface EditProfileFormProps {
   userDetails: (User & UserProfileData) | null
@@ -44,7 +45,7 @@ export default function EditProfileForm({ userDetails, setUserDetails, setEditMo
     userDetails?.introduction?.educations ? [...userDetails.introduction.educations] : []
   )
   const [workData, setWorkData] = useState(userDetails?.introduction?.jobs ? [...userDetails.introduction.jobs] : [])
-
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const dobLabelRef = useRef<HTMLLabelElement>(null)
   const dobMessageRef = useRef<HTMLParagraphElement>(null)
 
@@ -123,9 +124,12 @@ export default function EditProfileForm({ userDetails, setUserDetails, setEditMo
         educations: educationData
       })
     )
-    if (avatar) {
-      formData.append('avatar', avatar)
+    const files = (document.getElementById('avatar') as HTMLInputElement).files
+    if (files && files.length > 0) {
+      formData.append('images', files[0])
     }
+
+    setIsLoading(true)
 
     updateUser(formData)
       .then((data) => {
@@ -151,6 +155,9 @@ export default function EditProfileForm({ userDetails, setUserDetails, setEditMo
       })
       .catch(() => {
         toast.error(t('myAccount.editProfileForm.updateFailed'))
+      })
+      .finally(() => {
+        setIsLoading(false)
       })
   }
 
@@ -188,6 +195,7 @@ export default function EditProfileForm({ userDetails, setUserDetails, setEditMo
 
   return (
     <Form {...form}>
+      {isLoading && <Loading />}
       <form onSubmit={form.handleSubmit(handleSaveChanges)}>
         <div className='relative block lg:flex justify-between items-start gap-4'>
           <Button type='submit' className='fixed bottom-4 right-4'>

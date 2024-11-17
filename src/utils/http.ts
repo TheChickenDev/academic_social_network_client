@@ -36,6 +36,9 @@ class HTTP {
         // this.refresh_token = getRefreshTokenFromLocalStorage()
         // const contentType = formDataUrl.some((item) => config.url?.includes(item)) ? 'multipart/form-data' : ''
         // if (contentType) config.headers['Content-Type'] = contentType
+        if (config.data instanceof FormData) {
+          config.headers['Content-Type'] = 'multipart/form-data'
+        }
         if (this.access_token && this.refresh_token) {
           config.headers['access_token'] = 'Bearer ' + this.access_token
           config.headers['refresh_token'] = 'Bearer ' + this.refresh_token
