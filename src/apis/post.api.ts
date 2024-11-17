@@ -10,8 +10,8 @@ export const getPosts = (params: PostQuery) => {
   return http.get<SuccessResponse<PostProps[]>>('posts', { params })
 }
 
-export const getPostsById = (id: string) => {
-  return http.get<SuccessResponse<PostProps>>(`posts/${id}`)
+export const getPostsById = (id: string, params: { userEmail: string }) => {
+  return http.get<SuccessResponse<PostProps>>(`posts/${id}`, { params })
 }
 
 export const likePost = (id: string, body: ActionInfo) => {
@@ -20,4 +20,8 @@ export const likePost = (id: string, body: ActionInfo) => {
 
 export const dislikePost = (id: string, body: ActionInfo) => {
   return http.post<SuccessResponse<PostProps>>(`posts/${id}/dislike`, body)
+}
+
+export const deletePost = (id: string) => {
+  return http.delete<SuccessResponse<PostProps>>(`posts/${id}`)
 }

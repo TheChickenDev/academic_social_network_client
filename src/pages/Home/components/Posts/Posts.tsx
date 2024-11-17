@@ -1,18 +1,20 @@
 import Post from '@/components/Post'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { getPosts } from '@/apis/post.api'
-import { useEffect, useRef, useCallback } from 'react'
+import { useEffect, useRef, useCallback, useContext } from 'react'
 import { PostProps } from '@/types/post.type'
 import { Skeleton } from '@/components/ui/skeleton'
 import { postDefaultQuery } from '@/constants/post'
+import { AppContext } from '@/contexts/app.context'
 
 export default function Posts() {
   const loadMoreRef = useRef<HTMLDivElement | null>(null)
+  const { email } = useContext(AppContext)
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError } = useInfiniteQuery<PostProps[]>({
     queryKey: ['posts'],
     queryFn: async ({ pageParam = postDefaultQuery.page }) => {
-      const response = await getPosts({ page: pageParam as number, limit: postDefaultQuery.limit })
+      const response = await getPosts({ page: pageParam as number, limit: postDefaultQuery.limit, userEmail: email })
       return response.data.data
     },
     initialPageParam: 1,

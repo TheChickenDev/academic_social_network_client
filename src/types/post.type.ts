@@ -55,6 +55,8 @@ export interface PostProps {
   dislikes?: ActionInfo[]
   numberOfComments?: number
   content: object
+  // virtual fields
+  isSaved?: boolean
 }
 
 export interface PostQuery {
@@ -62,6 +64,8 @@ export interface PostQuery {
   page?: number
   limit?: number
   ownerEmail?: string
+  userEmail?: string
+  getSavedPosts?: boolean
 }
 
 export interface CommentQuery {

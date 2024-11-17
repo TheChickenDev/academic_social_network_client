@@ -11,6 +11,14 @@
   "confirmPassword": "Confirm password",
   "link": "Link",
   "image": "Image",
+  "noData": "No Data Available",
+  "noDataDescription": "There is no data available at the moment.",
+  "alertDialog": {
+    "message": "Are you absolutely sure?",
+    "description": "You won't be able to revert this! This will permanently remove your data from our servers.",
+    "confirm": "Confirm",
+    "cancel": "Cancel"
+  },
   "auth": {
     "pleaseLogin": "Please login to continue",
     "authenticaitonError": "Authentication error"
@@ -120,6 +128,16 @@
     "alreadyDisliked": "You already disliked this post!",
     "alreadyLikedComment": "You already liked this comment!",
     "alreadyDislikedComment": "You already disliked this comment!",
+    "savePost": "Save post",
+    "unsavePost": "Unsave post",
+    "savePostSuccessful": "Post saved successfully!",
+    "unsavePostSuccessful": "Post unsaved successfully!",
+    "savePostFailed": "An error occurred while saving the post. Please try again later.",
+    "unsavePostFailed": "An error occurred while unsaving the post. Please try again later.",
+    "reportPost": "Report post",
+    "reportPostSuccessful": "Post reported successfully!",
+    "reportPostFailed": "An error occurred while reporting the post. Please try again later.",
+    "actionSuccessful": "Action successful!",
     "actionFailed": "An error occurred while processing your action. Please try again later."
   },
   "minimalEditor": {
@@ -180,7 +198,9 @@
     "dislike": "Dislike",
     "reply": "Reply",
     "comment": "Comment",
-    "search": "Search"
+    "search": "Search",
+    "report": "Report",
+    "confirm": "Confirm"
   },
   "myAccount": {
     "createAPost": "Create a post",

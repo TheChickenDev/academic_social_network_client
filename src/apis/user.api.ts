@@ -9,3 +9,11 @@ export const getUser = (params: UserQuery) => {
 export const updateUser = (body: FormData) => {
   return http.patch<SuccessResponse<User & UserProfileData>>('users', body)
 }
+
+export const savePost = (body: { ownerEmail: string; postId: string }) => {
+  return http.patch<SuccessResponse<undefined>>(`users/save-post`, body)
+}
+
+export const unsavePost = (body: { ownerEmail: string; postId: string }) => {
+  return http.patch<SuccessResponse<undefined>>(`users/unsave-post`, body)
+}

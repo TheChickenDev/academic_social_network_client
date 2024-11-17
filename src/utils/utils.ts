@@ -13,8 +13,13 @@ export const getUserInfoFromJWT = (): JWTPayload | null => {
 
 export const convertISODateToLocaleString = (date: string | undefined): string => {
   const parsedDate = new Date(date ?? '')
-  const timeString = parsedDate.toLocaleTimeString()
-  const dateString = parsedDate.toString()
+  const timeString = parsedDate.toLocaleTimeString('en-BG', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+  const dateString = parsedDate.toLocaleDateString('en-BG', {
+    weekday: 'short',
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  })
   return `${timeString} ${dateString}`
 }
 

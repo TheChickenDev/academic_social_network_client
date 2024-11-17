@@ -1,19 +1,22 @@
 import { getPostsById } from '@/apis/post.api'
 import Post from '@/components/Post'
 import { Skeleton } from '@/components/ui/skeleton'
+import { AppContext } from '@/contexts/app.context'
 import { PostProps } from '@/types/post.type'
 import { useQuery } from '@tanstack/react-query'
+import { useContext } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 
 export default function PostDetails() {
   const { t } = useTranslation()
+  const { email } = useContext(AppContext)
   const params = useParams()
   const { isLoading, data } = useQuery({
     queryKey: ['post', params.id],
     queryFn: async () => {
-      const response = await getPostsById(params.id ?? '')
+      const response = await getPostsById(params.id ?? '', { userEmail: email ?? '' })
       return response.data.data
     },
     staleTime: 10 * 60 * 1000,

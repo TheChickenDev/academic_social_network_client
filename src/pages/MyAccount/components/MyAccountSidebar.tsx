@@ -40,6 +40,9 @@ import { AppContext } from '@/contexts/app.context'
 import EditProfileForm from './EditProfileForm'
 import Profile from './Profile'
 import Posts from './Posts'
+import { useNavigate } from 'react-router-dom'
+import paths from '@/constants/paths'
+import Saved from './Saved'
 
 type SidebarItem = 'Profile' | 'Posts' | 'Saved' | 'Friends' | 'Activities' | 'Settings'
 
@@ -50,6 +53,7 @@ export function MyAccountSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   const [userDetails, setUserDetails] = useState<(User & UserProfileData) | null>(null)
   const [editMode, setEditMode] = useState<boolean>(false)
   const { email } = useContext(AppContext)
+  const navigate = useNavigate()
 
   useEffect(() => {
     getUser({ email: email ?? '' }).then((response) => {
@@ -205,26 +209,24 @@ export function MyAccountSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
               </BreadcrumbList>
             </Breadcrumb>
           </div>
-          <div>
-            <div className='flex justify-center items-center gap-2'>
-              {userDetails && activeItem === 'Profile' ? (
-                editMode ? (
-                  <Button variant='destructive' onClick={() => setEditMode(false)}>
-                    {t('action.cancel')}
-                  </Button>
-                ) : (
-                  <Button onClick={() => setEditMode(true)}>
-                    <UserRoundPen className='mr-2' />
-                    {t('myAccount.editProfile')}
-                  </Button>
-                )
-              ) : activeItem === 'Posts' ? (
-                <Button>
-                  <BadgePlus className='mr-2' />
-                  {t('myAccount.createAPost')}
+          <div className='max-h-6 flex justify-center items-center gap-2'>
+            {userDetails && activeItem === 'Profile' ? (
+              editMode ? (
+                <Button variant='destructive' onClick={() => setEditMode(false)}>
+                  {t('action.cancel')}
                 </Button>
-              ) : null}
-            </div>
+              ) : (
+                <Button onClick={() => setEditMode(true)}>
+                  <UserRoundPen className='mr-2' />
+                  {t('myAccount.editProfile')}
+                </Button>
+              )
+            ) : activeItem === 'Posts' ? (
+              <Button onClick={() => navigate(paths.postEditor)}>
+                <BadgePlus className='mr-2' />
+                {t('myAccount.createAPost')}
+              </Button>
+            ) : null}
           </div>
         </header>
         <div className='p-4'>
@@ -237,10 +239,7 @@ export function MyAccountSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
           ) : activeItem === 'Posts' ? (
             <Posts />
           ) : activeItem === 'Saved' ? (
-            <div className='p-4 space-y-4'>
-              <h1 className='text-xl font-semibold'>{t('Saved')}</h1>
-              <p className='text-sm text-secondary'>{t('pages.myAccount.saved')}</p>
-            </div>
+            <Saved />
           ) : activeItem === 'Friends' ? (
             <div className='p-4 space-y-4'>
               <h1 className='text-xl font-semibold'>{t('Friends')}</h1>

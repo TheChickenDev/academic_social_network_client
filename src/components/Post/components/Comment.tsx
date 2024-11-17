@@ -278,7 +278,7 @@ export default function Comment({
         </Avatar>
         {isReply ? <SubConnectingLine /> : ''}
       </div>
-      <div className='relative ml-2 flex-1'>
+      <div className='flex-1 relative ml-2 w-[calc(100%-48px)]'>
         {commentDetails.replies && commentDetails.replies.length > 0 && <ConnectingLine />}
         <div>
           <p className='font-semibold'>{commentDetails.ownerName}</p>

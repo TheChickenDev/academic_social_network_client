@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback } from '../ui/avatar'
-import { ThumbsUp, ThumbsDown, MessageCircle, Smile, Frown } from 'lucide-react'
+import { ThumbsUp, ThumbsDown, MessageCircle, Smile, Frown, Ellipsis } from 'lucide-react'
 import { AvatarImage } from '@radix-ui/react-avatar'
 import { Button } from '../ui/button'
 import { useTranslation } from 'react-i18next'
@@ -26,12 +26,37 @@ import {
   DialogTrigger,
   DialogClose
 } from '@/components/ui/dialog'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger
+} from '@/components/ui/alert-dialog'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Content, JSONContent } from '@tiptap/core'
 import { contentMaxLength, contentMinLength } from '@/constants/post'
 import Comments from './components/Comments'
 import Tag from '../Tag'
+import { savePost, unsavePost } from '@/apis/user.api'
 
-export default function Post({ post, details = false }: { post: PostProps; details: boolean }) {
+export default function Post({
+  post,
+  details = false,
+  ownerMode = false,
+  actionTitle = 'action.delete',
+  actionCallback = () => {}
+}: {
+  post: PostProps
+  details: boolean
+  ownerMode?: boolean
+  actionTitle?: string
+  actionCallback?: (id: string) => void
+}) {
   const { t } = useTranslation()
   const { fullName, avatar, email, isAuthenticated } = useContext(AppContext)
   const [postDetails, setPostDetails] = useState<PostProps>(post)
@@ -75,7 +100,7 @@ export default function Post({ post, details = false }: { post: PostProps; detai
     onSuccess: (response) => {
       setPostsCacheData(response)
       setPostCacheData(response)
-      setPostDetails({ ...response.data.data })
+      setPostDetails({ ...postDetails, ...response.data.data })
     },
     onError: () => {
       toast.error(t('post.actionFailed'))
@@ -86,7 +111,7 @@ export default function Post({ post, details = false }: { post: PostProps; detai
     onSuccess: (response) => {
       setPostsCacheData(response)
       setPostCacheData(response)
-      setPostDetails({ ...response.data.data })
+      setPostDetails({ ...postDetails, ...response.data.data })
     },
     onError: () => {
       toast.error(t('post.actionFailed'))
@@ -202,15 +227,119 @@ export default function Post({ post, details = false }: { post: PostProps; detai
     )
   }
 
+  const handleSavePost = () => {
+    savePost({ postId: postDetails._id ?? '', ownerEmail: email ?? '' })
+      .then((response) => {
+        if (response.status === 200) {
+          queryClient.setQueryData(['post', postDetails._id], (oldData: PostProps) => {
+            if (!oldData) return
+            return { ...oldData, isSaved: true }
+          })
+          queryClient.setQueryData(['posts'], (oldData: InfiniteData<PostProps[], unknown>) => {
+            if (!oldData) return
+            return {
+              ...oldData,
+              pages: oldData.pages.map((page) => {
+                return page.map((item) => {
+                  if (item._id === postDetails._id) {
+                    return { ...postDetails, isSaved: true }
+                  }
+                  return item
+                })
+              })
+            }
+          })
+          toast.success(t('post.savePostSuccessful'))
+          setPostDetails({ ...postDetails, isSaved: true })
+        } else {
+          toast.error(t('post.savePostFailed'))
+        }
+      })
+      .catch(() => {
+        toast.error(t('post.savePostFailed'))
+      })
+  }
+
+  const handleUnsavePost = () => {
+    unsavePost({ postId: postDetails._id ?? '', ownerEmail: email ?? '' })
+      .then((response) => {
+        if (response.status === 200) {
+          queryClient.setQueryData(['post', postDetails._id], (oldData: PostProps) => {
+            if (!oldData) return
+            return { ...oldData, isSaved: false }
+          })
+          queryClient.setQueryData(['posts'], (oldData: InfiniteData<PostProps[], unknown>) => {
+            if (!oldData) return
+            return {
+              ...oldData,
+              pages: oldData.pages.map((page) => {
+                return page.map((item) => {
+                  if (item._id === postDetails._id) {
+                    return { ...postDetails, isSaved: false }
+                  }
+                  return item
+                })
+              })
+            }
+          })
+          toast.success(t('post.unsavePostSuccessful'))
+          setPostDetails({ ...postDetails, isSaved: false })
+        } else {
+          toast.error(t('post.unsavePostFailed'))
+        }
+      })
+      .catch(() => {
+        toast.error(t('post.unsavePostFailed'))
+      })
+  }
+
   return (
-    <div className='rounded-md border p-4 text-black dark:text-white bg-white dark:bg-dark-primary'>
+    <div className='relative rounded-md border p-4 text-black dark:text-white bg-white dark:bg-dark-primary'>
+      {isAuthenticated && (
+        <div className='absolute top-2 right-2 p-2'>
+          {ownerMode ? (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant='destructive'>{t(actionTitle)}</Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>{t('alertDialog.message')}</AlertDialogTitle>
+                  <AlertDialogDescription>{t('alertDialog.description')}</AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>{t('action.cancel')}</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => actionCallback(postDetails?._id ?? '')}>
+                    {t('action.confirm')}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          ) : (
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <Ellipsis />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className='w-fit min-w-32'>
+                {postDetails?.isSaved ? (
+                  <DropdownMenuItem onClick={handleUnsavePost}>{t('post.unsavePost')}</DropdownMenuItem>
+                ) : (
+                  <DropdownMenuItem onClick={handleSavePost}>{t('post.savePost')}</DropdownMenuItem>
+                )}
+
+                <DropdownMenuItem onClick={() => console.log('report')}>{t('post.reportPost')}</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+        </div>
+      )}
       <div className='border-b pb-4'>
         {details ? (
-          <p className='text-2xl'>{postDetails.title}</p>
+          <p className='text-xl'>{postDetails.title}</p>
         ) : (
           <Link
             to={postDetails._id ? paths.postDetails.replace(':id', postDetails._id) : '#'}
-            className='text-2xl hover:underline underline-offset-4'
+            className='text-xl hover:underline underline-offset-4'
           >
             {postDetails.title}
           </Link>
@@ -316,31 +445,33 @@ export default function Post({ post, details = false }: { post: PostProps; detai
             <MessageCircle className='ml-2' />
           </Button>
         ) : (
-          <Dialog onOpenChange={setCommentDialog} open={commentDialog}>
-            <DialogTrigger asChild>
-              <Button>{t('action.comment')}</Button>
-            </DialogTrigger>
-            <DialogContent aria-describedby={undefined} className='block'>
-              <DialogHeader>
-                <DialogTitle>{t('action.comment')}</DialogTitle>
-              </DialogHeader>
-              <MinimalTiptapEditor
-                value={editorContent}
-                onChange={setEditorContent}
-                className='h-auto min-h-48 rounded-md border border-input shadow-sm focus-within:border-primary my-4'
-                editorContentClassName='p-2'
-                output='json'
-                placeholder={t('post.commentPlaceholder')}
-                autofocus={false}
-                editable={true}
-                editorClassName='focus:outline-none'
-              />
-              <DialogFooter className='gap-4'>
-                <DialogClose>{t('action.close')}</DialogClose>
-                <Button onClick={handleSubmit}>{t('action.submit')}</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          isAuthenticated && (
+            <Dialog onOpenChange={setCommentDialog} open={commentDialog}>
+              <DialogTrigger asChild>
+                <Button>{t('action.comment')}</Button>
+              </DialogTrigger>
+              <DialogContent aria-describedby={undefined} className='block'>
+                <DialogHeader>
+                  <DialogTitle>{t('action.comment')}</DialogTitle>
+                </DialogHeader>
+                <MinimalTiptapEditor
+                  value={editorContent}
+                  onChange={setEditorContent}
+                  className='h-auto min-h-48 rounded-md border border-input shadow-sm focus-within:border-primary my-4'
+                  editorContentClassName='p-2'
+                  output='json'
+                  placeholder={t('post.commentPlaceholder')}
+                  autofocus={false}
+                  editable={true}
+                  editorClassName='focus:outline-none'
+                />
+                <DialogFooter className='gap-4'>
+                  <DialogClose>{t('action.close')}</DialogClose>
+                  <Button onClick={handleSubmit}>{t('action.submit')}</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          )
         )}
       </div>
       {details && <Comments postDetails={postDetails} setPostDetails={setPostDetails} />}

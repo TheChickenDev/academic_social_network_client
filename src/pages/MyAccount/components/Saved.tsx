@@ -9,7 +9,7 @@ import { AppContext } from '@/contexts/app.context'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
-export default function Posts() {
+export default function Saved() {
   const { t } = useTranslation()
   const loadMoreRef = useRef<HTMLDivElement | null>(null)
   const { email } = useContext(AppContext)
@@ -17,12 +17,13 @@ export default function Posts() {
   const [posts, setPosts] = useState<PostProps[]>([])
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError } = useInfiniteQuery<PostProps[]>({
-    queryKey: ['myPosts'],
+    queryKey: ['mySavedPosts'],
     queryFn: async ({ pageParam = postDefaultQuery.page }) => {
       const response = await getPosts({
         page: pageParam as number,
         limit: postDefaultQuery.limit,
-        ownerEmail: email ?? ''
+        ownerEmail: email ?? '',
+        getSavedPosts: true
       })
       return response.data.data
     },

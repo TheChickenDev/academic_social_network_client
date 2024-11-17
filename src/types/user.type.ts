@@ -48,6 +48,7 @@ export interface User {
   description: string
   points: number
   rank: string
+  savedPosts: string[]
   avatarImg: string
   isAdmin: boolean
   isActive: boolean
