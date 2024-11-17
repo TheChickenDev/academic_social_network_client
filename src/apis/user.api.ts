@@ -11,9 +11,9 @@ export const updateUser = (body: FormData) => {
 }
 
 export const savePost = (body: { ownerEmail: string; postId: string }) => {
-  return http.patch<SuccessResponse<undefined>>(`users/save-post`, body)
+  return http.patch<SuccessResponse<undefined>>(`users/posts?action=save`, body)
 }
 
 export const unsavePost = (body: { ownerEmail: string; postId: string }) => {
-  return http.patch<SuccessResponse<undefined>>(`users/unsave-post`, body)
+  return http.patch<SuccessResponse<undefined>>(`users/posts?action=unsave`, body)
 }

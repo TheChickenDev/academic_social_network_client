@@ -53,6 +53,14 @@ const routes: RouteObject[] = [
     )
   },
   {
+    path: paths.profile,
+    element: (
+      <DefaultLayout>
+        <MyAccount />
+      </DefaultLayout>
+    )
+  },
+  {
     path: '',
     element: <RejectedRoute />,
     children: [
@@ -78,14 +86,6 @@ const routes: RouteObject[] = [
     path: '',
     element: <ProtectedRoute />,
     children: [
-      {
-        path: paths.account,
-        element: (
-          <DefaultLayout>
-            <MyAccount />
-          </DefaultLayout>
-        )
-      },
       {
         path: paths.message,
         element: (

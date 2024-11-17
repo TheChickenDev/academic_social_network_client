@@ -36,13 +36,14 @@ import { useState, ComponentProps, useEffect, useContext } from 'react'
 import { User, UserProfileData } from '@/types/user.type'
 import { Button } from '@/components/ui/button'
 import { getUser } from '@/apis/user.api'
-import { AppContext } from '@/contexts/app.context'
 import EditProfileForm from './EditProfileForm'
 import Profile from './Profile'
 import Posts from './Posts'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import paths from '@/constants/paths'
 import Saved from './Saved'
+import { decodeIdToEmail } from '@/utils/utils'
+import { AppContext } from '@/contexts/app.context'
 
 type SidebarItem = 'Profile' | 'Posts' | 'Saved' | 'Friends' | 'Activities' | 'Settings'
 
@@ -52,11 +53,12 @@ export function MyAccountSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   const { t } = useTranslation()
   const [userDetails, setUserDetails] = useState<(User & UserProfileData) | null>(null)
   const [editMode, setEditMode] = useState<boolean>(false)
-  const { email } = useContext(AppContext)
+  const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const { isAuthenticated, email } = useContext(AppContext)
 
   useEffect(() => {
-    getUser({ email: email ?? '' }).then((response) => {
+    getUser({ email: decodeIdToEmail(id ?? '') }).then((response) => {
       setUserDetails(response.data.data)
     })
   }, [])
@@ -122,23 +124,6 @@ export function MyAccountSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                 <SidebarMenuItem>
                   <SidebarMenuButton
                     tooltip={{
-                      children: t('Saved'),
-                      hidden: false
-                    }}
-                    onClick={() => {
-                      setActiveItem('Saved')
-                      setOpen(true)
-                    }}
-                    isActive={activeItem === 'Saved'}
-                    className='px-2.5 md:px-2'
-                  >
-                    <Bookmark />
-                    <span>{t('Saved')}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton
-                    tooltip={{
                       children: t('Friends'),
                       hidden: false
                     }}
@@ -153,40 +138,61 @@ export function MyAccountSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                     <span>{t('Friends')}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton
-                    tooltip={{
-                      children: t('Activities'),
-                      hidden: false
-                    }}
-                    onClick={() => {
-                      setActiveItem('Activities')
-                      setOpen(true)
-                    }}
-                    isActive={activeItem === 'Activities'}
-                    className='px-2.5 md:px-2'
-                  >
-                    <History />
-                    <span>{t('Activities')}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton
-                    tooltip={{
-                      children: t('Settings'),
-                      hidden: false
-                    }}
-                    onClick={() => {
-                      setActiveItem('Settings')
-                      setOpen(true)
-                    }}
-                    isActive={activeItem === 'Settings'}
-                    className='px-2.5 md:px-2'
-                  >
-                    <Settings />
-                    <span>{t('Settings')}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                {isAuthenticated && email === userDetails?.email && (
+                  <>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton
+                        tooltip={{
+                          children: t('Saved'),
+                          hidden: false
+                        }}
+                        onClick={() => {
+                          setActiveItem('Saved')
+                          setOpen(true)
+                        }}
+                        isActive={activeItem === 'Saved'}
+                        className='px-2.5 md:px-2'
+                      >
+                        <Bookmark />
+                        <span>{t('Saved')}</span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton
+                        tooltip={{
+                          children: t('Activities'),
+                          hidden: false
+                        }}
+                        onClick={() => {
+                          setActiveItem('Activities')
+                          setOpen(true)
+                        }}
+                        isActive={activeItem === 'Activities'}
+                        className='px-2.5 md:px-2'
+                      >
+                        <History />
+                        <span>{t('Activities')}</span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton
+                        tooltip={{
+                          children: t('Settings'),
+                          hidden: false
+                        }}
+                        onClick={() => {
+                          setActiveItem('Settings')
+                          setOpen(true)
+                        }}
+                        isActive={activeItem === 'Settings'}
+                        className='px-2.5 md:px-2'
+                      >
+                        <Settings />
+                        <span>{t('Settings')}</span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  </>
+                )}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
@@ -209,25 +215,27 @@ export function MyAccountSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
               </BreadcrumbList>
             </Breadcrumb>
           </div>
-          <div className='max-h-6 flex justify-center items-center gap-2'>
-            {userDetails && activeItem === 'Profile' ? (
-              editMode ? (
-                <Button variant='destructive' onClick={() => setEditMode(false)}>
-                  {t('action.cancel')}
+          {isAuthenticated && (
+            <div className='max-h-6 flex justify-center items-center gap-2'>
+              {userDetails && activeItem === 'Profile' ? (
+                editMode ? (
+                  <Button variant='destructive' onClick={() => setEditMode(false)}>
+                    {t('action.cancel')}
+                  </Button>
+                ) : (
+                  <Button onClick={() => setEditMode(true)}>
+                    <UserRoundPen className='mr-2' />
+                    {t('myAccount.editProfile')}
+                  </Button>
+                )
+              ) : activeItem === 'Posts' ? (
+                <Button onClick={() => navigate(paths.postEditor)}>
+                  <BadgePlus className='mr-2' />
+                  {t('myAccount.createAPost')}
                 </Button>
-              ) : (
-                <Button onClick={() => setEditMode(true)}>
-                  <UserRoundPen className='mr-2' />
-                  {t('myAccount.editProfile')}
-                </Button>
-              )
-            ) : activeItem === 'Posts' ? (
-              <Button onClick={() => navigate(paths.postEditor)}>
-                <BadgePlus className='mr-2' />
-                {t('myAccount.createAPost')}
-              </Button>
-            ) : null}
-          </div>
+              ) : null}
+            </div>
+          )}
         </header>
         <div className='p-4'>
           {activeItem === 'Profile' ? (

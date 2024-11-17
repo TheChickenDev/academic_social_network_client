@@ -23,6 +23,14 @@ export const convertISODateToLocaleString = (date: string | undefined): string =
   return `${timeString} ${dateString}`
 }
 
+export const encodeEmailToId = (email: string): string => {
+  return btoa(email)
+}
+
+export const decodeIdToEmail = (id: string): string => {
+  return atob(id)
+}
+
 export const getValidYearForAgePicker = () => {
   const eighteenYearsAgo = new Date()
   return new Date(eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18))

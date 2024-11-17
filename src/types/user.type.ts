@@ -61,7 +61,6 @@ export interface User {
 export interface UserProfileData {
   posts: PostProps[]
   friends: string[]
-  saved: PostProps[]
 }
 
 export interface UserQuery {

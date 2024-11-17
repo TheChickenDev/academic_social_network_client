@@ -1,20 +1,22 @@
 import Post from '@/components/Post'
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
-import { deletePost, getPosts } from '@/apis/post.api'
-import { useEffect, useRef, useCallback, useContext, useState } from 'react'
+import { getPosts } from '@/apis/post.api'
+import { useEffect, useRef, useCallback, useState } from 'react'
 import { PostProps } from '@/types/post.type'
 import { Skeleton } from '@/components/ui/skeleton'
 import { postDefaultQuery } from '@/constants/post'
-import { AppContext } from '@/contexts/app.context'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
+import { useParams } from 'react-router-dom'
+import { decodeIdToEmail } from '@/utils/utils'
+import { unsavePost } from '@/apis/user.api'
 
 export default function Saved() {
   const { t } = useTranslation()
   const loadMoreRef = useRef<HTMLDivElement | null>(null)
-  const { email } = useContext(AppContext)
   const queryClient = useQueryClient()
   const [posts, setPosts] = useState<PostProps[]>([])
+  const { id } = useParams<{ id: string }>()
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError } = useInfiniteQuery<PostProps[]>({
     queryKey: ['mySavedPosts'],
@@ -22,7 +24,7 @@ export default function Saved() {
       const response = await getPosts({
         page: pageParam as number,
         limit: postDefaultQuery.limit,
-        ownerEmail: email ?? '',
+        ownerEmail: decodeIdToEmail(id ?? ''),
         getSavedPosts: true
       })
       return response.data.data
@@ -49,7 +51,7 @@ export default function Saved() {
   )
 
   const handleDelete = (postId: string) => {
-    deletePost(postId)
+    unsavePost({ postId: postId ?? '', ownerEmail: decodeIdToEmail(id ?? '') })
       .then((response) => {
         if (response.status === 200) {
           queryClient.invalidateQueries({
@@ -128,7 +130,7 @@ export default function Saved() {
               post={item}
               details={false}
               ownerMode={true}
-              actionTitle='action.delete'
+              actionTitle='action.unsave'
               actionCallback={handleDelete}
             />
           ))}

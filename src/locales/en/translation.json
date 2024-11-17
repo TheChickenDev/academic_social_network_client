@@ -200,7 +200,8 @@
     "comment": "Comment",
     "search": "Search",
     "report": "Report",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "unsave": "Unsave"
   },
   "myAccount": {
     "createAPost": "Create a post",

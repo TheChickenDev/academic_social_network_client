@@ -1,20 +1,21 @@
 import Post from '@/components/Post'
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { deletePost, getPosts } from '@/apis/post.api'
-import { useEffect, useRef, useCallback, useContext, useState } from 'react'
+import { useEffect, useRef, useCallback, useState } from 'react'
 import { PostProps } from '@/types/post.type'
 import { Skeleton } from '@/components/ui/skeleton'
 import { postDefaultQuery } from '@/constants/post'
-import { AppContext } from '@/contexts/app.context'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
+import { useParams } from 'react-router-dom'
+import { decodeIdToEmail } from '@/utils/utils'
 
 export default function Posts() {
   const { t } = useTranslation()
   const loadMoreRef = useRef<HTMLDivElement | null>(null)
-  const { email } = useContext(AppContext)
   const queryClient = useQueryClient()
   const [posts, setPosts] = useState<PostProps[]>([])
+  const { id } = useParams<{ id: string }>()
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError } = useInfiniteQuery<PostProps[]>({
     queryKey: ['myPosts'],
@@ -22,7 +23,7 @@ export default function Posts() {
       const response = await getPosts({
         page: pageParam as number,
         limit: postDefaultQuery.limit,
-        ownerEmail: email ?? ''
+        ownerEmail: decodeIdToEmail(id ?? '')
       })
       return response.data.data
     },
