@@ -9,7 +9,8 @@ const paths = {
   resetPassword: '/reset-password/:token',
   profile: '/users/:id',
   postEditor: '/posts',
-  postDetails: '/posts/:id'
+  postDetails: '/posts/:id',
+  groupDetails: '/groups/:id'
 } as const
 
 export default paths

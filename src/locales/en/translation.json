@@ -291,6 +291,22 @@
     "haveRejectedFriendRequest": "You have rejected friend request!",
     "haveUnfriended": "You have unfriended!"
   },
+  "community": {
+    "groups": "Groups",
+    "noGroupFound": "No group",
+    "createAGroup": "Create a group",
+    "createAGroupDescription": "Create a group to connect with people who share your interests.",
+    "groupName": "Group name",
+    "groupNameMessage": "Group name is required and must not exceed 255 characters",
+    "groupDescription": "Group description",
+    "groupDescriptionMessage": "Group description is required and must not exceed 2000 characters",
+    "createAGroupSuccessful": "Group created successfully!",
+    "createAGroupFailed": "An error occurred while creating group. Please try again later."
+  },
+  "group": {
+    "editGroup": "Edit group",
+    "createAPost": "Post a topic"
+  },
   "gender": {
     "Male": "Male",
     "Female": "Female",
