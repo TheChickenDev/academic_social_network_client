@@ -44,6 +44,7 @@ import paths from '@/constants/paths'
 import Saved from './Saved'
 import { decodeIdToEmail } from '@/utils/utils'
 import { AppContext } from '@/contexts/app.context'
+import Friends from './Friends'
 
 type SidebarItem = 'Profile' | 'Posts' | 'Saved' | 'Friends' | 'Activities' | 'Settings'
 
@@ -59,7 +60,9 @@ export function MyAccountSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
 
   useEffect(() => {
     getUser({ email: decodeIdToEmail(id ?? '') }).then((response) => {
-      setUserDetails(response.data.data)
+      if (!Array.isArray(response.data.data)) {
+        setUserDetails(response.data.data)
+      }
     })
   }, [])
 
@@ -249,10 +252,7 @@ export function MyAccountSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
           ) : activeItem === 'Saved' ? (
             <Saved />
           ) : activeItem === 'Friends' ? (
-            <div className='p-4 space-y-4'>
-              <h1 className='text-xl font-semibold'>{t('Friends')}</h1>
-              <p className='text-sm text-secondary'>{t('pages.myAccount.friends')}</p>
-            </div>
+            <Friends />
           ) : null}
         </div>
       </SidebarInset>

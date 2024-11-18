@@ -8,13 +8,16 @@ import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import paths from '@/constants/paths'
+import { AppContext } from '@/contexts/app.context'
+import FriendsSuggestion from '@/components/FriendsSuggestion'
 
 export default function Home() {
   const { t } = useTranslation()
   const [readingFocus, setReadingFocus] = useState<boolean>(false)
+  const { isAuthenticated } = useContext(AppContext)
 
   const navigate = useNavigate()
 
@@ -29,9 +32,7 @@ export default function Home() {
       </Helmet>
       <div className='flex justify-between items-start gap-4 py-28'>
         <div className='md:block hidden w-1/4'>
-          {readingFocus ? (
-            ''
-          ) : (
+          {!readingFocus && (
             <>
               <Search />
               <PopularTags />
@@ -49,7 +50,9 @@ export default function Home() {
           </div>
           <Posts />
         </div>
-        <div className='md:block hidden w-1/4'>{readingFocus ? '' : <Introduction />}</div>
+        <div className='md:block hidden w-1/4'>
+          {readingFocus ? '' : isAuthenticated ? <FriendsSuggestion /> : <Introduction />}
+        </div>
       </div>
     </div>
   )

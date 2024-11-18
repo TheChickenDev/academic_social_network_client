@@ -35,6 +35,18 @@ interface Introduction {
   contact: Contact
 }
 
+// friend
+
+export interface Friend {
+  email: string
+  fullName: string
+  rank: string
+  points: number
+  avatarImg: string
+  canAddFriend: boolean
+  canAccept: boolean
+}
+
 // user
 export interface User {
   _id: string
@@ -58,6 +70,8 @@ export interface User {
   updatedAt: Date
 }
 
+//
+
 export interface UserProfileData {
   posts: PostProps[]
   friends: string[]
@@ -66,4 +80,6 @@ export interface UserProfileData {
 export interface UserQuery {
   email: string
   _id?: string
+  page?: number
+  limit?: number
 }

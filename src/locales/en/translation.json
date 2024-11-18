@@ -201,7 +201,12 @@
     "search": "Search",
     "report": "Report",
     "confirm": "Confirm",
-    "unsave": "Unsave"
+    "unsave": "Unsave",
+    "addFriend": "Add friend",
+    "accept": "Accept",
+    "reject": "Reject",
+    "unfriend": "Unfriend",
+    "message": "Message"
   },
   "myAccount": {
     "createAPost": "Create a post",
@@ -263,6 +268,28 @@
       "toDate": "To date",
       "saved": "Saved!"
     }
+  },
+  "friend": {
+    "friends": "Friends",
+    "friendRequests": "Friend requests",
+    "noFriendFound": "No friend",
+    "noFriendRequest": "No friend request",
+    "addFriendSuccessful": "Friend request sent successfully!",
+    "addFriendFailed": "An error occurred while sending friend request. Please try again later.",
+    "acceptFriendSuccessful": "Friend request accepted successfully!",
+    "acceptFriendFailed": "An error occurred while accepting friend request. Please try again later.",
+    "rejectFriendSuccessful": "Friend request rejected successfully!",
+    "rejectFriendFailed": "An error occurred while rejecting friend request. Please try again later.",
+    "unFriendSuccessful": "Unfriend successfully!",
+    "unFriendFailed": "An error occurred while unfriending. Please try again later.",
+    "friendVirtualName": "No name yet",
+    "noRank": "No rank",
+    "noUserFound": "No user found",
+    "haveSendFriendRequest": "You have sent friend request!",
+    "haveActedFriendRequest": "You have just acted on this request!",
+    "haveAcceptedFriendRequest": "You have accepted friend request!",
+    "haveRejectedFriendRequest": "You have rejected friend request!",
+    "haveUnfriended": "You have unfriended!"
   },
   "gender": {
     "Male": "Male",
