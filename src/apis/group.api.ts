@@ -9,3 +9,11 @@ export const createGroup = (body: GroupProps) => {
 export const getGroups = (params: GroupQuery) => {
   return http.get<SuccessResponse<GroupProps[] | GroupProps>>('groups', { params })
 }
+
+export const updateGroup = (body: FormData) => {
+  return http.patch<SuccessResponse<GroupProps>>('groups', body)
+}
+
+export const getMembers = (params: GroupQuery) => {
+  return http.get<SuccessResponse<GroupProps[]>>('groups/members', { params })
+}

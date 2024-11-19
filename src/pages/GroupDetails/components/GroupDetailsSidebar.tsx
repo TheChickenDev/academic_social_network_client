@@ -1,14 +1,4 @@
-import {
-  FileUser,
-  LayoutList,
-  Bookmark,
-  ContactRound,
-  History,
-  Settings,
-  Github,
-  BadgePlus,
-  UserRoundPen
-} from 'lucide-react'
+import { FileUser, LayoutList, ContactRound, Settings, Github, BadgePlus } from 'lucide-react'
 import {
   Sidebar,
   SidebarContent,
@@ -34,16 +24,15 @@ import {
 } from '@/components/ui/breadcrumb'
 import { useState, ComponentProps, useEffect, useContext } from 'react'
 import { Button } from '@/components/ui/button'
-import { getUser } from '@/apis/user.api'
 import { useNavigate, useParams } from 'react-router-dom'
 import paths from '@/constants/paths'
 import { AppContext } from '@/contexts/app.context'
 import { GroupProps } from '@/types/group.type'
-import EditInformationForm from './EditInformationForm'
 import Information from './Information'
 import Posts from './Posts'
 import Members from './Members'
 import { getGroups } from '@/apis/group.api'
+import EditInformationForm from './EditInformationForm'
 
 type SidebarItem = 'Information' | 'Posts' | 'Members' | 'Settings'
 
@@ -52,17 +41,20 @@ export function GroupDetailsSidebar({ ...props }: ComponentProps<typeof Sidebar>
   const { setOpen } = useSidebar()
   const { t } = useTranslation()
   const [groupDetails, setGroupDetails] = useState<GroupProps | null>(null)
-  const [editMode, setEditMode] = useState<boolean>(false)
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { isAuthenticated, email } = useContext(AppContext)
 
   useEffect(() => {
-    getGroups({ id }).then((response) => {
+    getGroups({ id, userEmail: email }).then((response) => {
       const groupData = Array.isArray(response.data.data) ? response.data.data[0] : response.data.data
       setGroupDetails(groupData)
     })
   }, [])
+
+  const handleJoinGroup = () => {
+    console.log('alo')
+  }
 
   return (
     <>
@@ -91,7 +83,7 @@ export function GroupDetailsSidebar({ ...props }: ComponentProps<typeof Sidebar>
                 <SidebarMenuItem>
                   <SidebarMenuButton
                     tooltip={{
-                      children: t('Information'),
+                      children: t('group.information'),
                       hidden: false
                     }}
                     onClick={() => {
@@ -102,13 +94,13 @@ export function GroupDetailsSidebar({ ...props }: ComponentProps<typeof Sidebar>
                     className='px-2.5 md:px-2'
                   >
                     <FileUser />
-                    <span>{t('Information')}</span>
+                    <span>{t('group.information')}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton
                     tooltip={{
-                      children: t('Posts'),
+                      children: t('group.posts'),
                       hidden: false
                     }}
                     onClick={() => {
@@ -119,13 +111,13 @@ export function GroupDetailsSidebar({ ...props }: ComponentProps<typeof Sidebar>
                     className='px-2.5 md:px-2'
                   >
                     <LayoutList />
-                    <span>{t('Posts')}</span>
+                    <span>{t('group.posts')}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton
                     tooltip={{
-                      children: t('Members'),
+                      children: t('group.members'),
                       hidden: false
                     }}
                     onClick={() => {
@@ -136,14 +128,14 @@ export function GroupDetailsSidebar({ ...props }: ComponentProps<typeof Sidebar>
                     className='px-2.5 md:px-2'
                   >
                     <ContactRound />
-                    <span>{t('Members')}</span>
+                    <span>{t('group.members')}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 {isAuthenticated && email === groupDetails?.ownerEmail && (
                   <SidebarMenuItem>
                     <SidebarMenuButton
                       tooltip={{
-                        children: t('Settings'),
+                        children: t('group.settings'),
                         hidden: false
                       }}
                       onClick={() => {
@@ -154,7 +146,7 @@ export function GroupDetailsSidebar({ ...props }: ComponentProps<typeof Sidebar>
                       className='px-2.5 md:px-2'
                     >
                       <Settings />
-                      <span>{t('Settings')}</span>
+                      <span>{t('group.settings')}</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 )}
@@ -182,17 +174,10 @@ export function GroupDetailsSidebar({ ...props }: ComponentProps<typeof Sidebar>
           </div>
           {isAuthenticated && (
             <div className='max-h-6 flex justify-center items-center gap-2'>
-              {groupDetails && activeItem === 'Information' ? (
-                editMode ? (
-                  <Button variant='destructive' onClick={() => setEditMode(false)}>
-                    {t('action.cancel')}
-                  </Button>
-                ) : (
-                  <Button onClick={() => setEditMode(true)}>
-                    <UserRoundPen className='mr-2' />
-                    {t('group.editGroup')}
-                  </Button>
-                )
+              {groupDetails && groupDetails.canJoin && activeItem === 'Information' ? (
+                <Button onClick={handleJoinGroup}>
+                  {groupDetails.isPrivate ? t('group.requestToJoin') : t('group.join')}
+                </Button>
               ) : activeItem === 'Posts' ? (
                 <Button onClick={() => navigate(paths.postEditor)}>
                   <BadgePlus className='mr-2' />
@@ -204,15 +189,13 @@ export function GroupDetailsSidebar({ ...props }: ComponentProps<typeof Sidebar>
         </header>
         <div className='p-4'>
           {activeItem === 'Information' ? (
-            editMode ? (
-              <EditInformationForm />
-            ) : (
-              <Information />
-            )
+            <Information group={groupDetails} />
           ) : activeItem === 'Posts' ? (
             <Posts />
           ) : activeItem === 'Members' ? (
             <Members />
+          ) : groupDetails?.ownerEmail === email && activeItem === 'Settings' ? (
+            <EditInformationForm groupDetails={groupDetails} setGroupDetails={setGroupDetails} />
           ) : null}
         </div>
       </SidebarInset>

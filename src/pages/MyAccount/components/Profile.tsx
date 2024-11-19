@@ -1,10 +1,10 @@
 import { Mail, Phone, CalendarDays, MapPinHouse, BriefcaseBusiness, GraduationCap, BookHeart } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useTranslation } from 'react-i18next'
-import { User, UserProfileData } from '@/types/user.type'
+import { User } from '@/types/user.type'
 import { Skeleton } from '@/components/ui/skeleton'
 
-export default function Profile({ user }: { user: (User & UserProfileData) | null }) {
+export default function Profile({ user }: { user: User | null }) {
   const { t } = useTranslation()
 
   if (!user)
@@ -30,11 +30,11 @@ export default function Profile({ user }: { user: (User & UserProfileData) | nul
           <p className='text-base text-gray-500'>{t(user.rank ? user.rank : 'myAccount.noRank')}</p>
           <div className='flex justify-center items-center text-sm mt-12'>
             <div className='px-4'>
-              <p>{user.posts?.length ?? 0}</p>
+              <p>{user.numberOfPosts ?? 0}</p>
               <p className='text-gray-500'>{t('myAccount.posts')}</p>
             </div>
             <div className='border-x px-4'>
-              <p>{user.friends?.length ?? 0}</p>
+              <p>{user.numberOfFriends ?? 0}</p>
               <p className='text-gray-500'>{t('myAccount.friends')}</p>
             </div>
             <div className='px-4'>
@@ -55,7 +55,7 @@ export default function Profile({ user }: { user: (User & UserProfileData) | nul
           </div>
           <div className='flex gap-2 mt-4'>
             <BookHeart />
-            <p>{user.gender ?? t('myAccount.noGender')}</p>
+            <p>{user.gender ? user.gender : t('myAccount.noGender')}</p>
           </div>
           <div className='flex gap-2 mt-4'>
             <CalendarDays />
@@ -97,7 +97,7 @@ export default function Profile({ user }: { user: (User & UserProfileData) | nul
       <div className='lg:w-2/3 w-full'>
         <div className='border rounded-md p-4 mt-4 lg:mt-0'>
           <p className='text-xl font-bold'>{t('myAccount.aboutMe')}</p>
-          <p className='mt-2'>{user.description ?? t('myAccount.noAboutMe')}</p>
+          <p className='mt-2'>{user.description ? user.description : t('myAccount.noAboutMe')}</p>
         </div>
         <div className='border rounded-md p-4 mt-4'>
           <p className='text-lg font-bold'>{t('myAccount.work')}</p>

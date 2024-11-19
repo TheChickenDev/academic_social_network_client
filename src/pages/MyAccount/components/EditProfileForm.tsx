@@ -20,7 +20,7 @@ import {
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Education, User, UserProfileData } from '@/types/user.type'
+import { Education, User } from '@/types/user.type'
 import { isValidPhoneNumber } from '@/utils/rules'
 import { toast } from 'sonner'
 import { Textarea } from '@/components/ui/textarea'
@@ -32,8 +32,8 @@ import { getValidYearForAgePicker } from '@/utils/utils'
 import Loading from '@/components/Loading'
 
 interface EditProfileFormProps {
-  userDetails: (User & UserProfileData) | null
-  setUserDetails: React.Dispatch<React.SetStateAction<(User & UserProfileData) | null>>
+  userDetails: User | null
+  setUserDetails: React.Dispatch<React.SetStateAction<User | null>>
   setEditMode: React.Dispatch<React.SetStateAction<boolean>>
 }
 
@@ -148,7 +148,7 @@ export default function EditProfileForm({ userDetails, setUserDetails, setEditMo
             }
           }
 
-          setUserDetails({ ...newData } as User & UserProfileData)
+          setUserDetails({ ...newData } as User)
           setEditMode(false)
           toast.success(t('myAccount.editProfileForm.updateSuccessful'))
         }
@@ -225,11 +225,11 @@ export default function EditProfileForm({ userDetails, setUserDetails, setEditMo
               <p className='text-base text-gray-500'>{t(userDetails?.rank ? userDetails?.rank : 'myAccount.noRank')}</p>
               <div className='flex justify-center items-center text-sm mt-12'>
                 <div className='px-4'>
-                  <p>{userDetails?.posts?.length ?? 0}</p>
+                  <p>{userDetails?.numberOfPosts ?? 0}</p>
                   <p className='text-gray-500'>{t('myAccount.posts')}</p>
                 </div>
                 <div className='border-x px-4'>
-                  <p>{userDetails?.friends?.length ?? 0}</p>
+                  <p>{userDetails?.numberOfFriends ?? 0}</p>
                   <p className='text-gray-500'>{t('myAccount.friends')}</p>
                 </div>
                 <div className='px-4'>

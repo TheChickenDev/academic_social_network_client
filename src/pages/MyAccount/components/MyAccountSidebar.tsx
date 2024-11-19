@@ -33,7 +33,7 @@ import {
   BreadcrumbSeparator
 } from '@/components/ui/breadcrumb'
 import { useState, ComponentProps, useEffect, useContext } from 'react'
-import { User, UserProfileData } from '@/types/user.type'
+import { User } from '@/types/user.type'
 import { Button } from '@/components/ui/button'
 import { getUser } from '@/apis/user.api'
 import EditProfileForm from './EditProfileForm'
@@ -52,7 +52,7 @@ export function MyAccountSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   const [activeItem, setActiveItem] = useState<SidebarItem>('Profile')
   const { setOpen } = useSidebar()
   const { t } = useTranslation()
-  const [userDetails, setUserDetails] = useState<(User & UserProfileData) | null>(null)
+  const [userDetails, setUserDetails] = useState<User | null>(null)
   const [editMode, setEditMode] = useState<boolean>(false)
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
@@ -93,7 +93,7 @@ export function MyAccountSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                 <SidebarMenuItem>
                   <SidebarMenuButton
                     tooltip={{
-                      children: t('Profile'),
+                      children: t('myAccount.profile'),
                       hidden: false
                     }}
                     onClick={() => {
@@ -104,13 +104,13 @@ export function MyAccountSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                     className='px-2.5 md:px-2'
                   >
                     <FileUser />
-                    <span>{t('Profile')}</span>
+                    <span>{t('myAccount.profile')}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton
                     tooltip={{
-                      children: t('Posts'),
+                      children: t('myAccount.posts'),
                       hidden: false
                     }}
                     onClick={() => {
@@ -121,13 +121,13 @@ export function MyAccountSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                     className='px-2.5 md:px-2'
                   >
                     <LayoutList />
-                    <span>{t('Posts')}</span>
+                    <span>{t('myAccount.posts')}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton
                     tooltip={{
-                      children: t('Friends'),
+                      children: t('myAccount.friends'),
                       hidden: false
                     }}
                     onClick={() => {
@@ -138,7 +138,7 @@ export function MyAccountSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                     className='px-2.5 md:px-2'
                   >
                     <ContactRound />
-                    <span>{t('Friends')}</span>
+                    <span>{t('myAccount.friends')}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 {isAuthenticated && email === userDetails?.email && (
@@ -146,7 +146,7 @@ export function MyAccountSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                     <SidebarMenuItem>
                       <SidebarMenuButton
                         tooltip={{
-                          children: t('Saved'),
+                          children: t('myAccount.saved'),
                           hidden: false
                         }}
                         onClick={() => {
@@ -157,13 +157,13 @@ export function MyAccountSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                         className='px-2.5 md:px-2'
                       >
                         <Bookmark />
-                        <span>{t('Saved')}</span>
+                        <span>{t('myAccount.saved')}</span>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                     <SidebarMenuItem>
                       <SidebarMenuButton
                         tooltip={{
-                          children: t('Activities'),
+                          children: t('myAccount.activities'),
                           hidden: false
                         }}
                         onClick={() => {
@@ -174,13 +174,13 @@ export function MyAccountSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                         className='px-2.5 md:px-2'
                       >
                         <History />
-                        <span>{t('Activities')}</span>
+                        <span>{t('myAccount.activities')}</span>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                     <SidebarMenuItem>
                       <SidebarMenuButton
                         tooltip={{
-                          children: t('Settings'),
+                          children: t('myAccount.settings'),
                           hidden: false
                         }}
                         onClick={() => {
@@ -191,7 +191,7 @@ export function MyAccountSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                         className='px-2.5 md:px-2'
                       >
                         <Settings />
-                        <span>{t('Settings')}</span>
+                        <span>{t('myAccount.settings')}</span>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   </>
@@ -218,9 +218,9 @@ export function MyAccountSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
               </BreadcrumbList>
             </Breadcrumb>
           </div>
-          {isAuthenticated && (
+          {isAuthenticated && userDetails && userDetails.email === email && (
             <div className='max-h-6 flex justify-center items-center gap-2'>
-              {userDetails && activeItem === 'Profile' ? (
+              {activeItem === 'Profile' ? (
                 editMode ? (
                   <Button variant='destructive' onClick={() => setEditMode(false)}>
                     {t('action.cancel')}

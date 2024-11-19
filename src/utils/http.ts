@@ -82,8 +82,8 @@ class HTTP {
             .then((response) => {
               return response
             })
-            .catch((error) => {
-              toast.error(error)
+            .catch(() => {
+              toast.error('auth.authenticationError')
             })
         }
         return Promise.reject(error)

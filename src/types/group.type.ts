@@ -1,10 +1,15 @@
 export interface GroupMemberProps {
-  groupId: string
-  groupName: string
-  role: 'Member' | 'Moderator' | 'Admin'
-  contributionPoints: number
-  title: string
+  userEmail: string
+  userName: string
+  userAvatar: string
+  userRank: string
+  role: 'pending' | 'member' | 'moderator' | 'admin'
   joinDate: Date
+}
+
+export interface GroupPostProps {
+  postId: string
+  status: 'pending' | 'approved' | 'rejected'
 }
 
 // group
@@ -14,10 +19,21 @@ export interface GroupProps {
   description: string
   avatarImg?: string
   backgroundImg?: string
+  isPrivate: boolean
   ownerEmail: string
-  memberrs?: GroupMemberProps[]
+  members?: GroupMemberProps[]
+  moderators?: GroupMemberProps[]
+  posts?: GroupPostProps[]
   createdAt?: Date
   updatedAt?: Date
+  // virtuals
+  postsCount: number
+  membersCount: number
+  canJoin: boolean
+  canPost: boolean
+  ownerName: string
+  ownerAvatar: string
+  ownerRank: string
 }
 
 // group query
@@ -25,4 +41,6 @@ export interface GroupProps {
 export interface GroupQuery {
   id?: string
   ownerEmail?: string
+  userEmail?: string
+  memberRole?: 'member' | 'moderator' | 'admin'
 }

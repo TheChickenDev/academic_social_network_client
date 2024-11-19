@@ -1,5 +1,3 @@
-import { PostProps } from './post.type'
-
 // job
 export interface Job {
   profession: string
@@ -68,13 +66,8 @@ export interface User {
   refreshToken: string
   createdAt: Date
   updatedAt: Date
-}
-
-//
-
-export interface UserProfileData {
-  posts: PostProps[]
-  friends: string[]
+  numberOfPosts: number
+  numberOfFriends: number
 }
 
 export interface UserQuery {
