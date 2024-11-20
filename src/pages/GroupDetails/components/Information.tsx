@@ -35,11 +35,11 @@ export default function Information({ group }: { group: GroupProps | null }) {
           </p>
           <div className='flex justify-center items-center text-sm mt-12'>
             <div className='px-4'>
-              <p>{group?.posts?.length ?? 0}</p>
+              <p>{group?.postsCount ?? 0}</p>
               <p className='text-gray-500'>{t('group.posts')}</p>
             </div>
             <div className='border-l px-4'>
-              <p>{group?.members?.length ?? 0}</p>
+              <p>{group?.membersCount ?? 0}</p>
               <p className='text-gray-500'>{t('group.members')}</p>
             </div>
           </div>
@@ -63,59 +63,71 @@ export default function Information({ group }: { group: GroupProps | null }) {
             </div>
           </div>
           <p className='text-lg font-bold mt-4'>{t('group.moderators')}</p>
-          <div className='flex flex-wrap items-center gap-4 mt-2'>
-            {group?.moderators?.map((moderator, index) => (
-              <HoverCard key={index}>
-                <HoverCardTrigger>
-                  <Avatar className='w-12 h-12'>
-                    <AvatarImage src={moderator.userAvatar} />
-                    <AvatarFallback />
-                  </Avatar>
-                </HoverCardTrigger>
-                <HoverCardContent>
-                  <div className='flex items-center'>
+          {group?.moderators?.length === 0 ? (
+            <p>{t('group.noModerator')}</p>
+          ) : (
+            <div className='flex flex-wrap items-center gap-4 mt-2'>
+              {group?.moderators?.map((moderator) => (
+                <HoverCard key={moderator.userEmail}>
+                  <HoverCardTrigger>
                     <Avatar className='w-12 h-12'>
                       <AvatarImage src={moderator.userAvatar} />
                       <AvatarFallback />
                     </Avatar>
-                    <div className='ml-4'>
-                      <Link to={paths.profile.replace(':id', encodeEmailToId(moderator.userEmail))}>
-                        {moderator.userName}
-                      </Link>
-                      <p className='text-sm text-gray-500'>{t('myAccount.noRank')}</p>
+                  </HoverCardTrigger>
+                  <HoverCardContent>
+                    <div className='flex items-center'>
+                      <Avatar className='w-12 h-12'>
+                        <AvatarImage src={moderator.userAvatar} />
+                        <AvatarFallback />
+                      </Avatar>
+                      <div className='ml-4'>
+                        <Link to={paths.profile.replace(':id', encodeEmailToId(moderator.userEmail))}>
+                          {moderator.userName}
+                        </Link>
+                        <p className='text-sm text-gray-500'>
+                          {moderator.userRank ? moderator.userRank : t('myAccount.noRank')}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </HoverCardContent>
-              </HoverCard>
-            ))}
-          </div>
+                  </HoverCardContent>
+                </HoverCard>
+              ))}
+            </div>
+          )}
           <p className='text-lg font-bold mt-4'>{t('group.members')}</p>
-          <div className='flex flex-wrap items-center gap-4 mt-2'>
-            {group?.members?.map((moderator, index) => (
-              <HoverCard key={index}>
-                <HoverCardTrigger>
-                  <Avatar className='w-12 h-12'>
-                    <AvatarImage src={moderator.userAvatar} />
-                    <AvatarFallback />
-                  </Avatar>
-                </HoverCardTrigger>
-                <HoverCardContent>
-                  <div className='flex items-center'>
+          {group?.members?.length === 0 ? (
+            <p>{t('group.noMember')}</p>
+          ) : (
+            <div className='flex flex-wrap items-center gap-4 mt-2'>
+              {group?.members?.map((member) => (
+                <HoverCard key={member.userEmail}>
+                  <HoverCardTrigger>
                     <Avatar className='w-12 h-12'>
-                      <AvatarImage src={moderator.userAvatar} />
+                      <AvatarImage src={member.userAvatar} />
                       <AvatarFallback />
                     </Avatar>
-                    <div className='ml-4'>
-                      <Link to={paths.profile.replace(':id', encodeEmailToId(moderator.userEmail))}>
-                        {moderator.userName}
-                      </Link>
-                      <p className='text-sm text-gray-500'>{t('myAccount.noRank')}</p>
+                  </HoverCardTrigger>
+                  <HoverCardContent>
+                    <div className='flex items-center'>
+                      <Avatar className='w-12 h-12'>
+                        <AvatarImage src={member.userAvatar} />
+                        <AvatarFallback />
+                      </Avatar>
+                      <div className='ml-4'>
+                        <Link to={paths.profile.replace(':id', encodeEmailToId(member.userEmail))}>
+                          {member.userName}
+                        </Link>
+                        <p className='text-sm text-gray-500'>
+                          {member.userRank ? member.userRank : t('myAccount.noRank')}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </HoverCardContent>
-              </HoverCard>
-            ))}
-          </div>
+                  </HoverCardContent>
+                </HoverCard>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

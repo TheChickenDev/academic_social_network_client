@@ -9,7 +9,7 @@ export default function MyAccount() {
   return (
     <div className='mt-20'>
       <Helmet>
-        <title>{t('pages.home')}</title>
+        <title>{t('pages.profile')}</title>
       </Helmet>
       <SidebarProvider>
         <MyAccountSidebar />

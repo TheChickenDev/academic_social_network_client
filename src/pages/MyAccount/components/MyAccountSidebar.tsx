@@ -35,7 +35,7 @@ import {
 import { useState, ComponentProps, useEffect, useContext } from 'react'
 import { User } from '@/types/user.type'
 import { Button } from '@/components/ui/button'
-import { getUser } from '@/apis/user.api'
+import { addFriend, getUser } from '@/apis/user.api'
 import EditProfileForm from './EditProfileForm'
 import Profile from './Profile'
 import Posts from './Posts'
@@ -45,6 +45,7 @@ import Saved from './Saved'
 import { decodeIdToEmail } from '@/utils/utils'
 import { AppContext } from '@/contexts/app.context'
 import Friends from './Friends'
+import { toast } from 'sonner'
 
 type SidebarItem = 'Profile' | 'Posts' | 'Saved' | 'Friends' | 'Activities' | 'Settings'
 
@@ -61,10 +62,27 @@ export function MyAccountSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   useEffect(() => {
     getUser({ email: decodeIdToEmail(id ?? '') }).then((response) => {
       if (!Array.isArray(response.data.data)) {
-        setUserDetails(response.data.data)
+        setUserDetails({
+          ...response.data.data,
+          canAddFriend: response.data.data.friends.some(
+            (friend: { friendEmail: string; status: string }) => friend.friendEmail === email
+          )
+            ? false
+            : true
+        })
       }
     })
   }, [])
+
+  const handleAddFriendClick = () => {
+    addFriend({ email: email ?? '', friendEmail: userDetails?.email ?? '' }).then((response) => {
+      const status = response?.status
+      if (status === 200) {
+        toast.success(t('friend.haveSendFriendRequest'))
+        setUserDetails((prev) => (prev ? { ...prev, canAddFriend: false } : prev))
+      }
+    })
+  }
 
   return (
     <>
@@ -209,7 +227,7 @@ export function MyAccountSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem className='hidden md:block'>
-                  <BreadcrumbLink href='#'>{t('pages.myAccount')}</BreadcrumbLink>
+                  <BreadcrumbLink href='#'>{t('pages.profile')}</BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className='hidden md:block' />
                 <BreadcrumbItem>
@@ -218,7 +236,7 @@ export function MyAccountSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
               </BreadcrumbList>
             </Breadcrumb>
           </div>
-          {isAuthenticated && userDetails && userDetails.email === email && (
+          {isAuthenticated && userDetails && userDetails.email === email ? (
             <div className='max-h-6 flex justify-center items-center gap-2'>
               {activeItem === 'Profile' ? (
                 editMode ? (
@@ -237,6 +255,12 @@ export function MyAccountSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                   {t('myAccount.createAPost')}
                 </Button>
               ) : null}
+            </div>
+          ) : (
+            <div className='max-h-6 flex justify-center items-center gap-2'>
+              {activeItem === 'Profile' && userDetails?.canAddFriend && (
+                <Button onClick={() => handleAddFriendClick()}>{t('action.addFriend')}</Button>
+              )}
             </div>
           )}
         </header>

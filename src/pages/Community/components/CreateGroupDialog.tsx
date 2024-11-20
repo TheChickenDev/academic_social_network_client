@@ -18,6 +18,7 @@ import { createGroup } from '@/apis/group.api'
 import { AppContext } from '@/contexts/app.context'
 import { useNavigate } from 'react-router-dom'
 import paths from '@/constants/paths'
+import { Checkbox } from '@/components/ui/checkbox'
 
 export default function CreateGroupDialog() {
   const { t } = useTranslation()
@@ -27,6 +28,7 @@ export default function CreateGroupDialog() {
   const [description, setDescription] = useState<string>('')
   const descriptionLabelRef = useRef<HTMLLabelElement>(null)
   const descriptionMessageRef = useRef<HTMLParagraphElement>(null)
+  const [isPrivate, setIsPrivate] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const { email } = useContext(AppContext)
   const navigate = useNavigate()
@@ -78,7 +80,7 @@ export default function CreateGroupDialog() {
     }
 
     setIsLoading(true)
-    createGroup({ name: groupName, description, ownerEmail: email ?? '' })
+    createGroup({ name: groupName, description, ownerEmail: email ?? '', isPrivate })
       .then((response) => {
         const status = response.status
         if (status === 201) {
@@ -95,7 +97,7 @@ export default function CreateGroupDialog() {
       {isLoading && <Loading />}
       <Dialog>
         <DialogTrigger asChild>
-          <Button variant='outline'>{t('community.createAGroup')}</Button>
+          <Button>{t('community.createAGroup')}</Button>
         </DialogTrigger>
         <DialogContent className='sm:max-w-[475px]'>
           <DialogHeader>
@@ -134,6 +136,15 @@ export default function CreateGroupDialog() {
               <p className='text-[0.8rem] font-medium text-destructive mt-2 hidden' ref={descriptionMessageRef}>
                 {t('community.groupDescriptionMessage')}
               </p>
+            </div>
+            <div className='flex items-center space-x-2 mt-4'>
+              <Checkbox id='isPrivate' checked={isPrivate} onCheckedChange={(value) => setIsPrivate(!!value)} />
+              <Label
+                htmlFor='isPrivate'
+                className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
+              >
+                {t('group.isPrivate')}
+              </Label>
             </div>
           </div>
           <DialogFooter>

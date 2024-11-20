@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import Loading from '@/components/Loading'
 import { updateGroup } from '@/apis/group.api'
 import { toast } from 'sonner'
+import { Textarea } from '@/components/ui/textarea'
 
 interface EditInformationFormProps {
   groupDetails: GroupProps | null
@@ -79,7 +80,6 @@ export default function EditInformationForm({ groupDetails, setGroupDetails }: E
     formData.append('isPrivate', isPrivate.toString())
     const files = (document.getElementById('avatar') as HTMLInputElement).files
     if (files && files.length > 0) {
-      console.log(files)
       formData.append('images', files[0])
     }
 
@@ -142,9 +142,9 @@ export default function EditInformationForm({ groupDetails, setGroupDetails }: E
         <Label className='text-nowrap font-semibold' htmlFor='description' ref={descriptionLabelRef}>
           {t('group.description')}
         </Label>
-        <Input
+        <Textarea
           id='description'
-          className='mt-2'
+          className='mt-2 min-h-48 resize-none'
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder={t('group.description')}
@@ -154,9 +154,9 @@ export default function EditInformationForm({ groupDetails, setGroupDetails }: E
         </p>
       </div>
       <div className='flex items-center space-x-2 mt-4'>
-        <Checkbox id='untilNow' checked={isPrivate} onCheckedChange={(value) => setIsPrivate(!!value)} />
+        <Checkbox id='isPrivate' checked={isPrivate} onCheckedChange={(value) => setIsPrivate(!!value)} />
         <Label
-          htmlFor='untilNow'
+          htmlFor='isPrivate'
           className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
         >
           {t('group.isPrivate')}

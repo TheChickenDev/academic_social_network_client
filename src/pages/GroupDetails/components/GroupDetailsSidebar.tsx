@@ -31,13 +31,14 @@ import { GroupProps } from '@/types/group.type'
 import Information from './Information'
 import Posts from './Posts'
 import Members from './Members'
-import { getGroups } from '@/apis/group.api'
+import { getGroups, removeMember, requestToJoin } from '@/apis/group.api'
 import EditInformationForm from './EditInformationForm'
+import { toast } from 'sonner'
 
 type SidebarItem = 'Information' | 'Posts' | 'Members' | 'Settings'
 
 export function GroupDetailsSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
-  const [activeItem, setActiveItem] = useState<SidebarItem>('Information')
+  const [activeItem, setActiveItem] = useState<SidebarItem>('Posts')
   const { setOpen } = useSidebar()
   const { t } = useTranslation()
   const [groupDetails, setGroupDetails] = useState<GroupProps | null>(null)
@@ -53,7 +54,31 @@ export function GroupDetailsSidebar({ ...props }: ComponentProps<typeof Sidebar>
   }, [])
 
   const handleJoinGroup = () => {
-    console.log('alo')
+    requestToJoin({ id, userEmail: email }).then((response) => {
+      const status = response.status
+      if (status === 200) {
+        if (groupDetails?.isPrivate) {
+          toast.success(t('group.haveSendJoinRequest'))
+        } else {
+          toast.success(t('group.haveJoinedGroup'))
+        }
+        setGroupDetails((prevDetails) =>
+          prevDetails ? { ...prevDetails, canJoin: !prevDetails.canJoin, canPost: !prevDetails.canPost } : prevDetails
+        )
+      }
+    })
+  }
+
+  const handleLeaveGroup = () => {
+    removeMember({ id, userEmail: email }).then((response) => {
+      const status = response.status
+      if (status === 200) {
+        toast.success(t('group.haveLeftGroup'))
+        setGroupDetails((prevDetails) =>
+          prevDetails ? { ...prevDetails, canJoin: !prevDetails.canJoin, canPost: !prevDetails.isPrivate } : prevDetails
+        )
+      }
+    })
   }
 
   return (
@@ -163,7 +188,7 @@ export function GroupDetailsSidebar({ ...props }: ComponentProps<typeof Sidebar>
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem className='hidden md:block'>
-                  <BreadcrumbLink href='#'>{t('pages.myAccount')}</BreadcrumbLink>
+                  <BreadcrumbLink href='#'>{t('pages.group')}</BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className='hidden md:block' />
                 <BreadcrumbItem>
@@ -174,12 +199,16 @@ export function GroupDetailsSidebar({ ...props }: ComponentProps<typeof Sidebar>
           </div>
           {isAuthenticated && (
             <div className='max-h-6 flex justify-center items-center gap-2'>
-              {groupDetails && groupDetails.canJoin && activeItem === 'Information' ? (
-                <Button onClick={handleJoinGroup}>
-                  {groupDetails.isPrivate ? t('group.requestToJoin') : t('group.join')}
-                </Button>
-              ) : activeItem === 'Posts' ? (
-                <Button onClick={() => navigate(paths.postEditor)}>
+              {groupDetails && activeItem === 'Information' ? (
+                groupDetails.canJoin ? (
+                  <Button onClick={handleJoinGroup}>
+                    {groupDetails.isPrivate ? t('group.requestToJoin') : t('group.join')}
+                  </Button>
+                ) : (
+                  <Button onClick={handleLeaveGroup}>{t('action.leave')}</Button>
+                )
+              ) : activeItem === 'Posts' && groupDetails?.canPost ? (
+                <Button onClick={() => navigate(`${paths.postEditor}?groupId=${id}`)}>
                   <BadgePlus className='mr-2' />
                   {t('group.createAPost')}
                 </Button>
@@ -191,9 +220,9 @@ export function GroupDetailsSidebar({ ...props }: ComponentProps<typeof Sidebar>
           {activeItem === 'Information' ? (
             <Information group={groupDetails} />
           ) : activeItem === 'Posts' ? (
-            <Posts />
+            <Posts canEdit={groupDetails?.canEdit ?? false} />
           ) : activeItem === 'Members' ? (
-            <Members />
+            <Members groupDetails={groupDetails} />
           ) : groupDetails?.ownerEmail === email && activeItem === 'Settings' ? (
             <EditInformationForm groupDetails={groupDetails} setGroupDetails={setGroupDetails} />
           ) : null}

@@ -5,6 +5,8 @@ export interface GroupMemberProps {
   userRank: string
   role: 'pending' | 'member' | 'moderator' | 'admin'
   joinDate: Date
+  // virtuals
+  canAddFriend?: boolean
 }
 
 export interface GroupPostProps {
@@ -27,13 +29,14 @@ export interface GroupProps {
   createdAt?: Date
   updatedAt?: Date
   // virtuals
-  postsCount: number
-  membersCount: number
-  canJoin: boolean
-  canPost: boolean
-  ownerName: string
-  ownerAvatar: string
-  ownerRank: string
+  postsCount?: number
+  membersCount?: number
+  canJoin?: boolean
+  canPost?: boolean
+  canEdit?: boolean
+  ownerName?: string
+  ownerAvatar?: string
+  ownerRank?: string
 }
 
 // group query
@@ -42,5 +45,11 @@ export interface GroupQuery {
   id?: string
   ownerEmail?: string
   userEmail?: string
-  memberRole?: 'member' | 'moderator' | 'admin'
+  memberEmail?: string
+  getList?: boolean
+  page?: number
+  limit?: number
+  memberRole?: 'pending' | 'member' | 'moderator' | 'admin'
+  postStatus?: 'pending' | 'approved' | 'rejected'
+  postId?: string
 }

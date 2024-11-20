@@ -20,6 +20,10 @@ import { createPost } from '@/apis/post.api'
 import { toast } from 'sonner'
 import { AppContext } from '@/contexts/app.context'
 import { PostProps } from '@/types/post.type'
+import useQueryParams from '@/hooks/useQueryParams'
+import Loading from '@/components/Loading'
+import { useNavigate } from 'react-router-dom'
+import paths from '@/constants/paths'
 
 const OPTIONS: MultiSelectItem[] = [
   { label: 'nextjs', value: 'Nextjs' },
@@ -42,6 +46,8 @@ export default function PostEditor() {
   const [postTitle, setPostTitle] = useState<string>('')
   const titleRef = useRef<HTMLInputElement>(null)
   const tagsRef = useRef<MultipleSelectorRef>(null)
+  const { groupId } = useQueryParams()
+  const navigate = useNavigate()
 
   const { fullName, avatar, email } = useContext(AppContext)
   const queryClient = useQueryClient()
@@ -93,6 +99,7 @@ export default function PostEditor() {
         ownerName: fullName ?? '',
         ownerAvatar: avatar ?? '',
         ownerEmail: email ?? '',
+        groupId: groupId ?? '',
         content: editorContent as JSONContent
       },
       {
@@ -100,13 +107,18 @@ export default function PostEditor() {
           const status = response.status
           if (status === 201) {
             toast.success(t('post.createSuccessful'))
-            queryClient.setQueryData(['posts'], (oldData: InfiniteData<PostProps[], unknown>) => {
-              if (!oldData) return
-              oldData.pages[0].unshift(response.data.data)
-              return {
-                ...oldData
-              }
-            })
+            if (groupId) {
+              navigate(paths.groupDetails.replace(':id', groupId))
+            } else {
+              queryClient.setQueryData(['posts'], (oldData: InfiniteData<PostProps[], unknown>) => {
+                if (!oldData) return
+                oldData.pages[0].unshift(response.data.data)
+                return {
+                  ...oldData
+                }
+              })
+              navigate(paths.home)
+            }
           } else toast.error(t('post.createFailed'))
         },
         onError: () => {
@@ -117,73 +129,76 @@ export default function PostEditor() {
   }
 
   return (
-    <div className='min-h-screen px-2 md:px-6 lg:px-12 bg-light-primary dark:bg-dark-primary'>
-      <div className='md:flex justify-between items-center block gap-3 pt-24'>
-        <div className='md:w-1/2'>
-          <p className='font-semibold mb-2'>{t('post.title')}</p>
-          <Input
-            ref={titleRef}
-            type='text'
-            placeholder={t('post.titlePlaceholder')}
-            value={postTitle}
-            onChange={(e) => setPostTitle(e.target.value)}
-          />
-          <p className='text-sm text-gray-500 mt-2'>{t('post.titleDescription')}</p>
-        </div>
-        <div className='md:w-1/2 md:mt-0 mt-4'>
-          <p className='font-semibold mb-2'>{t('post.tag')}</p>
-          <MultipleSelector
-            ref={tagsRef}
-            onChange={(tags) => setSelectedTags(tags)}
-            maxSelected={5}
-            defaultOptions={OPTIONS}
-            placeholder={t('post.tagPlaceholder')}
-            emptyIndicator={
-              <p className='text-center text-lg leading-10 text-gray-600 dark:text-gray-400'>{t('no-data-found')}</p>
-            }
-          />
-          <p className='text-sm text-gray-500 mt-2'>{t('post.tagDescription')}</p>
-        </div>
-      </div>
-      <div className='mt-4'>
-        <p className='font-semibold'>{t('post.description')}</p>
-        <p className='text-sm text-gray-500 mb-1'>{t('post.descriptionDescription')}</p>
-        <MinimalTiptapEditor
-          value={editorContent}
-          onChange={setEditorContent}
-          className='h-auto min-h-48 rounded-md border border-input shadow-sm focus-within:border-primary'
-          editorContentClassName='p-2'
-          output='json'
-          placeholder={t('post.descriptionPlaceholder')}
-          autofocus={false}
-          editable={true}
-          editorClassName='focus:outline-none'
-        />
-      </div>
-      <div className='flex justify-end gap-2 mt-4'>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button>{t('action.preview')}</Button>
-          </DialogTrigger>
-          <DialogContent aria-describedby={undefined}>
-            <DialogHeader>
-              <DialogTitle>{t('action.preview')}</DialogTitle>
-            </DialogHeader>
-            <MinimalTiptapEditor
-              value={editorContent}
-              output='json'
-              placeholder=''
-              autofocus={false}
-              editable={false}
-              editorClassName='focus:outline-none'
+    <>
+      {postMutation.isPending && <Loading />}
+      <div className='min-h-screen px-2 md:px-6 lg:px-12 bg-light-primary dark:bg-dark-primary'>
+        <div className='md:flex justify-between items-center block gap-3 pt-24'>
+          <div className='md:w-1/2'>
+            <p className='font-semibold mb-2'>{t('post.title')}</p>
+            <Input
+              ref={titleRef}
+              type='text'
+              placeholder={t('post.titlePlaceholder')}
+              value={postTitle}
+              onChange={(e) => setPostTitle(e.target.value)}
             />
-            <DialogFooter>
-              <DialogClose>{t('action.close')}</DialogClose>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-        <Button onClick={() => handleSubmit()}>{t('action.post')}</Button>
+            <p className='text-sm text-gray-500 mt-2'>{t('post.titleDescription')}</p>
+          </div>
+          <div className='md:w-1/2 md:mt-0 mt-4'>
+            <p className='font-semibold mb-2'>{t('post.tag')}</p>
+            <MultipleSelector
+              ref={tagsRef}
+              onChange={(tags) => setSelectedTags(tags)}
+              maxSelected={5}
+              defaultOptions={OPTIONS}
+              placeholder={t('post.tagPlaceholder')}
+              emptyIndicator={
+                <p className='text-center text-lg leading-10 text-gray-600 dark:text-gray-400'>{t('no-data-found')}</p>
+              }
+            />
+            <p className='text-sm text-gray-500 mt-2'>{t('post.tagDescription')}</p>
+          </div>
+        </div>
+        <div className='mt-4'>
+          <p className='font-semibold'>{t('post.description')}</p>
+          <p className='text-sm text-gray-500 mb-1'>{t('post.descriptionDescription')}</p>
+          <MinimalTiptapEditor
+            value={editorContent}
+            onChange={setEditorContent}
+            className='h-auto min-h-48 rounded-md border border-input shadow-sm focus-within:border-primary'
+            editorContentClassName='p-2'
+            output='json'
+            placeholder={t('post.descriptionPlaceholder')}
+            autofocus={false}
+            editable={true}
+            editorClassName='focus:outline-none'
+          />
+        </div>
+        <div className='flex justify-end gap-2 mt-4'>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button>{t('action.preview')}</Button>
+            </DialogTrigger>
+            <DialogContent aria-describedby={undefined}>
+              <DialogHeader>
+                <DialogTitle>{t('action.preview')}</DialogTitle>
+              </DialogHeader>
+              <MinimalTiptapEditor
+                value={editorContent}
+                output='json'
+                placeholder=''
+                autofocus={false}
+                editable={false}
+                editorClassName='focus:outline-none'
+              />
+              <DialogFooter>
+                <DialogClose>{t('action.close')}</DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+          <Button onClick={() => handleSubmit()}>{t('action.post')}</Button>
+        </div>
       </div>
-    </div>
+    </>
   )
 }

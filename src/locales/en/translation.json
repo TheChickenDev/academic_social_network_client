@@ -35,7 +35,8 @@
     "notification": "Notification",
     "contributeIdeas": "Contribute ideas",
     "post": "Post",
-    "myAccount": "My account"
+    "group": "Group",
+    "profile": "Profile"
   },
   "components": {
     "popularTags": "Popular tags",
@@ -203,10 +204,15 @@
     "confirm": "Confirm",
     "unsave": "Unsave",
     "addFriend": "Add friend",
+    "kick": "Kick",
+    "appoint": "Appoint",
+    "dismissal": "Dismissal",
     "accept": "Accept",
     "reject": "Reject",
     "unfriend": "Unfriend",
-    "message": "Message"
+    "message": "Message",
+    "approve": "Approve",
+    "leave": "Leave"
   },
   "myAccount": {
     "createAPost": "Create a post",
@@ -304,7 +310,13 @@
     "groupDescription": "Group description",
     "groupDescriptionMessage": "Group description is required and must not exceed 2000 characters",
     "createAGroupSuccessful": "Group created successfully!",
-    "createAGroupFailed": "An error occurred while creating group. Please try again later."
+    "createAGroupFailed": "An error occurred while creating group. Please try again later.",
+    "myGroups": "My groups",
+    "noGroupOwned": "No group owned",
+    "joinedGroups": "Joined groups",
+    "noGroupJoined": "No group joined",
+    "suggestions": "Suggestions",
+    "noGroupSuggested": "No group suggested"
   },
   "group": {
     "editGroup": "Edit group",
@@ -316,6 +328,9 @@
     "posts": "Posts",
     "noPostFound": "No post",
     "members": "Members",
+    "noMember": "No member",
+    "requests": "Requests",
+    "noRequest": "No request",
     "settings": "Settings",
     "description": "Description",
     "descriptionError": "Description must be at least 20 and at most 2000 characters",
@@ -325,12 +340,22 @@
     "noName": "No name",
     "join": "Join",
     "requestToJoin": "Request to join",
+    "joinedAt": "Joined at",
+    "haveSendJoinRequest": "You have sent join request!",
+    "haveJoinedGroup": "You have joined group!",
+    "haveLeftGroup": "You have left group!",
     "leave": "Leave",
     "owner": "Owner",
     "moderators": "Moderators",
+    "noModerator": "No moderator",
     "isPrivate": "Private",
     "updateSuccessful": "Group updated successfully!",
-    "updateFailed": "An error occurred while updating group. Please try again later."
+    "updateFailed": "An error occurred while updating group. Please try again later.",
+    "groupPostRequests": "Waiting Approval",
+    "approvePostSuccessful": "Post approved successfully!",
+    "approvePostFailed": "An error occurred while approving post. Please try again later.",
+    "rejectPostSuccessful": "Post rejected successfully!",
+    "rejectPostFailed": "An error occurred while rejecting post. Please try again later."
   },
   "gender": {
     "Male": "Male",

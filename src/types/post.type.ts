@@ -47,6 +47,7 @@ export interface PostProps {
   ownerName: string
   ownerAvatar: string
   ownerEmail: string
+  groupId?: string
   createdAt?: string
   updatedAt?: string
   numberOfLikes?: number
@@ -65,6 +66,7 @@ export interface PostQuery {
   limit?: number
   ownerEmail?: string
   userEmail?: string
+  groupId?: string
   getSavedPosts?: boolean
 }
 

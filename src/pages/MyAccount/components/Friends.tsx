@@ -167,7 +167,7 @@ function FriendsRequests() {
   }
 
   useEffect(() => {
-    getFriends({ email: email ?? '', status: 'requested' })
+    getFriends({ email: email ?? '', status: 'pending' })
       .then((response) => {
         setFriends(response?.data?.data?.map((friend) => ({ ...friend, canAccept: true })))
       })

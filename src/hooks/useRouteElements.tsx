@@ -38,14 +38,6 @@ const routes: RouteObject[] = [
     index: true
   },
   {
-    path: paths.community,
-    element: (
-      <DefaultLayout>
-        <Community />
-      </DefaultLayout>
-    )
-  },
-  {
     path: paths.postDetails,
     element: (
       <DefaultLayout>
@@ -100,6 +92,14 @@ const routes: RouteObject[] = [
         element: (
           <DefaultLayout>
             <Message />
+          </DefaultLayout>
+        )
+      },
+      {
+        path: paths.community,
+        element: (
+          <DefaultLayout>
+            <Community />
           </DefaultLayout>
         )
       },

@@ -132,19 +132,6 @@ export default function Header() {
           >
             {t('pages.message')}
           </Link>
-          <Link
-            to={paths.message}
-            className={classNames(
-              'group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900 dark:text-white dark:hover:bg-gray-800',
-              {
-                'text-black dark:bg-dark-secondary': location.pathname === paths.message,
-                'text-gray-400': location.pathname !== paths.message
-              }
-            )}
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            {t('pages.notification')}
-          </Link>
         </div>
         <div className='md:flex items-center gap-2 hidden'>
           <ModeToggle />
@@ -162,7 +149,7 @@ export default function Header() {
                 <DropdownMenuLabel>{fullName || 'My account'}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => navigate(paths.profile.replace(':id', encodeEmailToId(email ?? '')))}>
-                  {t('pages.myAccount')}
+                  {t('pages.profile')}
                 </DropdownMenuItem>
                 <DropdownMenuItem>{t('pages.contributeIdeas')}</DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleSignOutClick()}>{t('action.signOut')}</DropdownMenuItem>
@@ -230,15 +217,6 @@ export default function Header() {
                   })}
                 >
                   {t('pages.message')}
-                </button>
-                <button
-                  onClick={() => handleMobileMenuLinkClick(paths.notification)}
-                  className={classNames('w-full text-left py-3', {
-                    'text-black dark:text-white': location.pathname === paths.notification,
-                    'text-gray-500': location.pathname !== paths.notification
-                  })}
-                >
-                  {t('pages.notification')}
                 </button>
               </div>
               <hr />

@@ -68,6 +68,8 @@ export interface User {
   updatedAt: Date
   numberOfPosts: number
   numberOfFriends: number
+  // virtual fields
+  canAddFriend: boolean
 }
 
 export interface UserQuery {
