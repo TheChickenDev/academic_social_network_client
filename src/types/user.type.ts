@@ -70,6 +70,7 @@ export interface User {
   numberOfFriends: number
   // virtual fields
   canAddFriend: boolean
+  friends: { friendEmail: string; status: string }[]
 }
 
 export interface UserQuery {
