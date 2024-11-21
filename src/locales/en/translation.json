@@ -212,7 +212,8 @@
     "unfriend": "Unfriend",
     "message": "Message",
     "approve": "Approve",
-    "leave": "Leave"
+    "leave": "Leave",
+    "send": "Send"
   },
   "myAccount": {
     "createAPost": "Create a post",
@@ -361,5 +362,14 @@
     "Male": "Male",
     "Female": "Female",
     "Other": "Other"
+  },
+  "chat": {
+    "lastMessage": "You: {{message}}",
+    "sayHelloTo": "Say hello to {{name}}",
+    "noMessage": "No messages yet. Start the conversation!",
+    "searchPlaceholder": "Search for conversations...",
+    "searchNoResult": "No conversation found",
+    "messagePlaceholder": "Type a message...",
+    "selectAConversation": "Select a conversation to start chatting!"
   }
 }
