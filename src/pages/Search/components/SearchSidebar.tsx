@@ -1,5 +1,5 @@
 import useQueryParams from '@/hooks/useQueryParams'
-import { ComponentProps, useEffect, useState } from 'react'
+import { ComponentProps, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -25,21 +25,32 @@ import {
   SelectValue
 } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
-import { AppWindow, BookCopy, Github, User, Users } from 'lucide-react'
+import { AppWindow, BookCopy, Github, User, Users as UsersIcon } from 'lucide-react'
+import UsersComponent from './Users'
 import paths from '@/constants/paths'
+import All from './All'
+import Posts from './Posts'
+import { useQueryClient } from '@tanstack/react-query'
+import { AppContext } from '@/contexts/app.context'
+import Groups from './Groups'
 
 type Type = 'posts' | 'users' | 'groups' | 'all'
-type PostsFilter = 'newest' | 'liked' | 'disliked' | 'commented' | null
-type UsersFilter = 'rank' | 'posts' | null
-type GroupsFilter = 'newest' | 'members' | 'posts' | null
+type PostsFilter = 'newest' | 'liked' | 'disliked' | 'all'
+type UsersFilter = 'rank' | 'all'
+type GroupsFilter = 'newest' | 'all'
 
 export default function SearchSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   const { t } = useTranslation()
   const { q, type, filter } = useQueryParams()
-  const [input, setInput] = useState<string>(q)
+  const [input, setInput] = useState<string>(q ?? '')
+  const [searchFilter, setSearchFilter] = useState<PostsFilter | UsersFilter | GroupsFilter | null>(
+    filter as PostsFilter
+  )
   const navigate = useNavigate()
   const [activeItem, setActiveItem] = useState<Type>((type as Type) || 'all')
   const { setOpen } = useSidebar()
+  const queryClient = useQueryClient()
+  const { email } = useContext(AppContext)
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -54,17 +65,27 @@ export default function SearchSidebar({ ...props }: ComponentProps<typeof Sideba
     if (!input) {
       navigate(`${paths.search}?type=${activeItem}`)
     } else {
-      navigate(`${paths.search}?q=${input}${type ? `&type=${type}` : ''}`)
+      navigate(`${paths.search}?q=${input}${activeItem ? `&type=${activeItem}` : ''}`)
     }
+    setSearchFilter('all')
   }, [activeItem])
 
-  const handleFilterChange = (value: PostsFilter | GroupsFilter | UsersFilter) => {
+  useEffect(() => {
     if (!input) {
-      navigate(`${paths.search}?type=${activeItem}${value ? `&filter=${value}` : ''}`)
+      navigate(`${paths.search}?type=${activeItem}${searchFilter ? `&filter=${searchFilter}` : ''}`)
     } else {
-      navigate(`${paths.search}?q=${input}&type=${activeItem}${value ? `&filter=${value}` : ''}`)
+      navigate(`${paths.search}?q=${input}&type=${activeItem}${searchFilter ? `&filter=${searchFilter}` : ''}`)
     }
-  }
+  }, [searchFilter])
+
+  useEffect(() => {
+    queryClient.invalidateQueries({
+      queryKey: ['searchPosts']
+    })
+    queryClient.invalidateQueries({
+      queryKey: ['searchUsers']
+    })
+  }, [q, type, filter])
 
   return (
     <>
@@ -154,7 +175,7 @@ export default function SearchSidebar({ ...props }: ComponentProps<typeof Sideba
                     isActive={activeItem === 'groups'}
                     className='px-2.5 md:px-2'
                   >
-                    <Users />
+                    <UsersIcon />
                     <span>{t('search.groups')}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -164,7 +185,7 @@ export default function SearchSidebar({ ...props }: ComponentProps<typeof Sideba
         </SidebarContent>
       </Sidebar>
       <SidebarInset>
-        <header className='sticky top-20 flex shrink-0 justify-between items-center gap-2 border-b p-4 bg-white dark:bg-dark-primary'>
+        <header className='sticky top-20 z-50 flex shrink-0 justify-between items-center gap-2 border-b p-4 bg-white dark:bg-dark-primary'>
           <div className='flex w-full shrink-0 items-center gap-2'>
             <SidebarTrigger className='-ml-1' />
             <Separator orientation='vertical' className='-ml-1 h-4' />
@@ -197,44 +218,43 @@ export default function SearchSidebar({ ...props }: ComponentProps<typeof Sideba
               </div>
             </form>
             {activeItem === 'posts' ? (
-              <Select onValueChange={(value) => handleFilterChange(value as PostsFilter)}>
+              <Select value={searchFilter as string} onValueChange={(value) => setSearchFilter(value as PostsFilter)}>
                 <SelectTrigger className='w-fit'>
                   <SelectValue placeholder={t('search.filterPlaceholder')} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
                     <SelectLabel>{t('search.filterPosts')}</SelectLabel>
+                    <SelectItem value='all'>{t('search.noFilter')}</SelectItem>
                     <SelectItem value='newest'>{t('search.newest')}</SelectItem>
                     <SelectItem value='liked'>{t('search.mostLiked')}</SelectItem>
                     <SelectItem value='disliked'>{t('search.mostDisliked')}</SelectItem>
-                    <SelectItem value='commented'>{t('search.mostCommented')}</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
             ) : activeItem === 'users' ? (
-              <Select onValueChange={(value) => handleFilterChange(value as UsersFilter)}>
+              <Select value={searchFilter as string} onValueChange={(value) => setSearchFilter(value as UsersFilter)}>
                 <SelectTrigger className='w-fit'>
                   <SelectValue placeholder={t('search.filterPlaceholder')} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
                     <SelectLabel>{t('search.filterUsers')}</SelectLabel>
-                    <SelectItem value='posts'>{t('search.mostPosts')}</SelectItem>
+                    <SelectItem value='all'>{t('search.noFilter')}</SelectItem>
                     <SelectItem value='rank'>{t('search.highestRank')}</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
             ) : activeItem === 'groups' ? (
-              <Select onValueChange={(value) => handleFilterChange(value as GroupsFilter)}>
+              <Select value={searchFilter as string} onValueChange={(value) => setSearchFilter(value as GroupsFilter)}>
                 <SelectTrigger className='w-fit'>
                   <SelectValue placeholder={t('search.filterPlaceholder')} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
                     <SelectLabel>{t('search.filterPosts')}</SelectLabel>
+                    <SelectItem value='all'>{t('search.noFilter')}</SelectItem>
                     <SelectItem value='newest'>{t('search.newest')}</SelectItem>
-                    <SelectItem value='members'>{t('search.mostMembers')}</SelectItem>
-                    <SelectItem value='posts'>{t('search.mostPosts')}</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -243,13 +263,13 @@ export default function SearchSidebar({ ...props }: ComponentProps<typeof Sideba
         </header>
         <div className='p-4'>
           {activeItem === 'posts' ? (
-            <div>posts</div>
+            <Posts q={q} type={activeItem} filter={searchFilter as string} />
           ) : activeItem === 'users' ? (
-            <div>users</div>
+            <UsersComponent q={q} type={activeItem} filter={searchFilter as string} email={email} />
           ) : activeItem === 'groups' ? (
-            <div>Groups</div>
+            <Groups q={q} type={activeItem} filter={searchFilter as string} email={email} />
           ) : (
-            <div>all</div>
+            <All q={q} type={activeItem} filter={searchFilter as string} />
           )}
         </div>
       </SidebarInset>

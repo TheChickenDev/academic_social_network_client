@@ -215,7 +215,7 @@ export function GroupDetailsSidebar({ ...props }: ComponentProps<typeof Sidebar>
                     {groupDetails.isPrivate ? t('group.requestToJoin') : t('group.join')}
                   </Button>
                 ) : (
-                  <Button onClick={handleLeaveGroup}>{t('action.leave')}</Button>
+                  groupDetails.ownerEmail !== email && <Button onClick={handleLeaveGroup}>{t('action.leave')}</Button>
                 )
               ) : activeItem === 'Posts' && groupDetails?.canPost ? (
                 <Button onClick={() => navigate(`${paths.postEditor}?groupId=${id}`)}>
