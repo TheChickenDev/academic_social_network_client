@@ -46,7 +46,7 @@ export default function Message() {
       />
 
       {/* Right Side */}
-      {selectedConversation?._id ? (
+      {selectedConversation ? (
         <Chatblock
           selectedConversation={selectedConversation}
           setSelectedConversation={setSelectedConversation}

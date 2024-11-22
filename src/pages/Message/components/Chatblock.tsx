@@ -63,6 +63,7 @@ export default function Chatblock({
             temp[key] = [msg]
           }
         })
+        console.log(temp)
         return { ...temp }
       })
       setHasMore(data.length > 0)
