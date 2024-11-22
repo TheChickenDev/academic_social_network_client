@@ -1,17 +1,21 @@
 import { introductionImg } from '@/assets/images'
 import { Button } from '@/components/ui/button'
+import paths from '@/constants/paths'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 export default function Introduction() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   return (
     <div className='relative'>
       <div className='absolute top-20 left-5 font-bold text-transparent bg-clip-text bg-gradient-to-r from-black dark:text-white to-gray-400'>
         <p className='text-3xl'>{t('introduction.text1')}</p>
         <p className='mt-2 text-2xl'>{t('introduction.text2')}</p>
         <p className='mt-2 text-md'>{t('introduction.text3')}</p>
-        <Button className='mt-4'>{t('introduction.joinUs')}</Button>
+        <Button onClick={() => navigate(paths.login)} className='mt-4'>
+          {t('introduction.joinUs')}
+        </Button>
       </div>
       <div className='rounded-md overflow-hidden border'>
         <img className='block w-full h-full' src={introductionImg} alt='Introduction' />

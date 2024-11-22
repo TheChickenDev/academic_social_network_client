@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
 import { ActionInfo, CommentProps, PostProps } from '@/types/post.type'
 import { MinimalTiptapEditor } from '../MinimalTiptapEditor'
-import { convertISODateToLocaleString } from '@/utils/utils'
+import { convertISODateToLocaleString, encodeEmailToId } from '@/utils/utils'
 import { Link, useNavigate } from 'react-router-dom'
 import { useCallback, useContext, useState } from 'react'
 import { AppContext } from '@/contexts/app.context'
@@ -359,7 +359,9 @@ export default function Post({
             <AvatarFallback />
           </Avatar>
           <div>
-            <p className='font-semibold'>{postDetails.ownerName ? postDetails.ownerName : postDetails.ownerEmail}</p>
+            <Link to={paths.profile.replace(':id', encodeEmailToId(postDetails.ownerEmail))} className='font-semibold'>
+              {postDetails.ownerName ? postDetails.ownerName : postDetails.ownerEmail}
+            </Link>
             <p className='text-xs text-gray-500'>
               {t('post.createdAt') + ` ${convertISODateToLocaleString(postDetails.createdAt)}`}
             </p>

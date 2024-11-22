@@ -110,39 +110,60 @@ export default function Groups({ q, type, filter, email }: SearchQueryParams) {
 
   return (
     <div className='flex flex-col space-y-4'>
-      {data?.pages?.map((page) =>
-        page?.map((group: GroupProps) => (
-          <Fragment>
-            <Fragment key={group._id}>
-              <div className='flex gap-4 my-2'>
-                <Avatar className='w-12 h-12 rounded-lg'>
-                  <AvatarImage src={group?.avatarImg} />
-                  <AvatarFallback isGroupAvatar={true} />
-                </Avatar>
-                <div className='w-full'>
-                  <Link to={paths.groupDetails.replace(':id', group._id ?? '')} className='font-semibold'>
-                    {group?.name}
-                  </Link>
-                  <p className='text-sm text-gray-500'>
-                    {t(group?.isPrivate ? t('group.privateGroup') : t('group.publicGroup'))}
-                  </p>
-                  {group.canJoin ? (
-                    <Button
-                      onClick={() => handleJoinGroup(group._id ?? '', group.isPrivate)}
-                      className='mt-2 float-right'
-                    >
-                      {t('group.join')}
-                    </Button>
-                  ) : (
-                    <p className='text-sm text-gray-500'>{t('search.haveJoinedGroup')}</p>
-                  )}
+      {data?.pages?.[0] && data?.pages?.[0].length > 0 ? (
+        data?.pages?.map((page) =>
+          page?.map((group: GroupProps) => (
+            <Fragment>
+              <Fragment key={group._id}>
+                <div className='flex gap-4 my-2'>
+                  <Avatar className='w-12 h-12 rounded-lg'>
+                    <AvatarImage src={group?.avatarImg} />
+                    <AvatarFallback isGroupAvatar={true} />
+                  </Avatar>
+                  <div className='w-full'>
+                    <Link to={paths.groupDetails.replace(':id', group._id ?? '')} className='font-semibold'>
+                      {group?.name}
+                    </Link>
+                    <p className='text-sm text-gray-500'>
+                      {t(group?.isPrivate ? t('group.privateGroup') : t('group.publicGroup'))}
+                    </p>
+                    {group.canJoin ? (
+                      <Button
+                        onClick={() => handleJoinGroup(group._id ?? '', group.isPrivate)}
+                        className='mt-2 float-right'
+                      >
+                        {t('group.join')}
+                      </Button>
+                    ) : (
+                      <p className='text-sm text-gray-500'>{t('search.haveJoinedGroup')}</p>
+                    )}
+                  </div>
                 </div>
-              </div>
+                <hr />
+              </Fragment>
               <hr />
             </Fragment>
-            <hr />
-          </Fragment>
-        ))
+          ))
+        )
+      ) : (
+        <div className='flex flex-col items-center justify-center h-full py-10 flex-1'>
+          <svg
+            className='w-16 h-16 text-gray-400'
+            fill='none'
+            stroke='currentColor'
+            viewBox='0 0 24 24'
+            xmlns='http://www.w3.org/2000/svg'
+          >
+            <path
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              strokeWidth='2'
+              d='M3 15a4 4 0 004 4h10a4 4 0 004-4M3 15a4 4 0 014-4h10a4 4 0 014 4M3 15V9a4 4 0 014-4h10a4 4 0 014 4v6M3 9a4 4 0 014-4h10a4 4 0 014 4v6'
+            />
+          </svg>
+          <h2 className='mt-4 text-xl font-semibold text-gray-700'>{t('noData')}</h2>
+          <p className='mt-2 text-gray-500'>{t('noDataDescription')}</p>
+        </div>
       )}
       <div ref={loadMoreRef} />
       {isFetchingNextPage && (
