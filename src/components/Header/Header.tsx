@@ -25,6 +25,7 @@ import { useTheme } from '@/hooks/useTheme'
 import { useLanguage } from '@/hooks/useLanguage'
 import useWindowDimensions from '@/hooks/useWindowDimensions'
 import { encodeEmailToId } from '@/utils/utils'
+import { toast } from 'sonner'
 
 export default function Header() {
   const navigate = useNavigate()
@@ -45,6 +46,7 @@ export default function Header() {
   const handleSignOutClick = () => {
     removeDataFromLocalStorage()
     setIsAuthenticated(false)
+    toast.success(t('action.signOutSuccessful'))
   }
 
   const handleMobileMenuLinkClick = (path: string) => {
@@ -152,7 +154,10 @@ export default function Header() {
                   {t('pages.profile')}
                 </DropdownMenuItem>
                 <DropdownMenuItem>{t('pages.contributeIdeas')}</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleSignOutClick()}>{t('action.signOut')}</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className='text-red-500' onClick={() => handleSignOutClick()}>
+                  {t('action.signOut')}
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (

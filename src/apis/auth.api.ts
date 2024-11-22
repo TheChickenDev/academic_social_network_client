@@ -2,7 +2,7 @@ import { User } from '@/types/user.type'
 import { SuccessResponse } from '@/types/utils.type'
 import http from '@/utils/http'
 import axios from 'axios'
-import { ForgotPasswordFormData, GoogleLoginFormData, LoginFormData, ResetPasswordFormData } from '@/types/rule.type'
+import { GoogleLoginFormData, LoginFormData, RegisterFormData, ResetPasswordFormData } from '@/types/rule.type'
 
 type AuthResponse = {
   access_token: string
@@ -10,8 +10,8 @@ type AuthResponse = {
   user: User
 }
 
-export const registerAccount = (body: FormData) => {
-  return http.post<SuccessResponse<AuthResponse>>('users/register', body)
+export const registerAccount = (body: RegisterFormData) => {
+  return http.post<SuccessResponse<AuthResponse>>('users/', body)
 }
 
 export const login = (body: LoginFormData) => {
@@ -39,10 +39,10 @@ export const refreshAccessToken = () => {
   return http.post<SuccessResponse<string>>('users/refresh-token')
 }
 
-export const forgotPassword = (body: ForgotPasswordFormData) => {
-  return http.post<SuccessResponse<string>>('users/forgot-password', body)
+export const forgotPassword = (body: ResetPasswordFormData) => {
+  return http.post<SuccessResponse<null>>('users/forgot-password', body)
 }
 
 export const resetPassword = (body: ResetPasswordFormData) => {
-  return http.patch<SuccessResponse<null>>('users/reset-password', body)
+  return http.post<SuccessResponse<AuthResponse>>('users/reset-password', body)
 }

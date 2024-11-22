@@ -35,3 +35,8 @@ export const getValidYearForAgePicker = () => {
   const eighteenYearsAgo = new Date()
   return new Date(eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18))
 }
+
+export const isValidEmail = (email: string) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return emailRegex.test(email)
+}

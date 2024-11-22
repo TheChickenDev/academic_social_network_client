@@ -77,7 +77,11 @@
     "passwordNotMatch": "Confirm password does not match",
     "text1": "Connecting with friends and others has never been easier. Eureka brings people closer together.",
     "text2": "HCMUTE - FIT - K21",
-    "acceptTerms": "By clicking Continue, you agree to our Terms of Service and Privacy Policy."
+    "acceptTerms": "By clicking Continue, you agree to our Terms of Service and Privacy Policy.",
+    "invalidCredentials": "Invalid email or password. Please try again.",
+    "forgotPasswordSuccessful": "Password reset email has been sent successfully! Please check your email.",
+    "forgotPasswordFailed": "An error occurred while sending password reset email. Please try again later.",
+    "forgotPasswordDescription": "Enter your email address and we'll send you a link to reset your password."
   },
   "register": {
     "title": "Sign up",
@@ -214,7 +218,8 @@
     "message": "Message",
     "approve": "Approve",
     "leave": "Leave",
-    "send": "Send"
+    "send": "Send",
+    "signOutSuccessful": "You have been signed out successfully!"
   },
   "myAccount": {
     "createAPost": "Create a post",
@@ -397,5 +402,13 @@
     "mostMembers": "Most members",
     "highestRank": "Highest rank",
     "haveJoinedGroup": "You have joined this group!"
+  },
+  "resetPassword": {
+    "title": "Reset Password",
+    "subtitle": "Enter your new password to reset.",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Confirm New Password",
+    "success": "Password reset successfully!",
+    "error": "Failed to reset password!"
   }
 }

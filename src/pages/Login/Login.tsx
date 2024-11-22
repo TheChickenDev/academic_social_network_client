@@ -4,22 +4,33 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
+import { Label } from '@/components/ui/label'
 import { Link, useNavigate } from 'react-router-dom'
 import paths from '@/constants/paths'
 import { useMutation } from '@tanstack/react-query'
 import { GoogleLoginFormData, LoginFormData } from '@/types/rule.type'
-import { getGoogleInfo, login, loginGoogle } from '@/apis/auth.api'
+import { forgotPassword, getGoogleInfo, login, loginGoogle } from '@/apis/auth.api'
 import { useContext, useEffect, useState } from 'react'
 import { AppContext } from '@/contexts/app.context'
 import { saveAccessTokenToLocalStorage, saveRefreshTokenToLocalStorage } from '@/utils/auth'
 import { toast } from 'sonner'
 import { useGoogleLogin } from '@react-oauth/google'
-import { decodeJWT } from '@/utils/utils'
+import { decodeJWT, isValidEmail } from '@/utils/utils'
 import { useTranslation } from 'react-i18next'
 import Spinner from '@/components/Spinner'
 import Logo from '@/components/Logo'
 import { Eye, EyeOff } from 'lucide-react'
 import { Helmet } from 'react-helmet-async'
+import Loading from '@/components/Loading'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -73,7 +84,7 @@ export default function Login() {
       onSuccess: (response) => {
         const status = response.status
         if (status === 200) {
-          const user = decodeJWT(response.data.data?.access_token)
+          const user = decodeJWT(response.data.data?.access_token ?? '')
           setIsAuthenticated(true)
           setEmail?.(user?.email ?? '')
           setFullName?.(user?.fullName ?? '')
@@ -82,10 +93,12 @@ export default function Login() {
           saveRefreshTokenToLocalStorage(response.data.data?.refresh_token)
           navigate(paths.home)
           toast.success(response.data.message)
-        } else toast.error(response.data.message)
+        } else {
+          toast.error(t('login.invalidCredentials'))
+        }
       },
-      onError: (error) => {
-        toast.error(error.message)
+      onError: () => {
+        toast.error(t('login.invalidCredentials'))
       }
     })
   }
@@ -239,17 +252,83 @@ export default function Login() {
               </Link>
               .
             </p>
-            <p className='text-grey-dark text-sm'>
-              {t('login.forgotPassword')}&nbsp;
-              <Link to={paths.register} className='no-underline text-blue font-bold'>
-                {t('login.resetPassword')}
-              </Link>
-              .
+            <p className='flex justify-center text-grey-dark text-sm'>
+              {t('login.forgotPassword')}&nbsp; <ResetPasswordDialog />
             </p>
             <p className='text-xs text-gray-500 mt-1'>{t('login.acceptTerms')}</p>
           </div>
         </Form>
       </div>
+    </div>
+  )
+}
+
+function ResetPasswordDialog() {
+  const [resetPasswordEmail, setResetPasswordEmail] = useState('')
+  const { t } = useTranslation()
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [open, setOpen] = useState<boolean>(false)
+
+  const handleSubmit = () => {
+    if (!resetPasswordEmail) {
+      toast.error(t('login.emailRequired'))
+      return
+    }
+    if (!isValidEmail(resetPasswordEmail)) {
+      toast.error(t('login.emailInvalid'))
+      return
+    }
+    setIsLoading(true)
+    forgotPassword({ email: resetPasswordEmail })
+      .then((response) => {
+        const status = response.status
+        if (status == 200) {
+          toast.success(t('login.forgotPasswordSuccessful'))
+        } else {
+          toast.error(t('login.forgotPasswordFailed'))
+        }
+        setIsLoading(false)
+        setOpen(false)
+      })
+      .catch(() => {
+        toast.error(t('login.forgotPasswordFailed'))
+        setIsLoading(false)
+      })
+  }
+
+  return (
+    <div>
+      {isLoading && <Loading />}
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <p className='cursor-pointer no-underline text-blue font-bold'>{t('login.resetPassword')}</p>
+        </DialogTrigger>
+        <DialogContent className='sm:max-w-[425px]'>
+          <DialogHeader>
+            <DialogTitle>{t('login.resetPassword')}</DialogTitle>
+            <DialogDescription>{t('login.forgotPasswordDescription')}</DialogDescription>
+          </DialogHeader>
+          <div className='grid gap-4 py-4'>
+            <div className='grid grid-cols-4 items-center gap-4'>
+              <Label htmlFor='resetPasswordEmail' className='text-right'>
+                Email
+              </Label>
+              <Input
+                id='resetPasswordEmail'
+                placeholder={t('login.enterEmail')}
+                value={resetPasswordEmail}
+                onChange={(e) => setResetPasswordEmail(e.target.value)}
+                className='col-span-3'
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button type='button' onClick={handleSubmit}>
+              {t('action.confirm')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

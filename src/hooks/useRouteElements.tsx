@@ -17,6 +17,7 @@ import PostEditor from '@/pages/PostEditor'
 import PostDetails from '@/pages/PostDetails/PostDetails'
 import GroupDetails from '@/pages/GroupDetails'
 import Search from '@/pages/Search'
+import NotFoundError from '@/pages/Errors/NotFound'
 
 const ProtectedRoute = () => {
   const { isAuthenticated } = useContext(AppContext)
@@ -121,6 +122,10 @@ const routes: RouteObject[] = [
         )
       }
     ]
+  },
+  {
+    path: '*',
+    element: <NotFoundError />
   }
 ]
 

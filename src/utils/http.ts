@@ -21,8 +21,8 @@ class HTTP {
   private refresh_token: string | null
 
   constructor() {
-    this.access_token = getAccessTokenFromLocalStorage()
-    this.refresh_token = getRefreshTokenFromLocalStorage()
+    this.access_token = null
+    this.refresh_token = null
     this.instance = axios.create({
       baseURL: import.meta.env.VITE_API_URL,
       timeout: 180000,
@@ -32,8 +32,8 @@ class HTTP {
     })
     this.instance.interceptors.request.use(
       async (config) => {
-        // this.access_token = getAccessTokenFromLocalStorage()
-        // this.refresh_token = getRefreshTokenFromLocalStorage()
+        this.access_token = getAccessTokenFromLocalStorage()
+        this.refresh_token = getRefreshTokenFromLocalStorage()
         // const contentType = formDataUrl.some((item) => config.url?.includes(item)) ? 'multipart/form-data' : ''
         // if (contentType) config.headers['Content-Type'] = contentType
         if (config.data instanceof FormData) {
