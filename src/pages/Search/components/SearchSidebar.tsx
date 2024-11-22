@@ -79,11 +79,15 @@ export default function SearchSidebar({ ...props }: ComponentProps<typeof Sideba
   }, [searchFilter])
 
   useEffect(() => {
+    setInput(q || '')
     queryClient.invalidateQueries({
       queryKey: ['searchPosts']
     })
     queryClient.invalidateQueries({
       queryKey: ['searchUsers']
+    })
+    queryClient.invalidateQueries({
+      queryKey: ['searchGroups']
     })
   }, [q, type, filter])
 

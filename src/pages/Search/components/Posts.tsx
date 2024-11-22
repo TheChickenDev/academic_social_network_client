@@ -6,9 +6,11 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { postDefaultQuery } from '@/constants/post'
 import { SearchQueryParams } from '@/types/utils.type'
 import { search } from '@/apis/search.api'
+import { useTranslation } from 'react-i18next'
 
 export default function Posts({ q, type, filter }: SearchQueryParams) {
   const loadMoreRef = useRef<HTMLDivElement | null>(null)
+  const { t } = useTranslation()
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError } = useInfiniteQuery<PostProps[]>({
     queryKey: ['searchPosts'],
@@ -65,7 +67,28 @@ export default function Posts({ q, type, filter }: SearchQueryParams) {
 
   return (
     <div className='flex flex-col space-y-4'>
-      {data?.pages?.map((page) => page?.map((item: PostProps) => <Post key={item._id} post={item} details={false} />))}
+      {data?.pages?.[0] && data?.pages?.[0].length > 0 ? (
+        data?.pages?.map((page) => page?.map((item: PostProps) => <Post key={item._id} post={item} details={false} />))
+      ) : (
+        <div className='flex flex-col items-center justify-center h-full py-10 flex-1'>
+          <svg
+            className='w-16 h-16 text-gray-400'
+            fill='none'
+            stroke='currentColor'
+            viewBox='0 0 24 24'
+            xmlns='http://www.w3.org/2000/svg'
+          >
+            <path
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              strokeWidth='2'
+              d='M3 15a4 4 0 004 4h10a4 4 0 004-4M3 15a4 4 0 014-4h10a4 4 0 014 4M3 15V9a4 4 0 014-4h10a4 4 0 014 4v6M3 9a4 4 0 014-4h10a4 4 0 014 4v6'
+            />
+          </svg>
+          <h2 className='mt-4 text-xl font-semibold text-gray-700'>{t('noData')}</h2>
+          <p className='mt-2 text-gray-500'>{t('noDataDescription')}</p>
+        </div>
+      )}
       <div ref={loadMoreRef} />
       {isFetchingNextPage && (
         <div className='flex flex-col space-y-3'>
