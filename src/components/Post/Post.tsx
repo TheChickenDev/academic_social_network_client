@@ -297,10 +297,12 @@ export default function Post({
     <div className='relative rounded-md border p-4 text-black dark:text-white bg-white dark:bg-dark-primary'>
       {isAuthenticated && (
         <div className='absolute top-2 right-2 p-2'>
-          {ownerMode ? (
+          {postDetails?.ownerEmail === email && ownerMode ? (
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button variant='destructive'>{t(actionTitle)}</Button>
+                <Button size='sm' variant='destructive'>
+                  {t(actionTitle)}
+                </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
@@ -316,20 +318,22 @@ export default function Post({
               </AlertDialogContent>
             </AlertDialog>
           ) : (
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <Ellipsis />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className='w-fit min-w-32'>
-                {postDetails?.isSaved ? (
-                  <DropdownMenuItem onClick={handleUnsavePost}>{t('post.unsavePost')}</DropdownMenuItem>
-                ) : (
-                  <DropdownMenuItem onClick={handleSavePost}>{t('post.savePost')}</DropdownMenuItem>
-                )}
+            postDetails?.ownerEmail !== email && (
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <Ellipsis />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className='w-fit min-w-32'>
+                  {postDetails?.isSaved ? (
+                    <DropdownMenuItem onClick={handleUnsavePost}>{t('post.unsavePost')}</DropdownMenuItem>
+                  ) : (
+                    <DropdownMenuItem onClick={handleSavePost}>{t('post.savePost')}</DropdownMenuItem>
+                  )}
 
-                <DropdownMenuItem onClick={() => console.log('report')}>{t('post.reportPost')}</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                  <DropdownMenuItem onClick={() => console.log('report')}>{t('post.reportPost')}</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )
           )}
         </div>
       )}
@@ -355,7 +359,7 @@ export default function Post({
             <AvatarFallback />
           </Avatar>
           <div>
-            <p className='font-semibold'>{postDetails.ownerName}</p>
+            <p className='font-semibold'>{postDetails.ownerName ? postDetails.ownerName : postDetails.ownerEmail}</p>
             <p className='text-xs text-gray-500'>
               {t('post.createdAt') + ` ${convertISODateToLocaleString(postDetails.createdAt)}`}
             </p>

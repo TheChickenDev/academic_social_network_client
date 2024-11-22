@@ -1,7 +1,7 @@
 import { getUser } from '@/apis/user.api'
 import { AppContext } from '@/contexts/app.context'
 import { Friend } from '@/types/user.type'
-import { useContext, useEffect, useState } from 'react'
+import { Fragment, useContext, useEffect, useState } from 'react'
 import Item from './components/Item'
 import { Skeleton } from '../ui/skeleton'
 import { useTranslation } from 'react-i18next'
@@ -37,7 +37,12 @@ export default function FriendsSuggestion() {
           </div>
         </div>
       ) : friends.length > 0 ? (
-        friends.map((friend) => <Item key={friend.email} friend={friend} setFriends={setFriends} />)
+        friends.map((friend) => (
+          <Fragment key={friend.email}>
+            <Item friend={friend} setFriends={setFriends} />
+            <hr />
+          </Fragment>
+        ))
       ) : (
         <p>{t('friend.noUserFound')}</p>
       )}

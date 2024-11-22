@@ -16,6 +16,7 @@ import Community from '@/pages/Community'
 import PostEditor from '@/pages/PostEditor'
 import PostDetails from '@/pages/PostDetails/PostDetails'
 import GroupDetails from '@/pages/GroupDetails'
+import Search from '@/pages/Search'
 
 const ProtectedRoute = () => {
   const { isAuthenticated } = useContext(AppContext)
@@ -108,6 +109,14 @@ const routes: RouteObject[] = [
         element: (
           <DefaultLayout>
             <PostEditor />
+          </DefaultLayout>
+        )
+      },
+      {
+        path: paths.search,
+        element: (
+          <DefaultLayout>
+            <Search />
           </DefaultLayout>
         )
       }

@@ -41,7 +41,7 @@ export default function Item({ friend, setFriends }: ItemProps) {
       </Avatar>
       <div className='w-full'>
         <p className='font-semibold'>{friend?.fullName ?? t('friend.friendVirtualName')}</p>
-        <p className='text-sm text-gray-500'>{friend?.rank}</p>
+        <p className='text-sm text-gray-500'>{friend?.rank ? friend.rank : t('myAccount.noRank')}</p>
         {friend?.canAddFriend ? (
           <Button onClick={handleAddFriendClick} className='mt-2 float-right'>
             {t('action.addFriend')}

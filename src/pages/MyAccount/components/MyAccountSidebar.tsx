@@ -276,7 +276,7 @@ export function MyAccountSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
           ) : activeItem === 'Saved' ? (
             <Saved />
           ) : activeItem === 'Friends' ? (
-            <Friends />
+            <Friends userDetails={userDetails} />
           ) : null}
         </div>
       </SidebarInset>

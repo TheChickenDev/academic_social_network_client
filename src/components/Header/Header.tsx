@@ -174,7 +174,10 @@ export default function Header() {
               <SheetTitle className='hidden'>Menu</SheetTitle>
               <SheetHeader className='text-left mb-4'>
                 {isAuthenticated ? (
-                  <Link to={`${paths.profile}/${email}`} className='flex justify-left items-center gap-4'>
+                  <Link
+                    to={`${paths.profile.replace(':id', encodeEmailToId(email ?? ''))}`}
+                    className='flex justify-left items-center gap-4'
+                  >
                     <Avatar>
                       <AvatarImage src={avatar} />
                       <AvatarFallback />

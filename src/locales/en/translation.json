@@ -36,7 +36,8 @@
     "contributeIdeas": "Contribute ideas",
     "post": "Post",
     "group": "Group",
-    "profile": "Profile"
+    "profile": "Profile",
+    "search": "Search"
   },
   "components": {
     "popularTags": "Popular tags",
@@ -371,5 +372,27 @@
     "searchNoResult": "No conversation found",
     "messagePlaceholder": "Type a message...",
     "selectAConversation": "Select a conversation to start chatting!"
+  },
+  "search": {
+    "search": "Search",
+    "searchPlaceholder": "Search for posts, tags, users...",
+    "searchNoResult": "No result found",
+    "filter": "Filter",
+    "filterPlaceholder": "Select a filter",
+    "all": "All",
+    "posts": "Posts",
+    "tags": "Tags",
+    "users": "Users",
+    "groups": "Groups",
+    "filterPosts": "Filter posts",
+    "filterUsers": "Filter users",
+    "filterGroups": "Filter groups",
+    "newest": "Newest",
+    "mostLiked": "Most liked",
+    "mostDisliked": "Most disliked",
+    "mostCommented": "Most commented",
+    "mostPosts": "Most posts",
+    "mostMembers": "Most members",
+    "highestRank": "Highest rank"
   }
 }
