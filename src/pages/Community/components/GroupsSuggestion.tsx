@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import paths from '@/constants/paths'
 import { AppContext } from '@/contexts/app.context'
 import { GroupProps } from '@/types/group.type'
-import { useContext, useEffect, useState } from 'react'
+import { Fragment, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
@@ -44,23 +44,26 @@ export default function GroupsSuggestion() {
         <p>{t('community.noGroupSuggested')}</p>
       ) : (
         suggestions.map((group) => (
-          <div key={group._id} className='flex gap-4 mt-2'>
-            <Avatar className='w-12 h-12 rounded-lg'>
-              <AvatarImage src={group?.avatarImg} />
-              <AvatarFallback isGroupAvatar={true} />
-            </Avatar>
-            <div className='w-full'>
-              <Link to={paths.groupDetails.replace(':id', group._id ?? '')} className='font-semibold'>
-                {group?.name}
-              </Link>
-              <p className='text-sm text-gray-500'>
-                {t(group?.isPrivate ? t('group.privateGroup') : t('group.publicGroup'))}
-              </p>
-              <Button onClick={() => handleJoinGroup(group._id ?? '', group.isPrivate)} className='mt-2 float-right'>
-                {t('group.join')}
-              </Button>
+          <Fragment key={group._id}>
+            <div className='flex gap-4 my-2'>
+              <Avatar className='w-12 h-12 rounded-lg'>
+                <AvatarImage src={group?.avatarImg} />
+                <AvatarFallback isGroupAvatar={true} />
+              </Avatar>
+              <div className='w-full'>
+                <Link to={paths.groupDetails.replace(':id', group._id ?? '')} className='font-semibold'>
+                  {group?.name}
+                </Link>
+                <p className='text-sm text-gray-500'>
+                  {t(group?.isPrivate ? t('group.privateGroup') : t('group.publicGroup'))}
+                </p>
+                <Button onClick={() => handleJoinGroup(group._id ?? '', group.isPrivate)} className='mt-2 float-right'>
+                  {t('group.join')}
+                </Button>
+              </div>
             </div>
-          </div>
+            <hr />
+          </Fragment>
         ))
       )}
     </div>

@@ -36,7 +36,8 @@
     "contributeIdeas": "Contribute ideas",
     "post": "Post",
     "group": "Group",
-    "profile": "Profile"
+    "profile": "Profile",
+    "search": "Search"
   },
   "components": {
     "popularTags": "Popular tags",
@@ -296,6 +297,7 @@
     "noRank": "No rank",
     "noUserFound": "No user found",
     "haveSendFriendRequest": "You have sent friend request!",
+    "youAreFriends": "You are friends!",
     "haveActedFriendRequest": "You have just acted on this request!",
     "haveAcceptedFriendRequest": "You have accepted friend request!",
     "haveRejectedFriendRequest": "You have rejected friend request!",
@@ -371,5 +373,29 @@
     "searchNoResult": "No conversation found",
     "messagePlaceholder": "Type a message...",
     "selectAConversation": "Select a conversation to start chatting!"
+  },
+  "search": {
+    "search": "Search",
+    "searchPlaceholder": "Search for posts, tags, users...",
+    "searchNoResult": "No result found",
+    "filter": "Filter",
+    "filterPlaceholder": "Sort by",
+    "noFilter": "No sort",
+    "all": "All",
+    "posts": "Posts",
+    "tags": "Tags",
+    "users": "Users",
+    "groups": "Groups",
+    "filterPosts": "Sort posts by",
+    "filterUsers": "Sort users by",
+    "filterGroups": "Sort groups by",
+    "newest": "Newest",
+    "mostLiked": "Most liked",
+    "mostDisliked": "Most disliked",
+    "mostCommented": "Most commented",
+    "mostPosts": "Most posts",
+    "mostMembers": "Most members",
+    "highestRank": "Highest rank",
+    "haveJoinedGroup": "You have joined this group!"
   }
 }

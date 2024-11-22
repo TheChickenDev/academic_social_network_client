@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { AppContext } from '@/contexts/app.context'
-import { Friend } from '@/types/user.type'
+import { Friend, User } from '@/types/user.type'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
@@ -19,16 +19,17 @@ import {
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
 
-export default function Friends() {
+export default function Friends({ userDetails }: { userDetails: User | null }) {
+  const { email } = useContext(AppContext)
   return (
     <div className='flex justify-between gap-2'>
-      <AcceptedFriends />
-      <FriendsRequests />
+      <AcceptedFriends userDetails={userDetails} />
+      {userDetails?.email === email && <FriendsRequests />}
     </div>
   )
 }
 
-function AcceptedFriends() {
+function AcceptedFriends({ userDetails }: { userDetails: User | null }) {
   const { t } = useTranslation()
   const { email } = useContext(AppContext)
   const [friends, setFriends] = useState<Friend[]>([])
@@ -55,7 +56,7 @@ function AcceptedFriends() {
   }, [])
 
   return (
-    <div className='lg:w-2/3 w-full border rounded-md p-2'>
+    <div className='flex-1 lg:w-2/3 w-full border rounded-md p-2'>
       <p className='font-bold text-lg'>{t('friend.friends')}</p>
       {friendsLoading ? (
         <div className='flex flex-col space-y-3'>
@@ -79,26 +80,28 @@ function AcceptedFriends() {
               <span className='text-sm text-gray-500 dark:text-gray-400'>
                 {friend.rank ? friend.rank : t('friend.noRank')}
               </span>
-              <div className='flex mt-4 md:mt-6 gap-2'>
-                <Button variant='outline'>{t('action.message')}</Button>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant='destructive'>{t('action.unfriend')}</Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>{t('alertDialog.message')}</AlertDialogTitle>
-                      <AlertDialogDescription>{t('alertDialog.description')}</AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>{t('action.cancel')}</AlertDialogCancel>
-                      <AlertDialogAction onClick={() => handleUnfriendClick(friend.email)}>
-                        {t('action.confirm')}
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </div>
+              {userDetails?.email === email && (
+                <div className='flex mt-4 md:mt-6 gap-2'>
+                  <Button variant='outline'>{t('action.message')}</Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant='destructive'>{t('action.unfriend')}</Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>{t('alertDialog.message')}</AlertDialogTitle>
+                        <AlertDialogDescription>{t('alertDialog.description')}</AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>{t('action.cancel')}</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => handleUnfriendClick(friend.email)}>
+                          {t('action.confirm')}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
+              )}
             </div>
           </div>
         ))

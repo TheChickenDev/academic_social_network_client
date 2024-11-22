@@ -81,6 +81,12 @@ export function GroupDetailsSidebar({ ...props }: ComponentProps<typeof Sidebar>
     })
   }
 
+  useEffect(() => {
+    if (groupDetails?.isPrivate) {
+      setActiveItem('Information')
+    }
+  }, [groupDetails])
+
   return (
     <>
       <Sidebar collapsible='icon' className='mt-20 overflow-hidden' {...props}>
@@ -122,40 +128,44 @@ export function GroupDetailsSidebar({ ...props }: ComponentProps<typeof Sidebar>
                     <span>{t('group.information')}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton
-                    tooltip={{
-                      children: t('group.posts'),
-                      hidden: false
-                    }}
-                    onClick={() => {
-                      setActiveItem('Posts')
-                      setOpen(true)
-                    }}
-                    isActive={activeItem === 'Posts'}
-                    className='px-2.5 md:px-2'
-                  >
-                    <LayoutList />
-                    <span>{t('group.posts')}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton
-                    tooltip={{
-                      children: t('group.members'),
-                      hidden: false
-                    }}
-                    onClick={() => {
-                      setActiveItem('Members')
-                      setOpen(true)
-                    }}
-                    isActive={activeItem === 'Members'}
-                    className='px-2.5 md:px-2'
-                  >
-                    <ContactRound />
-                    <span>{t('group.members')}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                {isAuthenticated && !groupDetails?.isPrivate && (
+                  <>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton
+                        tooltip={{
+                          children: t('group.posts'),
+                          hidden: false
+                        }}
+                        onClick={() => {
+                          setActiveItem('Posts')
+                          setOpen(true)
+                        }}
+                        isActive={activeItem === 'Posts'}
+                        className='px-2.5 md:px-2'
+                      >
+                        <LayoutList />
+                        <span>{t('group.posts')}</span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton
+                        tooltip={{
+                          children: t('group.members'),
+                          hidden: false
+                        }}
+                        onClick={() => {
+                          setActiveItem('Members')
+                          setOpen(true)
+                        }}
+                        isActive={activeItem === 'Members'}
+                        className='px-2.5 md:px-2'
+                      >
+                        <ContactRound />
+                        <span>{t('group.members')}</span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  </>
+                )}
                 {isAuthenticated && email === groupDetails?.ownerEmail && (
                   <SidebarMenuItem>
                     <SidebarMenuButton
@@ -205,7 +215,7 @@ export function GroupDetailsSidebar({ ...props }: ComponentProps<typeof Sidebar>
                     {groupDetails.isPrivate ? t('group.requestToJoin') : t('group.join')}
                   </Button>
                 ) : (
-                  <Button onClick={handleLeaveGroup}>{t('action.leave')}</Button>
+                  groupDetails.ownerEmail !== email && <Button onClick={handleLeaveGroup}>{t('action.leave')}</Button>
                 )
               ) : activeItem === 'Posts' && groupDetails?.canPost ? (
                 <Button onClick={() => navigate(`${paths.postEditor}?groupId=${id}`)}>
