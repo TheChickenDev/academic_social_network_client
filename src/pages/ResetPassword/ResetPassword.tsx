@@ -89,9 +89,9 @@ export default function ResetPassword() {
       <Helmet>
         <title>{t('resetPassword.title')}</title>
       </Helmet>
-      <div className='md:w-1/2 w-full h-screen bg-white xl:px-36 lg:px-8 px-4 flex flex-col justify-center mx-auto'>
+      <div className='md:w-1/2 w-full h-screen xl:px-36 lg:px-8 px-4 flex flex-col justify-center mx-auto'>
         <Link to={paths.home}>
-          <Logo className='w-full mb-4' />
+          <Logo className='w-full mb-4 dark:fill-white' />
         </Link>
         <h2 className='text-3xl font-bold mb-2'>{t('resetPassword.title')}</h2>
         <p className='text-gray-600 mb-4'>{t('resetPassword.subtitle')}</p>
