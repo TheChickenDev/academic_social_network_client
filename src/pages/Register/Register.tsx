@@ -7,8 +7,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Link, useNavigate } from 'react-router-dom'
 import paths from '@/constants/paths'
 import { useMutation } from '@tanstack/react-query'
-import { GoogleLoginFormData, LoginFormData } from '@/types/rule.type'
-import { getGoogleInfo, login, loginGoogle } from '@/apis/auth.api'
+import { GoogleLoginFormData, RegisterFormData } from '@/types/rule.type'
+import { getGoogleInfo, loginGoogle, registerAccount } from '@/apis/auth.api'
 import { useContext, useEffect, useState } from 'react'
 import { AppContext } from '@/contexts/app.context'
 import { saveAccessTokenToLocalStorage, saveRefreshTokenToLocalStorage } from '@/utils/auth'
@@ -22,7 +22,7 @@ import { isValidInputPassword } from '@/utils/rules'
 import { Eye, EyeOff } from 'lucide-react'
 import { Helmet } from 'react-helmet-async'
 
-export default function Login() {
+export default function Register() {
   const navigate = useNavigate()
   const { t } = useTranslation()
   const [showPassword, setShowPassword] = useState(false)
@@ -62,7 +62,7 @@ export default function Login() {
     }
   })
 
-  const { setIsAuthenticated, setFullName, setAvatar } = useContext(AppContext)
+  const { setIsAuthenticated, setFullName, setAvatar, setEmail } = useContext(AppContext)
   const [googleResponse, setGoogleResponse] = useState<{
     access_token: string
     expires_in: number
@@ -73,7 +73,7 @@ export default function Login() {
   } | null>(null)
 
   const loginMutation = useMutation({
-    mutationFn: (body: LoginFormData) => login(body)
+    mutationFn: (body: RegisterFormData) => registerAccount(body)
   })
 
   const googleLoginMutation = useMutation({
@@ -84,19 +84,20 @@ export default function Login() {
     loginMutation.mutate(data, {
       onSuccess: (response) => {
         const status = response.status
-        if (status === 200) {
+        if (status === 201) {
           const user = decodeJWT(response.data.data?.access_token)
           setIsAuthenticated(true)
+          setEmail?.(user?.email ?? '')
           setFullName?.(user ? (user.fullName ?? '') : '')
           setAvatar?.(user?.avatar ?? '')
           saveAccessTokenToLocalStorage(response.data.data?.access_token)
           saveRefreshTokenToLocalStorage(response.data.data?.refresh_token)
           navigate(paths.home)
           toast.success(response.data.message)
-        } else toast.error(response.data.message)
+        } else toast.error(t('login.invalidCredentials'))
       },
-      onError: (error) => {
-        toast.error(error.message)
+      onError: () => {
+        toast.error(t('login.invalidCredentials'))
       }
     })
   }

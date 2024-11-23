@@ -11,7 +11,7 @@ export type GoogleLoginFormData = {
 }
 
 export type RegisterFormData = {
-  name: string
+  name?: string
   email: string
   password: string
   confirm_password: string
@@ -29,10 +29,10 @@ export type ForgotPasswordFormData = {
 }
 
 export type ResetPasswordFormData = {
-  key: string
-  token: string
-  password: string
-  confirm_password: string
+  email?: string
+  token?: string
+  password?: string
+  confirm_password?: string
 }
 
 export type SendMessageFormData = {
