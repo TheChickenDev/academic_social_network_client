@@ -5,7 +5,6 @@ import { GroupProps } from '@/types/group.type'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
 import { Link } from 'react-router-dom'
 import paths from '@/constants/paths'
-import { encodeEmailToId } from '@/utils/utils'
 
 export default function Information({ group }: { group: GroupProps | null }) {
   const { t } = useTranslation()
@@ -68,7 +67,7 @@ export default function Information({ group }: { group: GroupProps | null }) {
           ) : (
             <div className='flex flex-wrap items-center gap-4 mt-2'>
               {group?.moderators?.map((moderator) => (
-                <HoverCard key={moderator.userEmail}>
+                <HoverCard key={moderator.userId}>
                   <HoverCardTrigger>
                     <Avatar className='w-12 h-12'>
                       <AvatarImage src={moderator.userAvatar} />
@@ -82,9 +81,7 @@ export default function Information({ group }: { group: GroupProps | null }) {
                         <AvatarFallback />
                       </Avatar>
                       <div className='ml-4'>
-                        <Link to={paths.profile.replace(':id', encodeEmailToId(moderator.userEmail))}>
-                          {moderator.userName}
-                        </Link>
+                        <Link to={paths.profile.replace(':id', moderator.userId)}>{moderator.userName}</Link>
                         <p className='text-sm text-gray-500'>
                           {moderator.userRank ? moderator.userRank : t('myAccount.noRank')}
                         </p>
@@ -101,7 +98,7 @@ export default function Information({ group }: { group: GroupProps | null }) {
           ) : (
             <div className='flex flex-wrap items-center gap-4 mt-2'>
               {group?.members?.map((member) => (
-                <HoverCard key={member.userEmail}>
+                <HoverCard key={member.userId}>
                   <HoverCardTrigger>
                     <Avatar className='w-12 h-12'>
                       <AvatarImage src={member.userAvatar} />
@@ -115,9 +112,7 @@ export default function Information({ group }: { group: GroupProps | null }) {
                         <AvatarFallback />
                       </Avatar>
                       <div className='ml-4'>
-                        <Link to={paths.profile.replace(':id', encodeEmailToId(member.userEmail))}>
-                          {member.userName}
-                        </Link>
+                        <Link to={paths.profile.replace(':id', member.userId)}>{member.userName}</Link>
                         <p className='text-sm text-gray-500'>
                           {member.userRank ? member.userRank : t('myAccount.noRank')}
                         </p>

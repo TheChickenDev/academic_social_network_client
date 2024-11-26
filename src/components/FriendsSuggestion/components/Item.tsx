@@ -13,17 +13,17 @@ interface ItemProps {
 }
 
 export default function Item({ friend, setFriends }: ItemProps) {
-  const { email } = useContext(AppContext)
+  const { userId } = useContext(AppContext)
   const { t } = useTranslation()
 
   const handleAddFriendClick = () => {
-    addFriend({ email: email ?? '', friendEmail: friend.email }).then((response) => {
+    addFriend({ _id: userId ?? '', friendId: friend._id }).then((response) => {
       const status = response?.status
       if (status === 200) {
         toast.success(t('friend.haveSendFriendRequest'))
         setFriends((prev) =>
           prev.map((f) => {
-            if (f.email === friend.email) {
+            if (f._id === friend._id) {
               return { ...f, canAddFriend: false }
             }
             return f

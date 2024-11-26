@@ -13,7 +13,6 @@ import { addFriend } from '@/apis/user.api'
 import { toast } from 'sonner'
 import { Link } from 'react-router-dom'
 import paths from '@/constants/paths'
-import { encodeEmailToId } from '@/utils/utils'
 
 export default function Users({ q, type, filter, email }: SearchQueryParams) {
   const loadMoreRef = useRef<HTMLDivElement | null>(null)
@@ -148,11 +147,11 @@ interface ItemProps {
 }
 
 function Item({ friend, setData }: ItemProps) {
-  const { email } = useContext(AppContext)
+  const { userId } = useContext(AppContext)
   const { t } = useTranslation()
 
   const handleAddFriendClick = () => {
-    addFriend({ email: email ?? '', friendEmail: friend.email }).then((response) => {
+    addFriend({ _id: userId ?? '', friendId: friend._id }).then((response) => {
       const status = response?.status
       if (status === 200) {
         toast.success(t('friend.haveSendFriendRequest'))
@@ -168,7 +167,7 @@ function Item({ friend, setData }: ItemProps) {
         <AvatarFallback />
       </Avatar>
       <div className='w-full'>
-        <Link to={paths.profile.replace(':id', encodeEmailToId(friend.email))} className='font-semibold'>
+        <Link to={paths.profile.replace(':id', friend._id)} className='font-semibold'>
           {friend?.fullName ?? t('friend.friendVirtualName')}
         </Link>
         <p className='text-sm text-gray-500'>{friend?.rank ? friend.rank : t('myAccount.noRank')}</p>

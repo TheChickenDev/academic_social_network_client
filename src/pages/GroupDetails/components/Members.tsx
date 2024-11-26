@@ -12,7 +12,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import paths from '@/constants/paths'
 import { AppContext } from '@/contexts/app.context'
 import { GroupMemberProps, GroupProps } from '@/types/group.type'
-import { convertISODateToLocaleString, encodeEmailToId } from '@/utils/utils'
+import { convertISODateToLocaleString } from '@/utils/utils'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams } from 'react-router-dom'
@@ -29,10 +29,10 @@ export default function Members({ groupDetails }: MembersProps) {
   const { t } = useTranslation()
   const [members, setMembers] = useState<GroupMemberProps[]>([])
   const { id } = useParams<{ id: string }>()
-  const { email } = useContext(AppContext)
+  const { userId } = useContext(AppContext)
 
   useEffect(() => {
-    getMembers({ id, userEmail: email }).then((response) => {
+    getMembers({ id, memberId: userId }).then((response) => {
       const status = response.status
       if (status === 200) {
         setMembers(Array.isArray(response.data.data) ? response.data.data : [response.data.data])
@@ -40,13 +40,13 @@ export default function Members({ groupDetails }: MembersProps) {
     })
   }, [])
 
-  const handleAcceptRequest = (userEmail: string) => {
-    acceptJoinRequest({ id, userEmail }).then((response) => {
+  const handleAcceptRequest = (memberId: string) => {
+    acceptJoinRequest({ id, memberId }).then((response) => {
       const status = response.status
       if (status === 200) {
         setMembers(
           members.map((member) => {
-            if (member.userEmail === userEmail) {
+            if (member.userId === memberId) {
               member.role = 'member'
               member.joinDate = response.data.data.joinDate
             }
@@ -57,23 +57,23 @@ export default function Members({ groupDetails }: MembersProps) {
     })
   }
 
-  const handleRejectRequest = (userEmail: string) => {
-    rejectJoinRequest({ id, userEmail }).then((response) => {
+  const handleRejectRequest = (memberId: string) => {
+    rejectJoinRequest({ id, memberId }).then((response) => {
       const status = response.status
       if (status === 200) {
-        setMembers(members.filter((member) => member.userEmail !== userEmail))
+        setMembers(members.filter((member) => member.userId !== memberId))
       }
     })
   }
 
-  const handleAddFriendClick = (userEmail: string) => {
-    addFriend({ email: email ?? '', friendEmail: userEmail }).then((response) => {
+  const handleAddFriendClick = (friendId: string) => {
+    addFriend({ _id: userId ?? '', friendId }).then((response) => {
       const status = response?.status
       if (status === 200) {
         toast.success(t('friend.haveSendFriendRequest'))
         setMembers((prev) =>
           prev.map((f) => {
-            if (f.userEmail === userEmail) {
+            if (f.userId === friendId) {
               return { ...f, canAddFriend: false }
             }
             return f
@@ -83,22 +83,22 @@ export default function Members({ groupDetails }: MembersProps) {
     })
   }
 
-  const handleKickClick = (userEmail: string) => {
-    removeMember({ id, userEmail }).then((response) => {
+  const handleKickClick = (memberId: string) => {
+    removeMember({ id, memberId }).then((response) => {
       const status = response?.status
       if (status === 200) {
-        setMembers(members.filter((member) => member.userEmail !== userEmail))
+        setMembers(members.filter((member) => member.userId !== memberId))
       }
     })
   }
 
-  const handleDismissalClick = (userEmail: string) => {
-    dismissalModerator({ id, userEmail }).then((response) => {
+  const handleDismissalClick = (memberId: string) => {
+    dismissalModerator({ id, memberId }).then((response) => {
       const status = response?.status
       if (status === 200) {
         setMembers(
           members.map((member) => {
-            if (member.userEmail === userEmail) {
+            if (member.userId === memberId) {
               member.role = 'member'
             }
             return member
@@ -108,13 +108,13 @@ export default function Members({ groupDetails }: MembersProps) {
     })
   }
 
-  const handleAppointClick = (userEmail: string) => {
-    appointModerator({ id, userEmail }).then((response) => {
+  const handleAppointClick = (memberId: string) => {
+    appointModerator({ id, memberId }).then((response) => {
       const status = response.status
       if (status === 200) {
         setMembers(
           members.map((member) => {
-            if (member.userEmail === userEmail) {
+            if (member.userId === memberId) {
               member.role = 'moderator'
             }
             return member
@@ -136,15 +136,13 @@ export default function Members({ groupDetails }: MembersProps) {
               {members.map(
                 (member) =>
                   member.role === 'moderator' && (
-                    <div key={member.userEmail} className='flex items-center m-2'>
+                    <div key={member.userId} className='flex items-center m-2'>
                       <Avatar className='w-12 h-12'>
                         <AvatarImage src={member.userAvatar} />
                         <AvatarFallback />
                       </Avatar>
                       <div className='flex-1 ml-4'>
-                        <Link to={paths.profile.replace(':id', encodeEmailToId(member.userEmail))}>
-                          {member.userName}
-                        </Link>
+                        <Link to={paths.profile.replace(':id', member.userId)}>{member.userName}</Link>
                         <p className='text-sm text-gray-500'>
                           {member.userRank ? member.userRank : t('myAccount.noRank')}
                         </p>
@@ -159,16 +157,16 @@ export default function Members({ groupDetails }: MembersProps) {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent>
                             {member.canAddFriend && (
-                              <DropdownMenuItem onClick={() => handleAddFriendClick(member.userEmail)}>
+                              <DropdownMenuItem onClick={() => handleAddFriendClick(member.userId)}>
                                 {t('action.addFriend')}
                               </DropdownMenuItem>
                             )}
-                            {groupDetails.ownerEmail === email && (
+                            {groupDetails.ownerId === userId && (
                               <>
-                                <DropdownMenuItem onClick={() => handleDismissalClick(member.userEmail)}>
+                                <DropdownMenuItem onClick={() => handleDismissalClick(member.userId)}>
                                   {t('action.dismissal')}
                                 </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => handleKickClick(member.userEmail)}>
+                                <DropdownMenuItem onClick={() => handleKickClick(member.userId)}>
                                   {t('action.kick')}
                                 </DropdownMenuItem>
                               </>
@@ -191,15 +189,13 @@ export default function Members({ groupDetails }: MembersProps) {
               {members.map(
                 (member) =>
                   member.role === 'member' && (
-                    <div key={member.userEmail} className='flex items-center m-2'>
+                    <div key={member.userId} className='flex items-center m-2'>
                       <Avatar className='w-12 h-12'>
                         <AvatarImage src={member.userAvatar} />
                         <AvatarFallback />
                       </Avatar>
                       <div className='flex-1 ml-4'>
-                        <Link to={paths.profile.replace(':id', encodeEmailToId(member.userEmail))}>
-                          {member.userName}
-                        </Link>
+                        <Link to={paths.profile.replace(':id', member.userId)}>{member.userName}</Link>
                         <p className='text-sm text-gray-500'>
                           {member.userRank ? member.userRank : t('myAccount.noRank')}
                         </p>
@@ -215,16 +211,16 @@ export default function Members({ groupDetails }: MembersProps) {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent>
                             {member.canAddFriend && (
-                              <DropdownMenuItem onClick={() => handleAddFriendClick(member.userEmail)}>
+                              <DropdownMenuItem onClick={() => handleAddFriendClick(member.userId)}>
                                 {t('action.addFriend')}
                               </DropdownMenuItem>
                             )}
-                            {groupDetails.ownerEmail === email && (
-                              <DropdownMenuItem onClick={() => handleAppointClick(member.userEmail)}>
+                            {groupDetails.ownerId === userId && (
+                              <DropdownMenuItem onClick={() => handleAppointClick(member.userId)}>
                                 {t('action.appoint')}
                               </DropdownMenuItem>
                             )}
-                            <DropdownMenuItem onClick={() => handleKickClick(member.userEmail)}>
+                            <DropdownMenuItem onClick={() => handleKickClick(member.userId)}>
                               {t('action.kick')}
                             </DropdownMenuItem>
                           </DropdownMenuContent>
@@ -237,7 +233,7 @@ export default function Members({ groupDetails }: MembersProps) {
           )}
         </div>
       </div>
-      {groupDetails?.isPrivate && email === groupDetails.ownerEmail && (
+      {groupDetails?.isPrivate && userId === groupDetails.ownerId && (
         <div className='border rounded-md p-2 lg:mt-0 mt-4 lg:w-1/3 h-fit'>
           <p className='font-semibold'>{t('group.requests')}</p>
           {members.length === 0 ? (
@@ -247,16 +243,13 @@ export default function Members({ groupDetails }: MembersProps) {
               {members.map(
                 (member) =>
                   member.role === 'pending' && (
-                    <div key={member.userEmail} className='flex gap-4 m-2'>
+                    <div key={member.userId} className='flex gap-4 m-2'>
                       <Avatar className='w-12 h-12'>
                         <AvatarImage src={member.userAvatar} />
                         <AvatarFallback />
                       </Avatar>
                       <div className='flex-1'>
-                        <Link
-                          to={paths.profile.replace(':id', encodeEmailToId(member.userEmail))}
-                          className='w-full line-clamp-1'
-                        >
+                        <Link to={paths.profile.replace(':id', member.userId)} className='w-full line-clamp-1'>
                           {member.userName}
                         </Link>
                         <p className='text-sm text-gray-500'>
@@ -265,14 +258,10 @@ export default function Members({ groupDetails }: MembersProps) {
                       </div>
                       {groupDetails?.canEdit && (
                         <>
-                          <Button
-                            variant='outline'
-                            size='sm'
-                            onClick={() => handleRejectRequest(member.userEmail ?? '')}
-                          >
+                          <Button variant='outline' size='sm' onClick={() => handleRejectRequest(member.userId ?? '')}>
                             {t('action.reject')}
                           </Button>
-                          <Button size='sm' onClick={() => handleAcceptRequest(member.userEmail ?? '')}>
+                          <Button size='sm' onClick={() => handleAcceptRequest(member.userId ?? '')}>
                             {t('action.accept')}
                           </Button>
                         </>

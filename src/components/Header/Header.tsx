@@ -24,7 +24,6 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { useTheme } from '@/hooks/useTheme'
 import { useLanguage } from '@/hooks/useLanguage'
 import useWindowDimensions from '@/hooks/useWindowDimensions'
-import { encodeEmailToId } from '@/utils/utils'
 import { toast } from 'sonner'
 
 export default function Header() {
@@ -34,7 +33,7 @@ export default function Header() {
   const { theme, setTheme } = useTheme()
   const { language, setLanguage } = useLanguage()
   const { t } = useTranslation()
-  const { isAuthenticated, setIsAuthenticated, fullName, avatar, email } = useContext(AppContext)
+  const { isAuthenticated, setIsAuthenticated, fullName, avatar, userId } = useContext(AppContext)
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false)
 
   const handleSignInClick = () => {
@@ -153,7 +152,7 @@ export default function Header() {
               <DropdownMenuContent>
                 <DropdownMenuLabel>{fullName || 'My account'}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => navigate(paths.profile.replace(':id', encodeEmailToId(email ?? '')))}>
+                <DropdownMenuItem onClick={() => userId && navigate(paths.profile.replace(':id', userId))}>
                   {t('pages.profile')}
                 </DropdownMenuItem>
                 <DropdownMenuItem>{t('pages.contributeIdeas')}</DropdownMenuItem>
@@ -183,7 +182,7 @@ export default function Header() {
               <SheetHeader className='text-left mb-4'>
                 {isAuthenticated ? (
                   <Link
-                    to={`${paths.profile.replace(':id', encodeEmailToId(email ?? ''))}`}
+                    to={userId ? `${paths.profile.replace(':id', userId)}` : '#'}
                     className='flex justify-left items-center gap-4'
                   >
                     <Avatar>

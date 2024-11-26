@@ -11,30 +11,6 @@ export default function Message() {
   const [mobileSelectedConversation, setMobileSelectedConversation] = useState<Conversation | null>(null)
   const { t } = useTranslation()
 
-  // useEffect(() => {
-  //   getMessages({
-  //     userEmail: email ?? '',
-  //     conversationId: selectedConversation?._id ?? '',
-  //     page: 1,
-  //     limit: 10
-  //   }).then((response) => {
-  //     const status = response.status
-  //     if (status === 200) {
-  //       const data = response.data.data
-  //       const temp: Record<string, MessageProps[]> = {}
-  //       data?.forEach((msg) => {
-  //         const key = dayjs(msg.createdAt).format('D MMM, YYYY')
-  //         if (temp[key]) {
-  //           temp[key].push(msg)
-  //         } else {
-  //           temp[key] = [msg]
-  //         }
-  //       })
-  //       setMessages(temp)
-  //     }
-  //   })
-  // }, [selectedConversation])
-
   return (
     <section className='flex h-full gap-6 mt-20 py-4 lg:px-12 px-2 relative overflow-hidden'>
       {/* Left Side */}

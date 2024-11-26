@@ -8,7 +8,6 @@ import { postDefaultQuery } from '@/constants/post'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { useParams } from 'react-router-dom'
-import { decodeIdToEmail } from '@/utils/utils'
 
 export default function Posts() {
   const { t } = useTranslation()
@@ -23,7 +22,8 @@ export default function Posts() {
       const response = await getPosts({
         page: pageParam as number,
         limit: postDefaultQuery.limit,
-        ownerEmail: decodeIdToEmail(id ?? '')
+        ownerId: id,
+        type: 'own'
       })
       return response.data.data
     },

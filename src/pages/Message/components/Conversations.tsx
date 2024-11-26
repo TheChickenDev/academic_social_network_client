@@ -26,11 +26,11 @@ export default function Conversations({
   const { t } = useTranslation()
   const [search, setSearch] = useState('')
   const [conversations, setConversations] = useState<Conversation[]>([])
-  const { email } = useContext(AppContext)
+  const { userId } = useContext(AppContext)
 
   useEffect(() => {
     getConversations({
-      userEmail: email ?? '',
+      userId: userId ?? '',
       page: 1,
       limit: 10
     }).then((response) => {

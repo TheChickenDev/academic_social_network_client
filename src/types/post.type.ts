@@ -47,7 +47,9 @@ export interface PostQuery {
   _id?: string
   page?: number
   limit?: number
-  userEmail?: string
+  groupId?: string
+  userId?: string
+  ownerId?: string
   type?: 'random' | 'own' | 'saved' | 'group'
 }
 

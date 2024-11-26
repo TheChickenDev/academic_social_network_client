@@ -1,5 +1,5 @@
 export interface GroupMemberProps {
-  userEmail: string
+  userId: string
   userName: string
   userAvatar: string
   userRank: string
@@ -22,7 +22,7 @@ export interface GroupProps {
   avatarImg?: string
   backgroundImg?: string
   isPrivate: boolean
-  ownerEmail: string
+  ownerId: string
   members?: GroupMemberProps[]
   moderators?: GroupMemberProps[]
   posts?: GroupPostProps[]
@@ -43,9 +43,8 @@ export interface GroupProps {
 
 export interface GroupQuery {
   id?: string
-  ownerEmail?: string
-  userEmail?: string
-  memberEmail?: string
+  ownerId?: string
+  memberId?: string
   getList?: boolean
   page?: number
   limit?: number

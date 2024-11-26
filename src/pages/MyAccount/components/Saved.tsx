@@ -8,7 +8,6 @@ import { postDefaultQuery } from '@/constants/post'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { useParams } from 'react-router-dom'
-import { decodeIdToEmail } from '@/utils/utils'
 import { unsavePost } from '@/apis/user.api'
 
 export default function Saved() {
@@ -24,8 +23,8 @@ export default function Saved() {
       const response = await getPosts({
         page: pageParam as number,
         limit: postDefaultQuery.limit,
-        ownerEmail: decodeIdToEmail(id ?? ''),
-        getSavedPosts: true
+        userId: id,
+        type: 'saved'
       })
       return response.data.data
     },
@@ -51,7 +50,7 @@ export default function Saved() {
   )
 
   const handleDelete = (postId: string) => {
-    unsavePost({ postId: postId ?? '', ownerEmail: decodeIdToEmail(id ?? '') })
+    unsavePost({ postId: postId ?? '', userId: id ?? '' })
       .then((response) => {
         if (response.status === 200) {
           queryClient.invalidateQueries({

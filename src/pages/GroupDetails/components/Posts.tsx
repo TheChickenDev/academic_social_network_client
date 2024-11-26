@@ -12,7 +12,7 @@ import { AppContext } from '@/contexts/app.context'
 import { approvePost, getGroupPosts, rejectPost } from '@/apis/group.api'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { convertISODateToLocaleString, encodeEmailToId } from '@/utils/utils'
+import { convertISODateToLocaleString } from '@/utils/utils'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import paths from '@/constants/paths'
 import { EllipsisVertical } from 'lucide-react'
@@ -23,7 +23,7 @@ export default function Posts({ canEdit }: { canEdit: boolean }) {
   const queryClient = useQueryClient()
   const [posts, setPosts] = useState<PostProps[]>([])
   const { id } = useParams<{ id: string }>()
-  const { email } = useContext(AppContext)
+  const { userId } = useContext(AppContext)
   const [requests, setRequests] = useState<PostProps[]>([])
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError } = useInfiniteQuery<PostProps[]>({
@@ -33,7 +33,7 @@ export default function Posts({ canEdit }: { canEdit: boolean }) {
         page: pageParam as number,
         limit: postDefaultQuery.limit,
         groupId: id,
-        userEmail: email
+        userId
       })
       return response.data.data
     },
@@ -200,10 +200,7 @@ export default function Posts({ canEdit }: { canEdit: boolean }) {
                   </Avatar>
                   <div className='flex-1 ml-2'>
                     <p className='font-semibold line-clamp-1'>{post.title}</p>
-                    <Link
-                      to={paths.profile.replace(':id', encodeEmailToId(post.ownerEmail))}
-                      className='text-xs line-clamp-1'
-                    >
+                    <Link to={paths.profile.replace(':id', post.ownerId)} className='text-xs line-clamp-1'>
                       {post.ownerName ? post.ownerName : post.ownerEmail}
                     </Link>
                     <p className='text-xs text-gray-500 line-clamp-1'>

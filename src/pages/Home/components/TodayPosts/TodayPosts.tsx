@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Skeleton } from '@/components/ui/skeleton'
 import paths from '@/constants/paths'
 import { PostProps } from '@/types/post.type'
-import { convertISODateToLocaleString, encodeEmailToId } from '@/utils/utils'
+import { convertISODateToLocaleString } from '@/utils/utils'
 import classNames from 'classnames'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -68,10 +68,7 @@ export default function TodayPosts() {
                       <AvatarImage src={post.ownerAvatar} />
                       <AvatarFallback />
                     </Avatar>
-                    <Link
-                      to={paths.profile.replace(':id', encodeEmailToId(post.ownerEmail ?? ''))}
-                      className='font-bold text-sm'
-                    >
+                    <Link to={paths.profile.replace(':id', post.ownerId ?? '')} className='font-bold text-sm'>
                       {post.ownerName}
                     </Link>
                     <svg width='12' height='12' viewBox='0 0 10 10' fill='none' xmlns='http://www.w3.org/2000/svg'>

@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
 import { CommentProps, PostProps } from '@/types/post.type'
 import { MinimalTiptapEditor } from '../MinimalTiptapEditor'
-import { convertISODateToLocaleString, encodeEmailToId } from '@/utils/utils'
+import { convertISODateToLocaleString } from '@/utils/utils'
 import { Link, useNavigate } from 'react-router-dom'
 import { useCallback, useContext, useState } from 'react'
 import { AppContext } from '@/contexts/app.context'
@@ -356,7 +356,7 @@ export default function Post({
             <AvatarFallback />
           </Avatar>
           <div>
-            <Link to={paths.profile.replace(':id', encodeEmailToId(postDetails.ownerId))} className='font-semibold'>
+            <Link to={paths.profile.replace(':id', postDetails.ownerId)} target='_blank' className='font-semibold'>
               {postDetails.ownerName ? postDetails.ownerName : postDetails.ownerEmail}
             </Link>
             <p className='text-xs text-gray-500'>

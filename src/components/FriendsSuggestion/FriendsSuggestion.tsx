@@ -7,13 +7,13 @@ import { Skeleton } from '../ui/skeleton'
 import { useTranslation } from 'react-i18next'
 
 export default function FriendsSuggestion() {
-  const { email } = useContext(AppContext)
+  const { userId } = useContext(AppContext)
   const [friends, setFriends] = useState<Friend[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const { t } = useTranslation()
 
   useEffect(() => {
-    getUser({ email: email ?? '', page: 1, limit: 10 })
+    getUser({ userId: userId ?? '', page: 1, limit: 10 })
       .then((res) => {
         if (Array.isArray(res?.data?.data)) {
           setFriends(res?.data?.data?.map((friend: Friend) => ({ ...friend, canAddFriend: true })))
@@ -38,7 +38,7 @@ export default function FriendsSuggestion() {
         </div>
       ) : friends.length > 0 ? (
         friends.map((friend) => (
-          <Fragment key={friend.email}>
+          <Fragment key={friend._id}>
             <Item friend={friend} setFriends={setFriends} />
             <hr />
           </Fragment>

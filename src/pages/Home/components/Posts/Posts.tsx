@@ -9,12 +9,12 @@ import { AppContext } from '@/contexts/app.context'
 
 export default function Posts() {
   const loadMoreRef = useRef<HTMLDivElement | null>(null)
-  const { email } = useContext(AppContext)
+  const { userId } = useContext(AppContext)
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError } = useInfiniteQuery<PostProps[]>({
     queryKey: ['posts'],
     queryFn: async ({ pageParam = postDefaultQuery.page }) => {
-      const response = await getPosts({ page: pageParam as number, limit: postDefaultQuery.limit, userEmail: email })
+      const response = await getPosts({ page: pageParam as number, limit: postDefaultQuery.limit, userId })
       return response.data.data
     },
     initialPageParam: 1,

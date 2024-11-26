@@ -20,33 +20,33 @@ import {
 } from '@/components/ui/alert-dialog'
 
 export default function Friends({ userDetails }: { userDetails: User | null }) {
-  const { email } = useContext(AppContext)
+  const { userId } = useContext(AppContext)
   return (
     <div className='flex justify-between gap-2'>
       <AcceptedFriends userDetails={userDetails} />
-      {userDetails?.email === email && <FriendsRequests />}
+      {userDetails?._id === userId && <FriendsRequests />}
     </div>
   )
 }
 
 function AcceptedFriends({ userDetails }: { userDetails: User | null }) {
   const { t } = useTranslation()
-  const { email } = useContext(AppContext)
+  const { userId } = useContext(AppContext)
   const [friends, setFriends] = useState<Friend[]>([])
   const [friendsLoading, setFriendsLoading] = useState<boolean>(true)
 
-  const handleUnfriendClick = (friendEmail: string) => {
-    removeFriend({ email: email ?? '', friendEmail: friendEmail }).then((response) => {
+  const handleUnfriendClick = (friendId: string) => {
+    removeFriend({ _id: userId ?? '', friendId: friendId }).then((response) => {
       const status = response?.status
       if (status === 200) {
         toast.success(t('friend.haveUnfriended'))
-        setFriends((prev) => prev.filter((f) => f.email !== friendEmail))
+        setFriends((prev) => prev.filter((f) => f._id !== friendId))
       }
     })
   }
 
   useEffect(() => {
-    getFriends({ email: email ?? '', status: 'accepted' })
+    getFriends({ userId: userDetails?._id ?? '', status: 'accepted' })
       .then((response) => {
         setFriends(response.data.data)
       })
@@ -74,13 +74,11 @@ function AcceptedFriends({ userDetails }: { userDetails: User | null }) {
                 <AvatarImage src={friend?.avatarImg} />
                 <AvatarFallback />
               </Avatar>
-              <p className='mb-1 text-xl font-medium text-gray-900 dark:text-white'>
-                {friend.fullName ?? friend.email}
-              </p>
+              <p className='mb-1 text-xl font-medium text-gray-900 dark:text-white'>{friend.fullName ?? friend._id}</p>
               <span className='text-sm text-gray-500 dark:text-gray-400'>
                 {friend.rank ? friend.rank : t('friend.noRank')}
               </span>
-              {userDetails?.email === email && (
+              {userDetails?._id === userId && (
                 <div className='flex mt-4 md:mt-6 gap-2'>
                   <Button variant='outline'>{t('action.message')}</Button>
                   <AlertDialog>
@@ -94,7 +92,7 @@ function AcceptedFriends({ userDetails }: { userDetails: User | null }) {
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel>{t('action.cancel')}</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => handleUnfriendClick(friend.email)}>
+                        <AlertDialogAction onClick={() => handleUnfriendClick(friend._id)}>
                           {t('action.confirm')}
                         </AlertDialogAction>
                       </AlertDialogFooter>
@@ -131,18 +129,18 @@ function AcceptedFriends({ userDetails }: { userDetails: User | null }) {
 
 function FriendsRequests() {
   const { t } = useTranslation()
-  const { email } = useContext(AppContext)
+  const { userId } = useContext(AppContext)
   const [friends, setFriends] = useState<Friend[]>([])
   const [friendsLoading, setFriendsLoading] = useState<boolean>(true)
 
-  const handleAcceptFriendClick = (friendEmail: string) => {
-    acceptFriendRequest({ email: email ?? '', friendEmail: friendEmail }).then((response) => {
+  const handleAcceptFriendClick = (friendId: string) => {
+    acceptFriendRequest({ _id: userId ?? '', friendId }).then((response) => {
       const status = response?.status
       if (status === 200) {
         toast.success(t('friend.haveAcceptedFriendRequest'))
         setFriends((prev) =>
           prev.map((f) => {
-            if (f.email === friendEmail) {
+            if (f._id === friendId) {
               return { ...f, canAccept: false }
             }
             return f
@@ -152,14 +150,14 @@ function FriendsRequests() {
     })
   }
 
-  const handleRejectFriendClick = (friendEmail: string) => {
-    removeFriend({ email: email ?? '', friendEmail: friendEmail }).then((response) => {
+  const handleRejectFriendClick = (friendId: string) => {
+    removeFriend({ _id: userId ?? '', friendId }).then((response) => {
       const status = response?.status
       if (status === 200) {
         toast.success(t('friend.haveRejectedFriendRequest'))
         setFriends((prev) =>
           prev.map((f) => {
-            if (f.email === friendEmail) {
+            if (f._id === friendId) {
               return { ...f, canAccept: false }
             }
             return f
@@ -170,7 +168,7 @@ function FriendsRequests() {
   }
 
   useEffect(() => {
-    getFriends({ email: email ?? '', status: 'pending' })
+    getFriends({ userId: userId ?? '', status: 'pending' })
       .then((response) => {
         setFriends(response?.data?.data?.map((friend) => ({ ...friend, canAccept: true })))
       })
@@ -193,7 +191,7 @@ function FriendsRequests() {
       ) : friends.length > 0 ? (
         friends?.map((friend, index) => (
           <>
-            <div key={friend.email} className='flex gap-4 border rounded-md p-2'>
+            <div key={friend._id} className='flex gap-4 border rounded-md p-2'>
               <Avatar className='w-12 h-12'>
                 <AvatarImage src={friend?.avatarImg} />
                 <AvatarFallback />
@@ -203,10 +201,10 @@ function FriendsRequests() {
                 <p className='text-sm text-gray-500'>{friend.rank ? friend.rank : t('friend.noRank')}</p>
                 {friend?.canAccept ? (
                   <div className='float-right space-x-2'>
-                    <Button size='sm' variant='outline' onClick={() => handleRejectFriendClick(friend.email)}>
+                    <Button size='sm' variant='outline' onClick={() => handleRejectFriendClick(friend._id)}>
                       {t('action.reject')}
                     </Button>
-                    <Button size='sm' onClick={() => handleAcceptFriendClick(friend.email)}>
+                    <Button size='sm' onClick={() => handleAcceptFriendClick(friend._id)}>
                       {t('action.accept')}
                     </Button>
                   </div>

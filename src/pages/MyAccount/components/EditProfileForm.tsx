@@ -108,7 +108,7 @@ export default function EditProfileForm({ userDetails, setUserDetails, setEditMo
       return
     }
     const formData = new FormData()
-    formData.append('email', userDetails?.email ?? '')
+    formData.append('userId', userDetails?._id ?? '')
     formData.append('fullName', values.name)
     formData.append('dateOfBirth', dob ? dob.toString() : '')
     formData.append('gender', values.gender)

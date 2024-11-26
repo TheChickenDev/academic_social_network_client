@@ -10,7 +10,7 @@ export interface Conversation {
 }
 
 export interface ConversationQuery {
-  userEmail: string
+  userId: string
   page: number
   limit: number
 }

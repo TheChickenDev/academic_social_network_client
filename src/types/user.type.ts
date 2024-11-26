@@ -36,7 +36,7 @@ interface Introduction {
 // friend
 
 export interface Friend {
-  email: string
+  _id: string
   fullName: string
   rank: string
   points: number
@@ -70,12 +70,11 @@ export interface User {
   numberOfFriends: number
   // virtual fields
   canAddFriend: boolean
-  friends: { friendEmail: string; status: string }[]
+  friends: { friendId: string; status: string }[]
 }
 
 export interface UserQuery {
-  email: string
-  _id?: string
+  userId?: string
   page?: number
   limit?: number
 }

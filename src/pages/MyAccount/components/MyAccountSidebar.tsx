@@ -42,7 +42,6 @@ import Posts from './Posts'
 import { useNavigate, useParams } from 'react-router-dom'
 import paths from '@/constants/paths'
 import Saved from './Saved'
-import { decodeIdToEmail } from '@/utils/utils'
 import { AppContext } from '@/contexts/app.context'
 import Friends from './Friends'
 import { toast } from 'sonner'
@@ -57,25 +56,21 @@ export function MyAccountSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   const [editMode, setEditMode] = useState<boolean>(false)
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { isAuthenticated, email } = useContext(AppContext)
+  const { isAuthenticated, userId } = useContext(AppContext)
 
   useEffect(() => {
-    getUser({ email: decodeIdToEmail(id ?? '') }).then((response) => {
+    getUser({ userId: id }).then((response) => {
       if (!Array.isArray(response.data.data)) {
         setUserDetails({
           ...response.data.data,
-          canAddFriend: response.data.data.friends.some(
-            (friend: { friendEmail: string; status: string }) => friend.friendEmail === email
-          )
-            ? false
-            : true
+          canAddFriend: response.data.data.friends.some((friend) => friend.friendId === userId) ? false : true
         })
       }
     })
   }, [])
 
   const handleAddFriendClick = () => {
-    addFriend({ email: email ?? '', friendEmail: userDetails?.email ?? '' }).then((response) => {
+    addFriend({ _id: userId ?? '', friendId: userDetails?._id ?? '' }).then((response) => {
       const status = response?.status
       if (status === 200) {
         toast.success(t('friend.haveSendFriendRequest'))
@@ -159,7 +154,7 @@ export function MyAccountSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                     <span>{t('myAccount.friends')}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-                {isAuthenticated && email === userDetails?.email && (
+                {isAuthenticated && userId === userDetails?._id && (
                   <>
                     <SidebarMenuItem>
                       <SidebarMenuButton
@@ -236,7 +231,7 @@ export function MyAccountSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
               </BreadcrumbList>
             </Breadcrumb>
           </div>
-          {isAuthenticated && userDetails && userDetails.email === email ? (
+          {isAuthenticated && userDetails && userDetails._id === userId ? (
             <div className='max-h-6 flex justify-center items-center gap-2'>
               {activeItem === 'Profile' ? (
                 editMode ? (
