@@ -1,22 +1,21 @@
 import { useNavigate } from 'react-router-dom'
 import { Button } from '../ui/button'
-import { Tag as TagObject } from '@/types/post.type'
 import paths from '@/constants/paths'
 
 interface TagProps {
-  tag: TagObject
+  tag: string
 }
 
 export default function Tag({ tag }: TagProps) {
   const navigate = useNavigate()
 
   const handleClick = () => {
-    navigate(`${paths.search}?q=${tag.label}`)
+    navigate(`${paths.search}?q=${tag}`)
   }
 
   return (
     <Button onClick={handleClick} variant='outline' size='sm'>
-      {tag.label}
+      {tag}
     </Button>
   )
 }

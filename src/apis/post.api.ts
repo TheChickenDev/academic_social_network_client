@@ -1,4 +1,4 @@
-import { ActionInfo, PostProps, PostQuery } from '@/types/post.type'
+import { PostProps, PostQuery } from '@/types/post.type'
 import { SuccessResponse } from '@/types/utils.type'
 import http from '@/utils/http'
 
@@ -14,12 +14,12 @@ export const getPostsById = (id: string, params: { userEmail: string }) => {
   return http.get<SuccessResponse<PostProps>>(`posts/${id}`, { params })
 }
 
-export const likePost = (id: string, body: ActionInfo) => {
-  return http.post<SuccessResponse<PostProps>>(`posts/${id}/like`, body)
+export const likePost = (id: string, body: { userId: string }) => {
+  return http.post<SuccessResponse<PostProps>>(`posts/${id}?action=like`, body)
 }
 
-export const dislikePost = (id: string, body: ActionInfo) => {
-  return http.post<SuccessResponse<PostProps>>(`posts/${id}/dislike`, body)
+export const dislikePost = (id: string, body: { userId: string }) => {
+  return http.post<SuccessResponse<PostProps>>(`posts/${id}?action=dislike`, body)
 }
 
 export const deletePost = (id: string) => {

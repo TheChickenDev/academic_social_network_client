@@ -4,11 +4,11 @@ import { AvatarImage } from '@radix-ui/react-avatar'
 import { Button } from '../ui/button'
 import { useTranslation } from 'react-i18next'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
-import { ActionInfo, CommentProps, PostProps } from '@/types/post.type'
+import { CommentProps, PostProps } from '@/types/post.type'
 import { MinimalTiptapEditor } from '../MinimalTiptapEditor'
 import { convertISODateToLocaleString, encodeEmailToId } from '@/utils/utils'
 import { Link, useNavigate } from 'react-router-dom'
-import { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { AppContext } from '@/contexts/app.context'
 import { toast } from 'sonner'
 import { InfiniteData, useMutation, useQueryClient } from '@tanstack/react-query'
@@ -58,7 +58,7 @@ export default function Post({
   actionCallback?: (id: string) => void
 }) {
   const { t } = useTranslation()
-  const { fullName, avatar, email, isAuthenticated } = useContext(AppContext)
+  const { userId, email, isAuthenticated } = useContext(AppContext)
   const [postDetails, setPostDetails] = useState<PostProps>(post)
   const [commentDialog, setCommentDialog] = useState<boolean>(false)
   const [editorContent, setEditorContent] = useState<Content>('')
@@ -74,7 +74,7 @@ export default function Post({
           pages: oldData.pages.map((page) => {
             return page.map((item) => {
               if (item._id === postDetails._id) {
-                return { ...response.data.data }
+                return { ...item, ...response.data.data }
               }
               return item
             })
@@ -89,14 +89,14 @@ export default function Post({
     (response: AxiosResponse) => {
       queryClient.setQueryData(['post', postDetails._id], (oldData: PostProps) => {
         if (!oldData) return
-        return { ...response.data.data }
+        return { ...oldData, ...response.data.data }
       })
     },
     [postDetails]
   )
 
   const likeMutation = useMutation({
-    mutationFn: (body: ActionInfo) => likePost(postDetails._id ?? '', body),
+    mutationFn: (body: { userId: string }) => likePost(postDetails._id ?? '', body),
     onSuccess: (response) => {
       setPostsCacheData(response)
       setPostCacheData(response)
@@ -107,7 +107,7 @@ export default function Post({
     }
   })
   const dislikeMutation = useMutation({
-    mutationFn: (body: ActionInfo) => dislikePost(postDetails._id ?? '', body),
+    mutationFn: (body: { userId: string }) => dislikePost(postDetails._id ?? '', body),
     onSuccess: (response) => {
       setPostsCacheData(response)
       setPostCacheData(response)
@@ -127,12 +127,12 @@ export default function Post({
       return
     }
 
-    if (postDetails.dislikes?.find((item) => item.ownerEmail === email)) {
+    if (postDetails.dislikedBy?.find((item) => item.userId === userId)) {
       toast.warning(t('post.alreadyDisliked'))
       return
     }
 
-    likeMutation.mutate({ ownerName: fullName ?? '', ownerEmail: email ?? '' })
+    likeMutation.mutate({ userId: userId ?? '' })
   }
 
   const handleDislikeClick = () => {
@@ -141,12 +141,12 @@ export default function Post({
       return
     }
 
-    if (postDetails.likes?.find((item) => item.ownerEmail === email)) {
+    if (postDetails.likedBy?.find((item) => item.userId === userId)) {
       toast.warning(t('post.alreadyLiked'))
       return
     }
 
-    dislikeMutation.mutate({ ownerName: fullName ?? '', ownerEmail: email ?? '' })
+    dislikeMutation.mutate({ userId: userId ?? '' })
   }
 
   const extractText = (node: JSONContent) => {
@@ -175,9 +175,7 @@ export default function Post({
     commentMutation.mutate(
       {
         postId: postDetails._id ?? '',
-        ownerName: fullName ?? '',
-        ownerAvatar: avatar ?? '',
-        ownerEmail: email ?? '',
+        ownerId: userId ?? '',
         content: editorContent as JSONContent
       },
       {
@@ -359,7 +357,7 @@ export default function Post({
             <AvatarFallback />
           </Avatar>
           <div>
-            <Link to={paths.profile.replace(':id', encodeEmailToId(postDetails.ownerEmail))} className='font-semibold'>
+            <Link to={paths.profile.replace(':id', encodeEmailToId(postDetails.ownerId))} className='font-semibold'>
               {postDetails.ownerName ? postDetails.ownerName : postDetails.ownerEmail}
             </Link>
             <p className='text-xs text-gray-500'>
@@ -384,7 +382,7 @@ export default function Post({
                 variant='outline'
                 onClick={handleLikeClick}
                 className={classNames({
-                  'text-blue-600': !!postDetails.likes?.find((item) => item.ownerEmail === email)
+                  'text-blue-600': !!postDetails.likedBy?.find((item) => item.userId === userId)
                 })}
               >
                 <span>{postDetails.numberOfLikes}</span>
@@ -392,15 +390,15 @@ export default function Post({
               </Button>
             </HoverCardTrigger>
             <HoverCardContent className='w-fit'>
-              {postDetails.likes?.length ? (
+              {postDetails.likedBy?.length ? (
                 <>
-                  {postDetails.likes.slice(0, 10).map((like) => (
-                    <p key={like.ownerEmail} className='text-xs'>
-                      {like.ownerName}
+                  {postDetails.likedBy.slice(0, 10).map((like) => (
+                    <p key={like.userId} className='text-xs'>
+                      {like.userName}
                     </p>
                   ))}
-                  {postDetails.likes.length > 10 ? (
-                    <p className='text-xs'>{t('post.andMore', { count: postDetails.likes.length - 10 })}</p>
+                  {postDetails.likedBy.length > 10 ? (
+                    <p className='text-xs'>{t('post.andMore', { count: postDetails.likedBy.length - 10 })}</p>
                   ) : (
                     ''
                   )}
@@ -419,7 +417,7 @@ export default function Post({
                 variant='outline'
                 onClick={handleDislikeClick}
                 className={classNames({
-                  'text-red-600': !!postDetails.dislikes?.find((item) => item.ownerEmail === email)
+                  'text-red-600': !!postDetails.dislikedBy?.find((item) => item.userId === userId)
                 })}
               >
                 <span>{postDetails.numberOfDislikes}</span>
@@ -427,10 +425,10 @@ export default function Post({
               </Button>
             </HoverCardTrigger>
             <HoverCardContent className='w-fit'>
-              {postDetails.dislikes?.length ? (
-                postDetails.dislikes.map((dislike) => (
-                  <p key={dislike.ownerEmail} className='text-xs'>
-                    {dislike.ownerName}
+              {postDetails.dislikedBy?.length ? (
+                postDetails.dislikedBy.map((dislike) => (
+                  <p key={dislike.userId} className='text-xs'>
+                    {dislike.userName}
                   </p>
                 ))
               ) : (

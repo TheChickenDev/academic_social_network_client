@@ -49,7 +49,7 @@ export default function PostEditor() {
   const { groupId } = useQueryParams()
   const navigate = useNavigate()
 
-  const { fullName, avatar, email } = useContext(AppContext)
+  const { userId } = useContext(AppContext)
   const queryClient = useQueryClient()
 
   const postMutation = useMutation({
@@ -95,10 +95,8 @@ export default function PostEditor() {
     postMutation.mutate(
       {
         title: postTitle,
-        tags: selectedTags,
-        ownerName: fullName ?? '',
-        ownerAvatar: avatar ?? '',
-        ownerEmail: email ?? '',
+        tags: selectedTags.map((tag) => tag.value),
+        ownerId: userId ?? '',
         groupId: groupId ?? '',
         content: editorContent as JSONContent
       },

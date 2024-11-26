@@ -62,7 +62,7 @@ export default function Register() {
     }
   })
 
-  const { setIsAuthenticated, setFullName, setAvatar, setEmail } = useContext(AppContext)
+  const { setIsAuthenticated, setUserId, setFullName, setAvatar, setEmail } = useContext(AppContext)
   const [googleResponse, setGoogleResponse] = useState<{
     access_token: string
     expires_in: number
@@ -87,6 +87,7 @@ export default function Register() {
         if (status === 201) {
           const user = decodeJWT(response.data.data?.access_token)
           setIsAuthenticated(true)
+          setUserId?.(user?._id ?? '')
           setEmail?.(user?.email ?? '')
           setFullName?.(user ? (user.fullName ?? '') : '')
           setAvatar?.(user?.avatar ?? '')

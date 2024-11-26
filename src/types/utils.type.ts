@@ -11,6 +11,7 @@ export interface SuccessResponse<data> {
 export interface JWTPayload {
   exp: number
   iat: number
+  _id: string
   email: string
   isAdmin: boolean
   fullName: string

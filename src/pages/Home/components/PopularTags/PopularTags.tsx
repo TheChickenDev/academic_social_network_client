@@ -1,36 +1,7 @@
 import Tag from '@/components/Tag'
 import { useTranslation } from 'react-i18next'
 
-const tags = [
-  {
-    label: 'reactjs',
-    value: 'reactjs'
-  },
-  {
-    label: 'java',
-    value: 'java'
-  },
-  {
-    label: 'javascript',
-    value: 'javascript'
-  },
-  {
-    label: 'typescript',
-    value: 'typescript'
-  },
-  {
-    label: 'nodejs',
-    value: 'nodejs'
-  },
-  {
-    label: 'css',
-    value: 'css'
-  },
-  {
-    label: 'html',
-    value: 'html'
-  }
-]
+const tags = ['javascript', 'react', 'nodejs', 'express', 'mongodb', 'typescript', 'python', 'django', 'flask', 'sql']
 
 export default function PopularTags() {
   const { t } = useTranslation()

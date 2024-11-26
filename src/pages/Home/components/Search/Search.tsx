@@ -9,7 +9,6 @@ export default function Search() {
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    console.log(input)
     if (!input) return
     navigate(`/search?q=${input}`)
   }

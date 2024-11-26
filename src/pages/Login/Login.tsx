@@ -61,7 +61,7 @@ export default function Login() {
     }
   })
 
-  const { setIsAuthenticated, setEmail, setFullName, setAvatar } = useContext(AppContext)
+  const { setIsAuthenticated, setUserId, setEmail, setFullName, setAvatar } = useContext(AppContext)
   const [googleResponse, setGoogleResponse] = useState<{
     access_token: string
     expires_in: number
@@ -86,6 +86,7 @@ export default function Login() {
         if (status === 200) {
           const user = decodeJWT(response.data.data?.access_token ?? '')
           setIsAuthenticated(true)
+          setUserId?.(user?._id ?? '')
           setEmail?.(user?.email ?? '')
           setFullName?.(user?.fullName ?? '')
           setAvatar?.(user?.avatar ?? '')
@@ -132,6 +133,7 @@ export default function Login() {
               onSuccess: (response) => {
                 const user = decodeJWT(response.data.data?.access_token)
                 setIsAuthenticated(true)
+                setUserId?.(user?._id ?? '')
                 setEmail?.(user?.email ?? '')
                 setFullName?.(user?.fullName ?? '')
                 setAvatar?.(user?.avatar ?? '')

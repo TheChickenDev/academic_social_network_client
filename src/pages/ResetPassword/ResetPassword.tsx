@@ -25,7 +25,7 @@ export default function ResetPassword() {
   const navigate = useNavigate()
   const { t } = useTranslation()
   const [showPassword, setShowPassword] = useState(false)
-  const { setEmail, setFullName, setAvatar, setIsAuthenticated } = useContext(AppContext)
+  const { setUserId, setEmail, setFullName, setAvatar, setIsAuthenticated } = useContext(AppContext)
   const { token } = useParams()
 
   const formSchema = z
@@ -68,6 +68,7 @@ export default function ResetPassword() {
           if (status === 200) {
             const user = decodeJWT(response.data.data?.access_token)
             setIsAuthenticated(true)
+            setUserId?.(user?._id ?? '')
             setEmail?.(user?.email ?? '')
             setFullName?.(user ? (user.fullName ?? '') : '')
             setAvatar?.(user?.avatar ?? '')

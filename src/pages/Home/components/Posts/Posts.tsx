@@ -66,7 +66,9 @@ export default function Posts() {
 
   return (
     <div className='flex flex-col space-y-4'>
-      {data?.pages?.map((page) => page.map((item: PostProps) => <Post key={item._id} post={item} details={false} />))}
+      {data?.pages?.map((page) =>
+        page.map((item: PostProps) => item._id && <Post key={item._id} post={item} details={false} />)
+      )}
       <div ref={loadMoreRef} />
       {isFetchingNextPage && (
         <div className='flex flex-col space-y-3'>

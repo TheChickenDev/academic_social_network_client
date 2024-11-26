@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { AvatarImage } from '@radix-ui/react-avatar'
 import { useTranslation } from 'react-i18next'
-import { ActionInfo, CommentProps, PostProps, ReplyProps } from '@/types/post.type'
+import { CommentProps, PostProps } from '@/types/post.type'
 import { convertISODateToLocaleString } from '@/utils/utils'
 import { MinimalTiptapEditor } from '@/components//MinimalTiptapEditor'
 import { InfiniteData, useMutation, useQueryClient } from '@tanstack/react-query'
@@ -35,7 +35,7 @@ export default function Comment({
   setPostDetails?: Dispatch<SetStateAction<PostProps>>
 }) {
   const { t } = useTranslation()
-  const { fullName, avatar, email, isAuthenticated } = useContext(AppContext)
+  const { userId, isAuthenticated } = useContext(AppContext)
   const [commentDialog, setCommentDialog] = useState<boolean>(false)
   const [editorContent, setEditorContent] = useState<Content>('')
   const [commentDetails, setCommentDetails] = useState<CommentProps>(comment)
@@ -43,7 +43,7 @@ export default function Comment({
   const queryClient = useQueryClient()
 
   const likeMutation = useMutation({
-    mutationFn: (body: ActionInfo & { commentId: string }) => likeComment(commentDetails._id ?? '', body),
+    mutationFn: (body: { userId: string }) => likeComment(commentDetails._id ?? '', body),
     onSuccess: (response) => {
       queryClient.setQueryData(
         ['comments', commentDetails.postId],
@@ -54,13 +54,13 @@ export default function Comment({
               ...oldData,
               pages: oldData.pages.map((page) => {
                 return page.map((item) => {
-                  if (item._id === (response.data.data as ReplyProps).commentId) {
+                  if (item._id === commentDetails.parentId) {
                     item.replies = item.replies?.map((reply) => {
-                      if (reply._id === response.data.data._id) {
-                        return { ...response.data.data } as ReplyProps
+                      if (reply._id === commentDetails._id) {
+                        return { ...reply, ...response.data.data }
                       }
                       return reply
-                    }) as ReplyProps[]
+                    }) as CommentProps[]
                   }
                   return item
                 })
@@ -72,7 +72,7 @@ export default function Comment({
             pages: oldData.pages.map((page) => {
               return page.map((item) => {
                 if (item._id === commentDetails._id) {
-                  return { ...response.data.data }
+                  return { ...item, ...response.data.data }
                 }
                 return item
               })
@@ -80,7 +80,7 @@ export default function Comment({
           }
         }
       )
-      setCommentDetails({ ...response.data.data })
+      setCommentDetails({ ...commentDetails, ...response.data.data })
     },
     onError: () => {
       toast.error(t('post.actionFailed'))
@@ -88,7 +88,7 @@ export default function Comment({
   })
 
   const dislikeMutation = useMutation({
-    mutationFn: (body: ActionInfo & { commentId: string }) => dislikeComment(commentDetails._id ?? '', body),
+    mutationFn: (body: { userId: string }) => dislikeComment(commentDetails._id ?? '', body),
     onSuccess: (response) => {
       queryClient.setQueryData(
         ['comments', commentDetails.postId],
@@ -99,13 +99,13 @@ export default function Comment({
               ...oldData,
               pages: oldData.pages.map((page) => {
                 return page.map((item) => {
-                  if (item._id === (response.data.data as ReplyProps).commentId) {
+                  if (item._id === commentDetails.parentId) {
                     item.replies = item.replies?.map((reply) => {
-                      if (reply._id === response.data.data._id) {
-                        return { ...response.data.data } as ReplyProps
+                      if (reply._id === commentDetails._id) {
+                        return { ...reply, ...response.data.data } as CommentProps
                       }
                       return reply
-                    }) as ReplyProps[]
+                    }) as CommentProps[]
                   }
                   return item
                 })
@@ -117,7 +117,7 @@ export default function Comment({
             pages: oldData.pages.map((page) => {
               return page.map((item) => {
                 if (item._id === commentDetails._id) {
-                  return { ...response.data.data }
+                  return { ...item, ...response.data.data }
                 }
                 return item
               })
@@ -125,7 +125,7 @@ export default function Comment({
           }
         }
       )
-      setCommentDetails({ ...response.data.data })
+      setCommentDetails({ ...commentDetails, ...response.data.data })
     },
     onError: () => {
       toast.error(t('post.actionFailed'))
@@ -138,15 +138,13 @@ export default function Comment({
       return
     }
 
-    if (commentDetails.dislikes?.find((item) => item.ownerEmail === email)) {
+    if (commentDetails.dislikedBy?.find((item) => item.userId === userId)) {
       toast.warning(t('post.alreadyDislikedComment'))
       return
     }
 
     likeMutation.mutate({
-      ownerName: fullName ?? '',
-      ownerEmail: email ?? '',
-      commentId: (commentDetails as ReplyProps).commentId ?? ''
+      userId: userId ?? ''
     })
   }
 
@@ -156,20 +154,18 @@ export default function Comment({
       return
     }
 
-    if (commentDetails.likes?.find((item) => item.ownerEmail === email)) {
+    if (commentDetails.likedBy?.find((item) => item.userId === userId)) {
       toast.warning(t('post.alreadyLikedComment'))
       return
     }
 
     dislikeMutation.mutate({
-      ownerName: fullName ?? '',
-      ownerEmail: email ?? '',
-      commentId: (commentDetails as ReplyProps).commentId ?? ''
+      userId: userId ?? ''
     })
   }
 
   const replyMutation = useMutation({
-    mutationFn: (body: ReplyProps) => replyComment(body)
+    mutationFn: (body: CommentProps) => replyComment(body)
   })
 
   const extractText = (node: JSONContent) => {
@@ -197,11 +193,9 @@ export default function Comment({
     }
     replyMutation.mutate(
       {
-        commentId: commentDetails._id ?? '',
+        parentId: commentDetails._id ?? '',
         postId: commentDetails.postId ?? '',
-        ownerName: fullName ?? '',
-        ownerAvatar: avatar ?? '',
-        ownerEmail: email ?? '',
+        ownerId: userId ?? '',
         content: editorContent as JSONContent
       },
       {
@@ -301,7 +295,7 @@ export default function Comment({
                     variant='outline'
                     onClick={handleLikeClick}
                     className={classNames({
-                      'text-blue-600': !!commentDetails.likes?.find((item) => item.ownerEmail === email)
+                      'text-blue-600': !!commentDetails.likedBy?.find((item) => item.userId === userId)
                     })}
                   >
                     <span>{commentDetails.numberOfLikes}</span>
@@ -309,15 +303,15 @@ export default function Comment({
                   </Button>
                 </HoverCardTrigger>
                 <HoverCardContent className='w-fit'>
-                  {commentDetails.likes?.length ? (
+                  {commentDetails.likedBy?.length ? (
                     <>
-                      {commentDetails.likes.slice(0, 10).map((like) => (
-                        <p key={like.ownerEmail} className='text-xs'>
-                          {like.ownerName}
+                      {commentDetails.likedBy.slice(0, 10).map((like) => (
+                        <p key={like.userId} className='text-xs'>
+                          {like.userName}
                         </p>
                       ))}
-                      {commentDetails.likes.length > 10 ? (
-                        <p className='text-xs'>{t('post.andMore', { count: commentDetails.likes.length - 10 })}</p>
+                      {commentDetails.likedBy.length > 10 ? (
+                        <p className='text-xs'>{t('post.andMore', { count: commentDetails.likedBy.length - 10 })}</p>
                       ) : (
                         ''
                       )}
@@ -336,7 +330,7 @@ export default function Comment({
                     variant='outline'
                     onClick={handleDislikeClick}
                     className={classNames({
-                      'text-red-600': !!commentDetails.dislikes?.find((item) => item.ownerEmail === email)
+                      'text-red-600': !!commentDetails.dislikedBy?.find((item) => item.userId === userId)
                     })}
                   >
                     <span>{commentDetails.numberOfDislikes}</span>
@@ -344,10 +338,10 @@ export default function Comment({
                   </Button>
                 </HoverCardTrigger>
                 <HoverCardContent className='w-fit'>
-                  {commentDetails.dislikes?.length ? (
-                    commentDetails.dislikes.map((dislike) => (
-                      <p key={dislike.ownerEmail} className='text-xs'>
-                        {dislike.ownerName}
+                  {commentDetails.dislikedBy?.length ? (
+                    commentDetails.dislikedBy.map((dislike) => (
+                      <p key={dislike.userId} className='text-xs'>
+                        {dislike.userName}
                       </p>
                     ))
                   ) : (
