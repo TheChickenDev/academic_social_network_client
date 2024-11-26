@@ -24,21 +24,23 @@ export default function PostDetails() {
   })
 
   return (
-    <div className='min-h-screen px-2 pt-28 pb-8 md:px-6 lg:px-12 bg-light-primary dark:bg-dark-primary'>
+    <>
       <Helmet>
         <title>{t('pages.post')}</title>
       </Helmet>
-      {isLoading ? (
-        <div className='flex flex-col space-y-3'>
-          <Skeleton className='w-full h-24 rounded-xl' />
-          <div className='space-y-2'>
-            <Skeleton className='h-4 w-full' />
-            <Skeleton className='h-4 w-4/5' />
+      <div className='min-h-screen px-2 pt-28 pb-8 md:px-6 lg:px-12 bg-light-primary dark:bg-dark-primary'>
+        {isLoading ? (
+          <div className='flex flex-col space-y-3'>
+            <Skeleton className='w-full h-24 rounded-xl' />
+            <div className='space-y-2'>
+              <Skeleton className='h-4 w-full' />
+              <Skeleton className='h-4 w-4/5' />
+            </div>
           </div>
-        </div>
-      ) : (
-        <Post post={data as PostProps} details={true}></Post>
-      )}
-    </div>
+        ) : (
+          <Post post={data as PostProps} details={true}></Post>
+        )}
+      </div>
+    </>
   )
 }

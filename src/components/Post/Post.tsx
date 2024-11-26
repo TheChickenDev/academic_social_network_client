@@ -8,7 +8,7 @@ import { CommentProps, PostProps } from '@/types/post.type'
 import { MinimalTiptapEditor } from '../MinimalTiptapEditor'
 import { convertISODateToLocaleString, encodeEmailToId } from '@/utils/utils'
 import { Link, useNavigate } from 'react-router-dom'
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { AppContext } from '@/contexts/app.context'
 import { toast } from 'sonner'
 import { InfiniteData, useMutation, useQueryClient } from '@tanstack/react-query'
@@ -58,7 +58,7 @@ export default function Post({
   actionCallback?: (id: string) => void
 }) {
   const { t } = useTranslation()
-  const { userId, email, isAuthenticated } = useContext(AppContext)
+  const { userId, isAuthenticated } = useContext(AppContext)
   const [postDetails, setPostDetails] = useState<PostProps>(post)
   const [commentDialog, setCommentDialog] = useState<boolean>(false)
   const [editorContent, setEditorContent] = useState<Content>('')
@@ -226,7 +226,7 @@ export default function Post({
   }
 
   const handleSavePost = () => {
-    savePost({ postId: postDetails._id ?? '', ownerEmail: email ?? '' })
+    savePost({ postId: postDetails._id ?? '', userId: userId ?? '' })
       .then((response) => {
         if (response.status === 200) {
           queryClient.setQueryData(['post', postDetails._id], (oldData: PostProps) => {
@@ -259,7 +259,7 @@ export default function Post({
   }
 
   const handleUnsavePost = () => {
-    unsavePost({ postId: postDetails._id ?? '', ownerEmail: email ?? '' })
+    unsavePost({ postId: postDetails._id ?? '', userId: userId ?? '' })
       .then((response) => {
         if (response.status === 200) {
           queryClient.setQueryData(['post', postDetails._id], (oldData: PostProps) => {
@@ -295,7 +295,7 @@ export default function Post({
     <div className='relative rounded-md border p-4 text-black dark:text-white bg-white dark:bg-dark-primary'>
       {isAuthenticated && (
         <div className='absolute top-2 right-2 p-2'>
-          {postDetails?.ownerEmail === email && ownerMode ? (
+          {postDetails?.ownerId === userId && ownerMode ? (
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button size='sm' variant='destructive'>
@@ -316,7 +316,7 @@ export default function Post({
               </AlertDialogContent>
             </AlertDialog>
           ) : (
-            postDetails?.ownerEmail !== email && (
+            postDetails?.ownerId !== userId && (
               <DropdownMenu>
                 <DropdownMenuTrigger>
                   <Ellipsis />
@@ -327,7 +327,6 @@ export default function Post({
                   ) : (
                     <DropdownMenuItem onClick={handleSavePost}>{t('post.savePost')}</DropdownMenuItem>
                   )}
-
                   <DropdownMenuItem onClick={() => console.log('report')}>{t('post.reportPost')}</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
