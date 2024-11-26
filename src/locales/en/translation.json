@@ -41,7 +41,7 @@
   },
   "components": {
     "popularTags": "Popular tags",
-    "todayPosts": "Today posts",
+    "todayPosts": "Newest",
     "discoverySpace": "Discovery Space"
   },
   "postProps": {

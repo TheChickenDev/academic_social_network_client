@@ -128,7 +128,7 @@ export function GroupDetailsSidebar({ ...props }: ComponentProps<typeof Sidebar>
                     <span>{t('group.information')}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-                {isAuthenticated && !groupDetails?.isPrivate && (
+                {isAuthenticated && (
                   <>
                     <SidebarMenuItem>
                       <SidebarMenuButton

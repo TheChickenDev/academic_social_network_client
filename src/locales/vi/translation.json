@@ -31,7 +31,7 @@
   },
   "components": {
     "popularTags": "Thẻ phổ biến",
-    "todayPosts": "Bài viết hôm nay",
+    "todayPosts": "Bài viết mới",
     "discoverySpace": "Không gian khám phá"
   },
   "postProps": {

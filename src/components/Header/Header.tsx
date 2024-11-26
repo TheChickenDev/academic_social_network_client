@@ -46,6 +46,9 @@ export default function Header() {
   const handleSignOutClick = () => {
     removeDataFromLocalStorage()
     setIsAuthenticated(false)
+    navigate({
+      pathname: paths.home
+    })
     toast.success(t('action.signOutSuccessful'))
   }
 
