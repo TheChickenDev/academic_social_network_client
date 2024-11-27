@@ -18,10 +18,10 @@ import { toast } from 'sonner'
 
 export default function All({ q, type, filter }: SearchQueryParams) {
   const [data, setData] = useState<SearchAllData | null>(null)
-  const { email } = useContext(AppContext)
+  const { userId } = useContext(AppContext)
 
   useEffect(() => {
-    search({ q, type, filter, email: email ?? '' }).then((response) => {
+    search({ q, type, filter, userId: userId ?? '' }).then((response) => {
       const status = response.status
       if (status === 200) {
         if (!Array.isArray(response.data.data)) {
@@ -36,7 +36,7 @@ export default function All({ q, type, filter }: SearchQueryParams) {
   }, [q, type])
 
   const handleJoinGroup = (id: string, isPrivate: boolean) => {
-    requestToJoin({ id, userEmail: email }).then((response) => {
+    requestToJoin({ id, userId }).then((response) => {
       const status = response.status
       if (status === 200) {
         if (isPrivate) {
@@ -62,7 +62,7 @@ export default function All({ q, type, filter }: SearchQueryParams) {
           <p className='font-semibold text-lg'>{t('search.users')}</p>
           {data?.users?.length && data.users.length > 0 ? (
             data.users.map((friend) => (
-              <Fragment key={friend.email}>
+              <Fragment key={friend._id}>
                 <Item friend={friend} setData={setData} />
                 <hr />
               </Fragment>
@@ -153,11 +153,11 @@ interface ItemProps {
 }
 
 function Item({ friend, setData }: ItemProps) {
-  const { email } = useContext(AppContext)
+  const { userId } = useContext(AppContext)
   const { t } = useTranslation()
 
   const handleAddFriendClick = () => {
-    addFriend({ email: email ?? '', friendEmail: friend.email }).then((response) => {
+    addFriend({ _id: userId ?? '', friendId: friend._id }).then((response) => {
       const status = response?.status
       if (status === 200) {
         toast.success(t('friend.haveSendFriendRequest'))
@@ -166,7 +166,7 @@ function Item({ friend, setData }: ItemProps) {
           return {
             ...prev,
             users: prev.users?.map((f) => {
-              if (f.email === friend.email) {
+              if (f._id === friend._id) {
                 return { ...f, canAddFriend: false }
               }
               return f

@@ -14,7 +14,7 @@ import { requestToJoin } from '@/apis/group.api'
 import { toast } from 'sonner'
 import { useTranslation } from 'react-i18next'
 
-export default function Groups({ q, type, filter, email }: SearchQueryParams) {
+export default function Groups({ q, type, filter, userId }: SearchQueryParams) {
   const loadMoreRef = useRef<HTMLDivElement | null>(null)
   const queryClient = useQueryClient()
   const { t } = useTranslation()
@@ -30,7 +30,7 @@ export default function Groups({ q, type, filter, email }: SearchQueryParams) {
         q,
         type,
         filter,
-        email
+        userId
       })
       return response.data.data as (GroupProps & { canJoin: boolean })[]
     },
@@ -70,7 +70,7 @@ export default function Groups({ q, type, filter, email }: SearchQueryParams) {
   }, [handleObserver])
 
   const handleJoinGroup = (id: string, isPrivate: boolean) => {
-    requestToJoin({ id, userEmail: email }).then((response) => {
+    requestToJoin({ id, userId }).then((response) => {
       const status = response.status
       if (status === 200) {
         if (isPrivate) {

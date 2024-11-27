@@ -29,7 +29,7 @@ export default function GroupsSuggestion() {
   }
 
   useEffect(() => {
-    getGroups({ getList: true, userId }).then((response) => {
+    getGroups({ userId }).then((response) => {
       const status = response.status
       if (status === 200) {
         setSuggestions(Array.isArray(response.data.data) ? response.data.data : [response.data.data])

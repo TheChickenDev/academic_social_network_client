@@ -50,7 +50,7 @@ export default function SearchSidebar({ ...props }: ComponentProps<typeof Sideba
   const [activeItem, setActiveItem] = useState<Type>((type as Type) || 'all')
   const { setOpen } = useSidebar()
   const queryClient = useQueryClient()
-  const { email } = useContext(AppContext)
+  const { userId } = useContext(AppContext)
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -269,9 +269,9 @@ export default function SearchSidebar({ ...props }: ComponentProps<typeof Sideba
           {activeItem === 'posts' ? (
             <Posts q={q} type={activeItem} filter={searchFilter as string} />
           ) : activeItem === 'users' ? (
-            <UsersComponent q={q} type={activeItem} filter={searchFilter as string} email={email} />
+            <UsersComponent q={q} type={activeItem} filter={searchFilter as string} userId={userId} />
           ) : activeItem === 'groups' ? (
-            <Groups q={q} type={activeItem} filter={searchFilter as string} email={email} />
+            <Groups q={q} type={activeItem} filter={searchFilter as string} userId={userId} />
           ) : (
             <All q={q} type={activeItem} filter={searchFilter as string} />
           )}

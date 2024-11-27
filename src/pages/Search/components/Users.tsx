@@ -14,7 +14,7 @@ import { toast } from 'sonner'
 import { Link } from 'react-router-dom'
 import paths from '@/constants/paths'
 
-export default function Users({ q, type, filter, email }: SearchQueryParams) {
+export default function Users({ q, type, filter, userId }: SearchQueryParams) {
   const loadMoreRef = useRef<HTMLDivElement | null>(null)
   const queryClient = useQueryClient()
   const { t } = useTranslation()
@@ -28,7 +28,7 @@ export default function Users({ q, type, filter, email }: SearchQueryParams) {
         q,
         type,
         filter,
-        email
+        userId
       })
       return response.data.data as User[]
     },

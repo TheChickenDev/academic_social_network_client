@@ -86,7 +86,7 @@ export default function Posts({ canEdit }: { canEdit: boolean }) {
       if (status === 200) {
         toast.success(t('group.approvePostSuccessful'))
         setRequests(requests.filter((request) => request._id !== postId))
-        setPosts((oldPosts) => [requests.find((request) => request._id === postId) as PostProps, ...oldPosts])
+        // setPosts((oldPosts) => [requests.find((request) => request._id === postId) as PostProps, ...oldPosts])
       } else {
         toast.error(t('group.approvePostFailed'))
       }
@@ -201,7 +201,12 @@ export default function Posts({ canEdit }: { canEdit: boolean }) {
                     <AvatarFallback />
                   </Avatar>
                   <div className='flex-1 ml-2'>
-                    <p className='font-semibold line-clamp-1'>{post.title}</p>
+                    <Link
+                      to={post._id ? paths.postDetails.replace(':id', post._id) : '#'}
+                      className='font-semibold line-clamp-1'
+                    >
+                      {post.title}
+                    </Link>
                     <Link to={paths.profile.replace(':id', post.ownerId)} className='text-xs line-clamp-1'>
                       {post.ownerName ? post.ownerName : post.ownerEmail}
                     </Link>

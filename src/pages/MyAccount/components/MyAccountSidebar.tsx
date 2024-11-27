@@ -231,33 +231,34 @@ export function MyAccountSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
               </BreadcrumbList>
             </Breadcrumb>
           </div>
-          {isAuthenticated && userDetails && userDetails._id === userId ? (
-            <div className='max-h-6 flex justify-center items-center gap-2'>
-              {activeItem === 'Profile' ? (
-                editMode ? (
-                  <Button variant='destructive' onClick={() => setEditMode(false)}>
-                    {t('action.cancel')}
+          {isAuthenticated &&
+            (userDetails && userDetails._id === userId ? (
+              <div className='max-h-6 flex justify-center items-center gap-2'>
+                {activeItem === 'Profile' ? (
+                  editMode ? (
+                    <Button variant='destructive' onClick={() => setEditMode(false)}>
+                      {t('action.cancel')}
+                    </Button>
+                  ) : (
+                    <Button onClick={() => setEditMode(true)}>
+                      <UserRoundPen className='mr-2' />
+                      {t('myAccount.editProfile')}
+                    </Button>
+                  )
+                ) : activeItem === 'Posts' ? (
+                  <Button onClick={() => navigate(paths.postEditor)}>
+                    <BadgePlus className='mr-2' />
+                    {t('myAccount.createAPost')}
                   </Button>
-                ) : (
-                  <Button onClick={() => setEditMode(true)}>
-                    <UserRoundPen className='mr-2' />
-                    {t('myAccount.editProfile')}
-                  </Button>
-                )
-              ) : activeItem === 'Posts' ? (
-                <Button onClick={() => navigate(paths.postEditor)}>
-                  <BadgePlus className='mr-2' />
-                  {t('myAccount.createAPost')}
-                </Button>
-              ) : null}
-            </div>
-          ) : (
-            <div className='max-h-6 flex justify-center items-center gap-2'>
-              {activeItem === 'Profile' && userDetails?.canAddFriend && (
-                <Button onClick={() => handleAddFriendClick()}>{t('action.addFriend')}</Button>
-              )}
-            </div>
-          )}
+                ) : null}
+              </div>
+            ) : (
+              <div className='max-h-6 flex justify-center items-center gap-2'>
+                {activeItem === 'Profile' && userDetails?.canAddFriend && (
+                  <Button onClick={() => handleAddFriendClick()}>{t('action.addFriend')}</Button>
+                )}
+              </div>
+            ))}
         </header>
         <div className='p-4'>
           {activeItem === 'Profile' ? (

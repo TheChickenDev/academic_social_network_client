@@ -6,7 +6,7 @@ export interface MessageContent {
 export interface Message {
   _id?: string
   conversationId: string
-  senderEmail: string
+  senderId: string
   senderAvatar: string
   message: MessageContent
   createdAt?: Date
@@ -14,7 +14,7 @@ export interface Message {
 
 export interface MessageQuery {
   conversationId: string
-  userEmail: string
+  userId: string
   page: number
   limit: number
 }

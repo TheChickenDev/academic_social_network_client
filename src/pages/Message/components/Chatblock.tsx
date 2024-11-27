@@ -22,6 +22,7 @@ import { Message as MessageProps } from '@/types/message.type'
 import dayjs from 'dayjs'
 
 interface ChatBlockProps {
+  setConversations: Dispatch<SetStateAction<Conversation[]>>
   selectedConversation: Conversation | null
   setSelectedConversation: Dispatch<SetStateAction<Conversation | null>>
   mobileSelectedConversation: Conversation | null
@@ -29,6 +30,7 @@ interface ChatBlockProps {
 }
 
 export default function Chatblock({
+  setConversations,
   selectedConversation,
   setSelectedConversation,
   mobileSelectedConversation,
@@ -36,7 +38,7 @@ export default function Chatblock({
 }: ChatBlockProps) {
   const { t } = useTranslation()
   const [messages, setMessages] = useState<Record<string, MessageProps[]>>({})
-  const { email } = useContext(AppContext)
+  const { userId } = useContext(AppContext)
   const [input, setInput] = useState<string>('')
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
@@ -44,29 +46,29 @@ export default function Chatblock({
   const loadMoreRef = useRef<HTMLDivElement | null>(null)
 
   const fetchMessages = async (page: number) => {
-    const response = await getMessages({
-      userEmail: email ?? '',
+    await getMessages({
+      userId: userId ?? '',
       conversationId: selectedConversation?._id ?? '',
       page,
       limit: 10
-    })
-
-    if (response.status === 200) {
-      const data = response.data.data
-      setMessages((prev) => {
-        const temp: Record<string, MessageProps[]> = { ...prev }
-        data?.forEach((msg) => {
-          const key = dayjs(msg.createdAt).format('D MMM, YYYY')
-          if (temp[key]) {
-            temp[key].push(msg)
-          } else {
-            temp[key] = [msg]
-          }
+    }).then((response) => {
+      if (response.status === 200) {
+        const data = response.data.data
+        setMessages((prev) => {
+          const temp: Record<string, MessageProps[]> = { ...prev }
+          data?.forEach((msg) => {
+            const key = dayjs(msg.createdAt).format('D MMM, YYYY')
+            if (temp[key]) {
+              temp[key].push(msg)
+            } else {
+              temp[key] = [msg]
+            }
+          })
+          return { ...temp }
         })
-        return { ...temp }
-      })
-      setHasMore(data.length > 0)
-    }
+        setHasMore(data.length > 0)
+      }
+    })
   }
 
   const handleObserver = useCallback(
@@ -80,6 +82,7 @@ export default function Chatblock({
   )
 
   useEffect(() => {
+    console.log('page', page)
     fetchMessages(page)
   }, [page])
 
@@ -96,8 +99,8 @@ export default function Chatblock({
       if (socket) {
         const message = {
           conversationId: selectedConversation?._id,
-          senderEmail: email,
-          receiverEmail: selectedConversation?.userEmail,
+          senderId: userId,
+          receiverId: selectedConversation?.userId,
           type: 'text',
           content: input
         }
@@ -108,16 +111,34 @@ export default function Chatblock({
   }
 
   useEffect(() => {
-    if (email) {
+    if (userId) {
       let socket = getSocket()
       if (!socket) {
-        socket = initializeSocket(email)
+        socket = initializeSocket(userId)
       }
 
       socket.on('chat message', (response) => {
         const msg: MessageProps = response.data
+        setConversations((prev) => {
+          const temp = [...prev]
+          const index = temp.findIndex((conv) => conv._id === msg.conversationId)
+          if (index > -1) {
+            temp[index].lastMessage = { ...msg.message, senderId: msg.senderId }
+          }
+          return temp
+        })
         setSelectedConversation((prev) =>
-          prev ? { ...prev, lastMessage: msg.message, _id: msg.conversationId } : null
+          prev
+            ? {
+                ...prev,
+                lastMessage: { ...msg.message, senderId: msg.senderId },
+                _id: msg.conversationId,
+                userId: prev.userId,
+                userRank: prev.userRank,
+                userName: prev.userName,
+                avatarImg: prev.avatarImg
+              }
+            : null
         )
         setMessages((prev) => {
           const temp = { ...prev }
@@ -126,7 +147,7 @@ export default function Chatblock({
             temp[key].unshift({
               _id: msg._id,
               conversationId: msg.conversationId,
-              senderEmail: msg.senderEmail === email ? 'You' : msg.senderEmail,
+              senderId: msg.senderId === userId ? 'You' : msg.senderId,
               senderAvatar: msg.senderAvatar,
               message: msg.message,
               createdAt: msg.createdAt
@@ -136,7 +157,7 @@ export default function Chatblock({
               {
                 _id: msg._id,
                 conversationId: msg.conversationId,
-                senderEmail: msg.senderEmail === email ? 'You' : msg.senderEmail,
+                senderId: msg.senderId === userId ? 'You' : msg.senderId,
                 senderAvatar: msg.senderAvatar,
                 message: msg.message,
                 createdAt: msg.createdAt
@@ -149,7 +170,7 @@ export default function Chatblock({
           if (prev) {
             return {
               ...prev,
-              lastMessage: msg.message,
+              lastMessage: { ...msg.message, senderId: msg.senderId },
               _id: msg.conversationId
             }
           }
@@ -159,7 +180,7 @@ export default function Chatblock({
           if (prev) {
             return {
               ...prev,
-              lastMessage: msg.message,
+              lastMessage: { ...msg.message, senderId: msg.senderId },
               _id: msg.conversationId
             }
           }
@@ -171,7 +192,7 @@ export default function Chatblock({
         socket.off('chat message')
       }
     }
-  }, [email])
+  }, [userId])
 
   return (
     <div
@@ -194,7 +215,7 @@ export default function Chatblock({
           </Button>
           <div className='flex items-center gap-2 lg:gap-4'>
             <Avatar className='size-9 lg:size-11'>
-              <AvatarImage src={selectedConversation?.avatarImg} alt={selectedConversation?.userEmail} />
+              <AvatarImage src={selectedConversation?.avatarImg} alt={selectedConversation?.userId} />
               <AvatarFallback></AvatarFallback>
             </Avatar>
             <div>
@@ -233,10 +254,10 @@ export default function Chatblock({
                     <Fragment key={key}>
                       {messages[key].map((msg, index) => (
                         <div
-                          key={`${msg.senderEmail}-${msg.createdAt}-${index}`}
+                          key={`${msg.senderId}-${msg.createdAt}-${index}`}
                           className={cn(
                             'max-w-72 break-words px-3 py-2 shadow-lg',
-                            msg.senderEmail === 'You'
+                            msg.senderId === 'You'
                               ? 'self-end rounded-[16px_16px_0_16px] bg-primary/85 text-primary-foreground/75'
                               : 'self-start rounded-[16px_16px_16px_0] bg-secondary'
                           )}
@@ -245,7 +266,7 @@ export default function Chatblock({
                           <span
                             className={cn(
                               'mt-1 block text-xs font-light italic text-muted-foreground',
-                              msg.senderEmail === 'You' && 'text-right'
+                              msg.senderId === 'You' && 'text-right'
                             )}
                           >
                             {dayjs(msg.createdAt).format('h:mm a')}
