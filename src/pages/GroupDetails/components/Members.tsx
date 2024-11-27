@@ -32,7 +32,7 @@ export default function Members({ groupDetails }: MembersProps) {
   const { userId } = useContext(AppContext)
 
   useEffect(() => {
-    getMembers({ id, memberId: userId }).then((response) => {
+    getMembers({ id, userId }).then((response) => {
       const status = response.status
       if (status === 200) {
         setMembers(Array.isArray(response.data.data) ? response.data.data : [response.data.data])
@@ -41,7 +41,7 @@ export default function Members({ groupDetails }: MembersProps) {
   }, [])
 
   const handleAcceptRequest = (memberId: string) => {
-    acceptJoinRequest({ id, memberId }).then((response) => {
+    acceptJoinRequest({ id, userId: memberId }).then((response) => {
       const status = response.status
       if (status === 200) {
         setMembers(
@@ -58,7 +58,7 @@ export default function Members({ groupDetails }: MembersProps) {
   }
 
   const handleRejectRequest = (memberId: string) => {
-    rejectJoinRequest({ id, memberId }).then((response) => {
+    rejectJoinRequest({ id, userId: memberId }).then((response) => {
       const status = response.status
       if (status === 200) {
         setMembers(members.filter((member) => member.userId !== memberId))
@@ -84,16 +84,19 @@ export default function Members({ groupDetails }: MembersProps) {
   }
 
   const handleKickClick = (memberId: string) => {
-    removeMember({ id, memberId }).then((response) => {
+    removeMember({ id, userId: memberId }).then((response) => {
       const status = response?.status
       if (status === 200) {
         setMembers(members.filter((member) => member.userId !== memberId))
+        toast.success(t('group.kickSuccessful'))
+      } else {
+        toast.error(t('group.kickFailed'))
       }
     })
   }
 
   const handleDismissalClick = (memberId: string) => {
-    dismissalModerator({ id, memberId }).then((response) => {
+    dismissalModerator({ id, userId: memberId }).then((response) => {
       const status = response?.status
       if (status === 200) {
         setMembers(
@@ -104,12 +107,15 @@ export default function Members({ groupDetails }: MembersProps) {
             return member
           })
         )
+        toast.success(t('group.dismissalSuccessful'))
+      } else {
+        toast.error(t('group.dismissalFailed'))
       }
     })
   }
 
   const handleAppointClick = (memberId: string) => {
-    appointModerator({ id, memberId }).then((response) => {
+    appointModerator({ id, userId: memberId }).then((response) => {
       const status = response.status
       if (status === 200) {
         setMembers(
@@ -120,17 +126,41 @@ export default function Members({ groupDetails }: MembersProps) {
             return member
           })
         )
+        toast.success(t('group.appointSuccessful'))
+      } else {
+        toast.error(t('group.appointFailed'))
       }
     })
   }
+
+  const moderators = members.filter((member) => member.role === 'moderator')
+  const membersList = members.filter((member) => member.role === 'member')
+  const pendingMembers = members.filter((member) => member.role === 'pending')
 
   return (
     <div className='lg:flex block gap-4'>
       <div className='flex-1'>
         <div className='border rounded-md p-2 h-fit'>
           <p className='font-semibold'>{t('group.moderators')}</p>
-          {members.length === 0 ? (
-            <p>{t('group.noModerator')}</p>
+          {moderators.length === 0 ? (
+            <div className='flex flex-col items-center justify-center h-full py-10 flex-1'>
+              <svg
+                className='w-16 h-16 text-gray-400'
+                fill='none'
+                stroke='currentColor'
+                viewBox='0 0 24 24'
+                xmlns='http://www.w3.org/2000/svg'
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth='2'
+                  d='M3 15a4 4 0 004 4h10a4 4 0 004-4M3 15a4 4 0 014-4h10a4 4 0 014 4M3 15V9a4 4 0 014-4h10a4 4 0 014 4v6M3 9a4 4 0 014-4h10a4 4 0 014 4v6'
+                />
+              </svg>
+              <h2 className='mt-4 text-xl font-semibold text-gray-700'>{t('group.noMember')}</h2>
+              <p className='mt-2 text-gray-500'>{t('noDataDescription')}</p>
+            </div>
           ) : (
             <ScrollArea className='space-y-2 h-72'>
               {members.map(
@@ -150,7 +180,7 @@ export default function Members({ groupDetails }: MembersProps) {
                           {`${t('group.joinedAt')} ${convertISODateToLocaleString(member.joinDate.toString())}`}
                         </p>
                       </div>
-                      {groupDetails?.canEdit && (
+                      {groupDetails?.canEdit && member.userId !== userId && (
                         <DropdownMenu>
                           <DropdownMenuTrigger className='h-10 outline-none flex justify-center items-center border rounded-full p-1'>
                             <EllipsisVertical />
@@ -182,8 +212,25 @@ export default function Members({ groupDetails }: MembersProps) {
         </div>
         <div className='border rounded-md p-2 mt-4 h-fit'>
           <p className='font-semibold'>{t('group.members')}</p>
-          {members.length === 0 ? (
-            <p>{t('group.noMember')}</p>
+          {membersList.length === 0 ? (
+            <div className='flex flex-col items-center justify-center h-full py-10 flex-1'>
+              <svg
+                className='w-16 h-16 text-gray-400'
+                fill='none'
+                stroke='currentColor'
+                viewBox='0 0 24 24'
+                xmlns='http://www.w3.org/2000/svg'
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth='2'
+                  d='M3 15a4 4 0 004 4h10a4 4 0 004-4M3 15a4 4 0 014-4h10a4 4 0 014 4M3 15V9a4 4 0 014-4h10a4 4 0 014 4v6M3 9a4 4 0 014-4h10a4 4 0 014 4v6'
+                />
+              </svg>
+              <h2 className='mt-4 text-xl font-semibold text-gray-700'>{t('group.noMember')}</h2>
+              <p className='mt-2 text-gray-500'>{t('noDataDescription')}</p>
+            </div>
           ) : (
             <ScrollArea className='space-y-2 h-screen'>
               {members.map(
@@ -204,7 +251,7 @@ export default function Members({ groupDetails }: MembersProps) {
                           {`${t('group.joinedAt')} ${convertISODateToLocaleString(member.joinDate.toString())}`}
                         </p>
                       </div>
-                      {groupDetails?.canEdit && (
+                      {groupDetails?.canEdit && member.userId !== userId && (
                         <DropdownMenu>
                           <DropdownMenuTrigger className='h-10 outline-none flex justify-center items-center border rounded-full p-1'>
                             <EllipsisVertical />
@@ -236,8 +283,25 @@ export default function Members({ groupDetails }: MembersProps) {
       {groupDetails?.isPrivate && userId === groupDetails.ownerId && (
         <div className='border rounded-md p-2 lg:mt-0 mt-4 lg:w-1/3 h-fit'>
           <p className='font-semibold'>{t('group.requests')}</p>
-          {members.length === 0 ? (
-            <p>{t('group.noRequests')}</p>
+          {pendingMembers.length === 0 ? (
+            <div className='flex flex-col items-center justify-center h-full py-10 flex-1'>
+              <svg
+                className='w-16 h-16 text-gray-400'
+                fill='none'
+                stroke='currentColor'
+                viewBox='0 0 24 24'
+                xmlns='http://www.w3.org/2000/svg'
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth='2'
+                  d='M3 15a4 4 0 004 4h10a4 4 0 004-4M3 15a4 4 0 014-4h10a4 4 0 014 4M3 15V9a4 4 0 014-4h10a4 4 0 014 4v6M3 9a4 4 0 014-4h10a4 4 0 014 4v6'
+                />
+              </svg>
+              <h2 className='mt-4 text-xl font-semibold text-gray-700'>{t('group.noRequest')}</h2>
+              <p className='mt-2 text-gray-500'>{t('noDataDescription')}</p>
+            </div>
           ) : (
             <ScrollArea className='space-y-2 h-screen'>
               {members.map(

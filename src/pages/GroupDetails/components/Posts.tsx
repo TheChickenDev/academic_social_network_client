@@ -86,6 +86,7 @@ export default function Posts({ canEdit }: { canEdit: boolean }) {
       if (status === 200) {
         toast.success(t('group.approvePostSuccessful'))
         setRequests(requests.filter((request) => request._id !== postId))
+        setPosts((oldPosts) => [requests.find((request) => request._id === postId) as PostProps, ...oldPosts])
       } else {
         toast.error(t('group.approvePostFailed'))
       }
@@ -189,12 +190,12 @@ export default function Posts({ canEdit }: { canEdit: boolean }) {
         </div>
       )}
       {canEdit && (
-        <div className='lg:w-1/3 border rounded-md p-2'>
+        <div className='lg:w-1/3 border h-fit rounded-md p-2'>
           <h2 className='font-semibold'>{t('group.requests')}</h2>
           {requests.length > 0 ? (
             <ScrollArea className='h-screen'>
               {requests.map((post: PostProps) => (
-                <div className='flex items-center justify-start gap-2'>
+                <div key={post._id} className='flex items-center justify-start gap-2'>
                   <Avatar>
                     <AvatarImage src={post.ownerAvatar} />
                     <AvatarFallback />
@@ -226,7 +227,24 @@ export default function Posts({ canEdit }: { canEdit: boolean }) {
               ))}
             </ScrollArea>
           ) : (
-            <p>{t('group.noRequest')}</p>
+            <div className='flex flex-col items-center justify-center py-10 flex-1'>
+              <svg
+                className='w-16 h-16 text-gray-400'
+                fill='none'
+                stroke='currentColor'
+                viewBox='0 0 24 24'
+                xmlns='http://www.w3.org/2000/svg'
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth='2'
+                  d='M3 15a4 4 0 004 4h10a4 4 0 004-4M3 15a4 4 0 014-4h10a4 4 0 014 4M3 15V9a4 4 0 014-4h10a4 4 0 014 4v6M3 9a4 4 0 014-4h10a4 4 0 014 4v6'
+                />
+              </svg>
+              <h2 className='mt-4 text-xl font-semibold text-gray-700'>{t('group.noRequest')}</h2>
+              <p className='mt-2 text-gray-500'>{t('noDataDescription')}</p>
+            </div>
           )}
         </div>
       )}

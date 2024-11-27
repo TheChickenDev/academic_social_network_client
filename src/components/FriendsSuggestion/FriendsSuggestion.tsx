@@ -44,7 +44,24 @@ export default function FriendsSuggestion() {
           </Fragment>
         ))
       ) : (
-        <p>{t('friend.noUserFound')}</p>
+        <div className='flex flex-col items-center justify-center h-full py-10 flex-1'>
+          <svg
+            className='w-16 h-16 text-gray-400'
+            fill='none'
+            stroke='currentColor'
+            viewBox='0 0 24 24'
+            xmlns='http://www.w3.org/2000/svg'
+          >
+            <path
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              strokeWidth='2'
+              d='M3 15a4 4 0 004 4h10a4 4 0 004-4M3 15a4 4 0 014-4h10a4 4 0 014 4M3 15V9a4 4 0 014-4h10a4 4 0 014 4v6M3 9a4 4 0 014-4h10a4 4 0 014 4v6'
+            />
+          </svg>
+          <h2 className='mt-4 text-xl font-semibold text-gray-700'>{t('friend.noUserFound')}</h2>
+          <p className='mt-2 text-gray-500'>{t('noDataDescription')}</p>
+        </div>
       )}
     </div>
   )

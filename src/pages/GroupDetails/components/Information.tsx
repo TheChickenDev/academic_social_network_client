@@ -57,7 +57,7 @@ export default function Information({ group }: { group: GroupProps | null }) {
               <AvatarFallback />
             </Avatar>
             <div className='ml-4'>
-              <p>{group?.ownerName}</p>
+              <Link to={paths.profile.replace(':id', group.ownerId)}>{group?.ownerName}</Link>
               <p className='text-sm text-gray-500'>{group?.ownerRank ? group?.ownerRank : t('myAccount.noRank')}</p>
             </div>
           </div>

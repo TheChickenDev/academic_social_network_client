@@ -15,7 +15,7 @@ export default function MyGroups() {
   const { userId } = useContext(AppContext)
 
   useEffect(() => {
-    getGroups({ ownerId: userId, type: 'own' }).then((response) => {
+    getGroups({ userId, type: 'own' }).then((response) => {
       const status = response.status
       if (status === 200) {
         setMyGroups(Array.isArray(response.data.data) ? response.data.data : [response.data.data])

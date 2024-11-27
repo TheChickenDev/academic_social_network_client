@@ -363,7 +363,13 @@
     "approvePostSuccessful": "Post approved successfully!",
     "approvePostFailed": "An error occurred while approving post. Please try again later.",
     "rejectPostSuccessful": "Post rejected successfully!",
-    "rejectPostFailed": "An error occurred while rejecting post. Please try again later."
+    "rejectPostFailed": "An error occurred while rejecting post. Please try again later.",
+    "kickSuccessful": "Member kicked successfully!",
+    "kickFailed": "An error occurred while kicking member. Please try again later.",
+    "appointSuccessful": "Moderator appointed successfully!",
+    "appointFailed": "An error occurred while appointing moderator. Please try again later.",
+    "dismissalSuccessful": "Moderator dismissed successfully!",
+    "dismissalFailed": "An error occurred while dismissing moderator. Please try again later."
   },
   "gender": {
     "Male": "Male",
