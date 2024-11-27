@@ -12,10 +12,10 @@ import { toast } from 'sonner'
 export default function GroupsSuggestion() {
   const { t } = useTranslation()
   const [suggestions, setSuggestions] = useState<GroupProps[]>([])
-  const { email } = useContext(AppContext)
+  const { userId } = useContext(AppContext)
 
   const handleJoinGroup = (id: string, isPrivate: boolean) => {
-    requestToJoin({ id, userEmail: email }).then((response) => {
+    requestToJoin({ id, userId }).then((response) => {
       const status = response.status
       if (status === 200) {
         if (isPrivate) {
@@ -29,7 +29,7 @@ export default function GroupsSuggestion() {
   }
 
   useEffect(() => {
-    getGroups({ getList: true, userEmail: email }).then((response) => {
+    getGroups({ getList: true, userId }).then((response) => {
       const status = response.status
       if (status === 200) {
         setSuggestions(Array.isArray(response.data.data) ? response.data.data : [response.data.data])

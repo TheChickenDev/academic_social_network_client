@@ -26,7 +26,7 @@ export default function Information({ group }: { group: GroupProps | null }) {
         <div className='border rounded-md text-center px-4 py-12'>
           <Avatar className='md:w-32 md:h-32 w-24 h-24 border m-auto'>
             <AvatarImage src={group?.avatarImg} />
-            <AvatarFallback />
+            <AvatarFallback isGroupAvatar={true} />
           </Avatar>
           <p className='md:text-2xl text-lg font-bold mt-4'>{group?.name ?? t('group.noName')}</p>
           <p className='text-base text-gray-500'>
@@ -57,7 +57,7 @@ export default function Information({ group }: { group: GroupProps | null }) {
               <AvatarFallback />
             </Avatar>
             <div className='ml-4'>
-              <p>{group?.ownerName ? group?.ownerName : group?.ownerEmail}</p>
+              <p>{group?.ownerName}</p>
               <p className='text-sm text-gray-500'>{group?.ownerRank ? group?.ownerRank : t('myAccount.noRank')}</p>
             </div>
           </div>

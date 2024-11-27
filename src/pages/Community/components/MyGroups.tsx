@@ -12,17 +12,17 @@ export default function MyGroups() {
   const { t } = useTranslation()
   const [myGroups, setMyGroups] = useState<GroupProps[]>([])
   const [joinedGroups, setJoinedGroups] = useState<GroupProps[]>([])
-  const { email } = useContext(AppContext)
+  const { userId } = useContext(AppContext)
 
   useEffect(() => {
-    getGroups({ ownerEmail: email }).then((response) => {
+    getGroups({ ownerId: userId, type: 'own' }).then((response) => {
       const status = response.status
       if (status === 200) {
         setMyGroups(Array.isArray(response.data.data) ? response.data.data : [response.data.data])
       }
     })
 
-    getGroups({ memberEmail: email, getList: true }).then((response) => {
+    getGroups({ userId: userId, type: 'joined' }).then((response) => {
       const status = response.status
       if (status === 200) {
         setJoinedGroups(Array.isArray(response.data.data) ? response.data.data : [response.data.data])

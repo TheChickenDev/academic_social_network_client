@@ -50,7 +50,7 @@ export interface PostQuery {
   groupId?: string
   userId?: string
   ownerId?: string
-  type?: 'random' | 'own' | 'saved' | 'group'
+  type?: 'random' | 'own' | 'saved' | 'group' | 'inGroups'
 }
 
 export interface CommentQuery {

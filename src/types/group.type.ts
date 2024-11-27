@@ -44,10 +44,10 @@ export interface GroupProps {
 export interface GroupQuery {
   id?: string
   ownerId?: string
-  memberId?: string
-  getList?: boolean
+  userId?: string
   page?: number
   limit?: number
+  type?: 'byId' | 'own' | 'joined' | 'random'
   memberRole?: 'pending' | 'member' | 'moderator' | 'admin'
   postStatus?: 'pending' | 'approved' | 'rejected'
   postId?: string

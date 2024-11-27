@@ -44,17 +44,17 @@ export function GroupDetailsSidebar({ ...props }: ComponentProps<typeof Sidebar>
   const [groupDetails, setGroupDetails] = useState<GroupProps | null>(null)
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { isAuthenticated, email } = useContext(AppContext)
+  const { isAuthenticated, userId } = useContext(AppContext)
 
   useEffect(() => {
-    getGroups({ id, userEmail: email }).then((response) => {
+    getGroups({ id, userId, type: 'byId' }).then((response) => {
       const groupData = Array.isArray(response.data.data) ? response.data.data[0] : response.data.data
       setGroupDetails(groupData)
     })
   }, [])
 
   const handleJoinGroup = () => {
-    requestToJoin({ id, userEmail: email }).then((response) => {
+    requestToJoin({ id, userId }).then((response) => {
       const status = response.status
       if (status === 200) {
         if (groupDetails?.isPrivate) {
@@ -70,7 +70,7 @@ export function GroupDetailsSidebar({ ...props }: ComponentProps<typeof Sidebar>
   }
 
   const handleLeaveGroup = () => {
-    removeMember({ id, userEmail: email }).then((response) => {
+    removeMember({ id, userId }).then((response) => {
       const status = response.status
       if (status === 200) {
         toast.success(t('group.haveLeftGroup'))
@@ -166,7 +166,7 @@ export function GroupDetailsSidebar({ ...props }: ComponentProps<typeof Sidebar>
                     </SidebarMenuItem>
                   </>
                 )}
-                {isAuthenticated && email === groupDetails?.ownerEmail && (
+                {isAuthenticated && userId === groupDetails?.ownerId && (
                   <SidebarMenuItem>
                     <SidebarMenuButton
                       tooltip={{
@@ -215,7 +215,7 @@ export function GroupDetailsSidebar({ ...props }: ComponentProps<typeof Sidebar>
                     {groupDetails.isPrivate ? t('group.requestToJoin') : t('group.join')}
                   </Button>
                 ) : (
-                  groupDetails.ownerEmail !== email && <Button onClick={handleLeaveGroup}>{t('action.leave')}</Button>
+                  groupDetails.ownerId !== userId && <Button onClick={handleLeaveGroup}>{t('action.leave')}</Button>
                 )
               ) : activeItem === 'Posts' && groupDetails?.canPost ? (
                 <Button onClick={() => navigate(`${paths.postEditor}?groupId=${id}`)}>
@@ -233,7 +233,7 @@ export function GroupDetailsSidebar({ ...props }: ComponentProps<typeof Sidebar>
             <Posts canEdit={groupDetails?.canEdit ?? false} />
           ) : activeItem === 'Members' ? (
             <Members groupDetails={groupDetails} />
-          ) : groupDetails?.ownerEmail === email && activeItem === 'Settings' ? (
+          ) : groupDetails?.ownerId === userId && activeItem === 'Settings' ? (
             <EditInformationForm groupDetails={groupDetails} setGroupDetails={setGroupDetails} />
           ) : null}
         </div>

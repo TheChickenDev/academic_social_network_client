@@ -81,7 +81,7 @@ export default function EditProfileForm({ userDetails, setUserDetails, setEditMo
     defaultValues: {
       name: userDetails?.fullName ?? '',
       phoneNumber: userDetails?.introduction?.contact?.phone ?? t('myAccount.noPhoneNumber'),
-      gender: (userDetails?.gender as 'Male' | 'Female' | 'Other' | '') ?? t('myAccount.noGender'),
+      gender: userDetails?.gender ? userDetails.gender : 'Male',
       address: userDetails?.introduction?.address ?? t('myAccount.noAddress'),
       aboutMe: userDetails?.description ?? t('myAccount.noAboutMe')
     }

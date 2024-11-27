@@ -119,7 +119,7 @@ export default function EditInformationForm({ groupDetails, setGroupDetails }: E
       <Label htmlFor='avatar' className='w-fit block m-auto'>
         <Avatar className='md:w-32 md:h-32 w-24 h-24 border m-auto hover:opacity-80 cursor-pointer'>
           <AvatarImage src={avatar} />
-          <AvatarFallback />
+          <AvatarFallback isGroupAvatar={true} />
         </Avatar>
       </Label>
       <input type='file' accept='image/*' id='avatar' onChange={handleSelectAvatar} className='hidden' />

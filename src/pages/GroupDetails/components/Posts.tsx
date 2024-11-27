@@ -33,7 +33,8 @@ export default function Posts({ canEdit }: { canEdit: boolean }) {
         page: pageParam as number,
         limit: postDefaultQuery.limit,
         groupId: id,
-        userId
+        userId,
+        type: 'group'
       })
       return response.data.data
     },

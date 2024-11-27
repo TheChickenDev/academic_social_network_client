@@ -22,7 +22,7 @@ export default function Posts() {
       const response = await getPosts({
         page: pageParam as number,
         limit: postDefaultQuery.limit,
-        ownerId: id,
+        userId: id,
         type: 'own'
       })
       return response.data.data

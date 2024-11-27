@@ -30,7 +30,7 @@ export default function CreateGroupDialog() {
   const descriptionMessageRef = useRef<HTMLParagraphElement>(null)
   const [isPrivate, setIsPrivate] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const { email } = useContext(AppContext)
+  const { userId } = useContext(AppContext)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -80,7 +80,7 @@ export default function CreateGroupDialog() {
     }
 
     setIsLoading(true)
-    createGroup({ name: groupName, description, ownerEmail: email ?? '', isPrivate })
+    createGroup({ name: groupName, description, ownerId: userId ?? '', isPrivate })
       .then((response) => {
         const status = response.status
         if (status === 201) {
