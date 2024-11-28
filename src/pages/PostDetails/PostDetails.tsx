@@ -11,12 +11,12 @@ import { useParams } from 'react-router-dom'
 
 export default function PostDetails() {
   const { t } = useTranslation()
-  const { email } = useContext(AppContext)
+  const { userId } = useContext(AppContext)
   const params = useParams()
   const { isLoading, data } = useQuery({
     queryKey: ['post', params.id],
     queryFn: async () => {
-      const response = await getPostsById(params.id ?? '', { userEmail: email ?? '' })
+      const response = await getPostsById(params.id ?? '', { userId: userId ?? '' })
       return response.data.data
     },
     staleTime: 10 * 60 * 1000,

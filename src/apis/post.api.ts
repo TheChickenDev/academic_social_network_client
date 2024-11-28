@@ -10,7 +10,7 @@ export const getPosts = (params: PostQuery) => {
   return http.get<SuccessResponse<PostProps[]>>('posts', { params })
 }
 
-export const getPostsById = (id: string, params: { userEmail: string }) => {
+export const getPostsById = (id: string, params: { userId: string }) => {
   return http.get<SuccessResponse<PostProps>>(`posts/${id}`, { params })
 }
 
