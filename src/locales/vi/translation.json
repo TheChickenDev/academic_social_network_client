@@ -11,6 +11,14 @@
   "confirmPassword": "Xác nhận mật khẩu",
   "link": "Liên kết",
   "image": "Hình ảnh",
+  "noData": "Chưa có dữ liệu",
+  "noDataDescription": "Hiện tại dữ liệu bạn yêu cầu không có sẵn.",
+  "alertDialog": {
+    "message": "Bạn có chắc chắn không?",
+    "description": "Bạn sẽ không thể hoàn tác điều này! Điều này sẽ xóa vĩnh viễn dữ liệu của bạn khỏi máy chủ của chúng tôi.",
+    "confirm": "Xác nhận",
+    "cancel": "Hủy"
+  },
   "auth": {
     "pleaseLogin": "Vui lòng đăng nhập để tiếp tục",
     "authenticaitonError": "Lỗi xác thực"
@@ -27,7 +35,9 @@
     "notification": "Thông báo",
     "profile": "Tài khoản",
     "contributeIdeas": "Đóng góp ý kiến",
-    "post": "Bài viết"
+    "post": "Bài viết",
+    "group": "Nhóm",
+    "search": "Tìm kiếm"
   },
   "components": {
     "popularTags": "Thẻ phổ biến",
@@ -43,7 +53,7 @@
     "text2": "Kết nối và Phát triển",
     "text3": "Hành trình của bạn bắt đầu từ đây.",
     "joinUs": "Tham gia ngay!",
-    "privacyTerms": "Điều khoản bảo mật & Chính sách",
+    "privacyTerms": "Điều khoản & chính sách",
     "about": "Về chúng tôi",
     "helpCenter": "Trợ giúp"
   },
@@ -67,7 +77,11 @@
     "passwordNotMatch": "Mật khẩu không khớp",
     "text1": "Kết nối với bạn bè và những người khác chưa bao giờ dễ đến thể. Eurekas sẽ mang mọi người lại gần nhau hơn.",
     "text2": "HCMUTE - FIT - K21",
-    "acceptTerms": "Bằng cách nhấp vào Tiếp tục, bạn đồng ý với Điều khoản Dịch vụ và Chính sách Bảo mật của chúng tôi."
+    "acceptTerms": "Bằng cách nhấp vào Tiếp tục, bạn đồng ý với Điều khoản Dịch vụ và Chính sách Bảo mật của chúng tôi.",
+    "invalidCredentials": "Email hoặc mật khẩu không chính xác. Vui lòng thử lại.",
+    "forgotPasswordSuccessful": "Chúng tôi đã gửi email đặt lại mật khẩu. Vui lòng kiểm tra email của bạn.",
+    "forgotPasswordFailed": "Có lỗi xảy ra khi gửi email đặt lại mật khẩu. Vui lòng thử lại sau.",
+    "forgotPasswordDescription": "Chúng tôi sẽ gửi liên kết đặt lại mật khẩu đến email này."
   },
   "register": {
     "title": "Đăng ký",
@@ -105,6 +119,7 @@
     "tagError": "Vui lòng chọn ít nhất 1 thẻ",
     "description": "Mô tả",
     "descriptionPlaceholder": "Nhập mô tả bài viết của bạn ở đây...",
+    "commentPlaceholder": "Nhập bình luận của bạn ở đây...",
     "descriptionDescription": "Mô tả chi tiết vấn đề bạn đang gặp phải trong khoảng 20 đến 2000 ký tự.",
     "descriptionError": "Vui lòng nhập mô tả từ 20 đến 2000 ký tự",
     "createSuccessful": "Đăng bài viết thành công!",
@@ -119,6 +134,16 @@
     "alreadyDisliked": "Bạn đã không thích bài viết này rồi!",
     "alreadyLikedComment": "Bạn đã thích bình luận này rồi!",
     "alreadyDislikedComment": "Bạn đã không thích bình luận này rồi!",
+    "savePost": "Lưu bài viết",
+    "unsavePost": "Bỏ lưu bài viết",
+    "savePostSuccessful": "Đã lưu bài viết thành công!",
+    "unsavePostSuccessful": "Đã bỏ lưu bài viết thành công!",
+    "savePostFailed": "Có lỗi xảy ra khi lưu bài viết. Vui lòng thử lại sau.",
+    "unsavePostFailed": "Có lỗi xảy ra khi bỏ lưu bài viết. Vui lòng thử lại sau.",
+    "reportPost": "Báo cáo bài viết",
+    "reportPostSuccessful": "Đã báo cáo bài viết thành công!",
+    "reportPostFailed": "Có lỗi xảy ra khi báo cáo bài viết. Vui lòng thử lại sau.",
+    "actionSuccessful": "Thành công!",
     "actionFailed": "Có lỗi xảy ra khi xử lý yêu cầu của bạn. Vui lòng thử lại sau."
   },
   "minimalEditor": {
@@ -168,6 +193,7 @@
     "preview": "Xem trước",
     "cancel": "Hủy",
     "close": "Đóng",
+    "add": "Thêm",
     "edit": "Chỉnh sửa",
     "signOut": "Đăng xuất",
     "signIn": "Đăng nhập",
@@ -176,6 +202,22 @@
     "like": "Thích",
     "dislike": "Không thích",
     "reply": "Trả lời",
-    "comment": "Bình luận"
+    "comment": "Bình luận",
+    "search": "Tìm kiếm",
+    "report": "Báo cáo",
+    "confirm": "Xác nhận",
+    "unsave": "Bỏ lưu",
+    "addFriend": "Kết bạn",
+    "kick": "Xóa khỏi nhóm",
+    "appoint": "Cấp quyền quản trị viên nhóm",
+    "dismissal": "Hủy quyền quản trị viên nhóm",
+    "accept": "Chấp nhận",
+    "reject": "Từ chối",
+    "unfriend": "Hủy kết bạn",
+    "message": "Nhắn tin",
+    "approve": "Phê duyệt",
+    "leave": "Rời khỏi nhóm",
+    "send": "Gửi",
+    "signOutSuccessful": "Đăng xuất thành công!"
   }
 }
