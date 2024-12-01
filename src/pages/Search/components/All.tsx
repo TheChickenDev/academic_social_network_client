@@ -27,7 +27,7 @@ export default function All({ q, type, filter }: SearchQueryParams) {
         if (!Array.isArray(response.data.data)) {
           setData({
             posts: response.data.data.posts,
-            users: response.data.data.users.map((friend: Friend) => ({ ...friend, canAddFriend: true })),
+            users: response.data.data.users,
             groups: response.data.data.groups
           })
         }
@@ -177,6 +177,8 @@ function Item({ friend, setData }: ItemProps) {
     })
   }
 
+  console.log(friend)
+
   return (
     <div className='flex gap-4'>
       <Avatar className='w-12 h-12'>
@@ -184,14 +186,16 @@ function Item({ friend, setData }: ItemProps) {
         <AvatarFallback />
       </Avatar>
       <div className='w-full'>
-        <p className='font-semibold'>{friend?.fullName ?? t('friend.friendVirtualName')}</p>
+        <Link to={paths.profile.replace(':id', friend._id)} className='font-semibold'>
+          {friend?.fullName ?? t('friend.friendVirtualName')}
+        </Link>
         <p className='text-sm text-gray-500'>{friend?.rank ? friend.rank : t('myAccount.noRank')}</p>
         {friend?.canAddFriend ? (
           <Button onClick={handleAddFriendClick} className='mt-2 float-right'>
             {t('action.addFriend')}
           </Button>
         ) : (
-          <p>{t('friend.haveSendFriendRequest')}</p>
+          <p>{t('friend.youAreFriends')}</p>
         )}
       </div>
     </div>
