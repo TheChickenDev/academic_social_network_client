@@ -37,7 +37,8 @@
     "post": "Post",
     "group": "Group",
     "profile": "Profile",
-    "search": "Search"
+    "search": "Search",
+    "dashboard": "Dashboard"
   },
   "components": {
     "popularTags": "Popular tags",
@@ -416,5 +417,32 @@
     "confirmNewPassword": "Confirm New Password",
     "success": "Password reset successfully!",
     "error": "Failed to reset password!"
+  },
+  "admin": {
+    "users": "Users",
+    "posts": "Posts",
+    "groups": "Groups",
+    "settings": "Settings",
+    "fullName": "Full name",
+    "dateOfBirth": "Date of birth",
+    "gender": "Gender",
+    "points": "Points",
+    "rank": "Rank",
+    "title": "Title",
+    "owner": "Owner",
+    "createdAt": "Created at",
+    "ownerEmail": "Owner email",
+    "actions": "Actions",
+    "copyEmail": "Copy email",
+    "seeDetails": "See details",
+    "deleteAccount": "Delete account",
+    "columns": "Columns",
+    "next": "Next",
+    "previous": "Previous",
+    "noDataAvailable": "No data available",
+    "filterEmail": "Filter by email",
+    "filterName": "Filter by name",
+    "filterTitle": "Filter by title",
+    "filterOwner": "Filter by owner"
   }
 }

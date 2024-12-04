@@ -10,7 +10,10 @@ const paths = {
   postEditor: '/posts',
   postDetails: '/posts/:id',
   groupDetails: '/groups/:id',
-  search: '/search'
+  search: '/search',
+  admin: '/admin'
 } as const
+
+export const exceptAdminPaths = ['/users', '/posts', '/groups']
 
 export default paths

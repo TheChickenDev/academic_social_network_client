@@ -6,8 +6,16 @@ export const getUser = (params: UserQuery) => {
   return http.get<SuccessResponse<User | Friend[]>>('users', { params })
 }
 
+export const getUsers = (params: UserQuery) => {
+  return http.get<SuccessResponse<User[]>>('users', { params })
+}
+
 export const updateUser = (body: FormData) => {
   return http.patch<SuccessResponse<User>>('users', body)
+}
+
+export const deleteUser = (userId: string) => {
+  return http.delete<SuccessResponse<undefined>>('users', { params: { userId } })
 }
 
 export const savePost = (body: { userId: string; postId: string }) => {

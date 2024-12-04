@@ -58,7 +58,7 @@ export default function Post({
   actionCallback?: (id: string) => void
 }) {
   const { t } = useTranslation()
-  const { userId, isAuthenticated } = useContext(AppContext)
+  const { userId, isAuthenticated, isAdmin } = useContext(AppContext)
   const [postDetails, setPostDetails] = useState<PostProps>(post)
   const [commentDialog, setCommentDialog] = useState<boolean>(false)
   const [editorContent, setEditorContent] = useState<Content>('')
@@ -122,7 +122,7 @@ export default function Post({
   })
 
   const handleLikeClick = () => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated || isAdmin) {
       toast.warning(t('auth.pleaseLogin'))
       return
     }
@@ -136,7 +136,7 @@ export default function Post({
   }
 
   const handleDislikeClick = () => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated || isAdmin) {
       toast.warning(t('auth.pleaseLogin'))
       return
     }
@@ -293,7 +293,7 @@ export default function Post({
 
   return (
     <div className='relative rounded-md border p-4 text-black dark:text-white bg-white dark:bg-dark-primary'>
-      {isAuthenticated && (
+      {isAuthenticated && !isAdmin && (
         <div className='absolute top-2 right-2 p-2'>
           {postDetails?.ownerId === userId && ownerMode ? (
             <AlertDialog>
@@ -448,7 +448,8 @@ export default function Post({
             <MessageCircle className='ml-2' />
           </Button>
         ) : (
-          isAuthenticated && (
+          isAuthenticated &&
+          !isAdmin && (
             <Dialog onOpenChange={setCommentDialog} open={commentDialog}>
               <DialogTrigger asChild>
                 <Button>{t('action.comment')}</Button>

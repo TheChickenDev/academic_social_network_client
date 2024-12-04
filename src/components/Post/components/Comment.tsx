@@ -35,7 +35,7 @@ export default function Comment({
   setPostDetails?: Dispatch<SetStateAction<PostProps>>
 }) {
   const { t } = useTranslation()
-  const { userId, isAuthenticated } = useContext(AppContext)
+  const { userId, isAuthenticated, isAdmin } = useContext(AppContext)
   const [commentDialog, setCommentDialog] = useState<boolean>(false)
   const [editorContent, setEditorContent] = useState<Content>('')
   const [commentDetails, setCommentDetails] = useState<CommentProps>(comment)
@@ -133,7 +133,7 @@ export default function Comment({
   })
 
   const handleLikeClick = () => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated || isAdmin) {
       toast.warning(t('auth.pleaseLogin'))
       return
     }
@@ -149,7 +149,7 @@ export default function Comment({
   }
 
   const handleDislikeClick = () => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated || isAdmin) {
       toast.warning(t('auth.pleaseLogin'))
       return
     }
@@ -353,7 +353,7 @@ export default function Comment({
                 </HoverCardContent>
               </HoverCard>
             </div>
-            {!isReply && isAuthenticated && (
+            {!isReply && isAuthenticated && !isAdmin && (
               <Dialog onOpenChange={setCommentDialog} open={commentDialog}>
                 <DialogTrigger asChild>
                   <Button variant='outline'>{t('action.reply')}</Button>

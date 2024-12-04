@@ -18,6 +18,7 @@ import PostDetails from '@/pages/PostDetails/PostDetails'
 import GroupDetails from '@/pages/GroupDetails'
 import Search from '@/pages/Search'
 import NotFoundError from '@/pages/Errors/NotFound'
+import AdminDashboard from '@/pages/AdminDashboard'
 
 const ProtectedRoute = () => {
   const { isAuthenticated } = useContext(AppContext)
@@ -62,6 +63,10 @@ const routes: RouteObject[] = [
         <MyAccount />
       </DefaultLayout>
     )
+  },
+  {
+    path: paths.admin,
+    element: <AdminDashboard />
   },
   {
     path: '',

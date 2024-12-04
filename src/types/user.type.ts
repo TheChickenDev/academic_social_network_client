@@ -52,7 +52,7 @@ export interface User {
   email: string
   password: string
   fullName: string
-  dateOfBirth: Date
+  dateOfBirth: Date | string
   gender: 'Male' | 'Female' | 'Other' | ''
   introduction: Introduction
   description: string

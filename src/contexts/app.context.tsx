@@ -16,6 +16,7 @@ interface AppContextInterface {
   isAuthenticated: boolean
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>
   isAdmin?: boolean
+  setIsAdmin?: React.Dispatch<React.SetStateAction<boolean>>
   userId?: string
   setUserId?: React.Dispatch<React.SetStateAction<string>>
   email?: string
@@ -34,6 +35,7 @@ const initialAppContext: AppContextInterface = {
   isAuthenticated: Boolean(getAccessTokenFromLocalStorage()),
   setIsAuthenticated: () => null,
   isAdmin: userInfo?.isAdmin,
+  setIsAdmin: () => null,
   userId: userInfo?._id,
   setUserId: () => null,
   email: userInfo?.email,
@@ -59,6 +61,7 @@ export const AppContext = createContext<AppContextInterface>(initialAppContext)
 const AppProvider = ({ children, defaultTheme = 'system', defaultLanguage = 'en' }: AppProviderProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(initialAppContext.isAuthenticated)
   const [userId, setUserId] = useState<string>(initialAppContext.userId ?? '')
+  const [isAdmin, setIsAdmin] = useState<boolean>(initialAppContext.isAdmin ?? false)
   const [email, setEmail] = useState<string>(initialAppContext.email ?? '')
   const [fullName, setFullName] = useState<string>(initialAppContext.fullName ?? '')
   const [avatar, setAvatar] = useState<string>(initialAppContext.avatar ?? '')
@@ -90,6 +93,8 @@ const AppProvider = ({ children, defaultTheme = 'system', defaultLanguage = 'en'
         setIsAuthenticated,
         userId,
         setUserId,
+        isAdmin,
+        setIsAdmin,
         email,
         setEmail,
         fullName,
