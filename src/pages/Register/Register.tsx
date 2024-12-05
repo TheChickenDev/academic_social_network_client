@@ -270,7 +270,10 @@ export default function Register() {
           </div>
         </Form>
       </div>
-      <div className='md:w-1/2 w-full bg-black dark:bg-white text-white dark:text-black lg:p-8 p-4 flex flex-col justify-between'>
+      <div
+        className='md:w-1/2 w-full bg-black dark:bg-white text-white dark:text-black lg:p-8 p-4
+        flex flex-col justify-between bg-[url("src/assets/images/authBG.png")] bg-cover bg-left'
+      >
         <div className='w-fit'>
           <Link to={paths.home}>
             <Logo className='fill-white dark:fill-black' />

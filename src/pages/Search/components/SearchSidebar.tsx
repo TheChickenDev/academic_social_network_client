@@ -99,7 +99,7 @@ export default function SearchSidebar({ ...props }: ComponentProps<typeof Sideba
             <SidebarMenuItem>
               <SidebarMenuButton size='lg' asChild className='md:h-8 md:p-0'>
                 <a href='#'>
-                  <div className='flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground'>
+                  <div className='flex aspect-square size-8 items-center justify-center rounded-lg'>
                     <svg
                       className='dark:fill-white fill-black'
                       width='49'

@@ -31,42 +31,42 @@ import {
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
 import paths from '@/constants/paths'
-import { deletePost } from '@/apis/post.api'
 import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import Loading from '@/components/Loading'
-import { getPosts } from '@/apis/post.api'
-import { PostProps } from '@/types/post.type'
+import { getGroups, deleteGroup } from '@/apis/group.api'
+import { GroupProps } from '@/types/group.type'
+import { convertISODateToLocaleString } from '@/utils/utils'
 
 export function Groups() {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
-  const [posts, setUsers] = React.useState<PostProps[]>([])
+  const [groups, setGroups] = React.useState<GroupProps[]>([])
   const [isLoading, setIsLoading] = React.useState(true)
   const { t } = useTranslation()
   const navigate = useNavigate()
 
   React.useEffect(() => {
-    getPosts({ page: 1, limit: 0 })
-      .then((response) => setUsers(response.data.data))
+    getGroups({ page: 1, limit: 0 })
+      .then((response) => setGroups(Array.isArray(response.data.data) ? response.data.data : [response.data.data]))
       .finally(() => setIsLoading(false))
   }, [])
 
   const handleDeleteUser = (id: string) => {
     setIsLoading(true)
-    deletePost(id)
+    deleteGroup(id)
       .then(() => {
-        setUsers(posts.filter((post) => post._id !== id))
+        setGroups(groups.filter((group) => group._id !== id))
       })
       .finally(() => setIsLoading(false))
   }
 
   const table = useReactTable({
-    data: posts,
+    data: groups,
     columns: [
       // {
       //   id: 'select',
@@ -88,28 +88,28 @@ export function Groups() {
       //   enableHiding: false
       // },
       {
-        accessorKey: 'title',
+        accessorKey: 'name',
         header: ({ column }) => {
           return (
             <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-              {t('admin.title')}
+              {t('admin.name')}
               <ArrowUpDown size='20px' className='ml-1' />
             </Button>
           )
         },
-        cell: ({ row }) => row.getValue('title')
+        cell: ({ row }) => row.getValue('name')
       },
       {
-        accessorKey: 'updatedAt',
+        accessorKey: 'createdAt',
         header: ({ column }) => {
           return (
             <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-              {t('admin.updatedAt')}
+              {t('admin.createdAt')}
               <ArrowUpDown size='20px' className='ml-1' />
             </Button>
           )
         },
-        cell: ({ row }) => row.getValue('updatedAt')
+        cell: ({ row }) => convertISODateToLocaleString(row.getValue('createdAt'))
       },
       {
         accessorKey: 'ownerName',
@@ -125,11 +125,14 @@ export function Groups() {
         id: 'actions',
         header: t('admin.actions'),
         cell: ({ row }) => {
-          const post = row.original
+          const group = row.original
 
           return (
             <div className='flex'>
-              <Button variant='ghost' onClick={() => post._id && navigate(paths.postDetails.replace(':id', post._id))}>
+              <Button
+                variant='ghost'
+                onClick={() => group._id && navigate(paths.groupDetails.replace(':id', group._id))}
+              >
                 <Eye size='20px' />
               </Button>
               <AlertDialog>
@@ -145,7 +148,7 @@ export function Groups() {
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>{t('action.cancel')}</AlertDialogCancel>
-                    <AlertDialogAction onClick={() => post._id && handleDeleteUser(post._id)}>
+                    <AlertDialogAction onClick={() => group._id && handleDeleteUser(group._id)}>
                       {t('action.confirm')}
                     </AlertDialogAction>
                   </AlertDialogFooter>
@@ -175,7 +178,7 @@ export function Groups() {
 
   if (isLoading) return <Loading />
 
-  if (!posts.length)
+  if (!groups.length)
     return (
       <div className='flex flex-col items-center justify-center h-full py-10 flex-1'>
         <svg
@@ -201,9 +204,9 @@ export function Groups() {
     <div className='w-full'>
       <div className='flex items-center py-4'>
         <Input
-          placeholder={t('admin.filterTitle')}
-          value={(table.getColumn('title')?.getFilterValue() as string) ?? ''}
-          onChange={(event) => table.getColumn('title')?.setFilterValue(event.target.value)}
+          placeholder={t('admin.filterName')}
+          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
+          onChange={(event) => table.getColumn('name')?.setFilterValue(event.target.value)}
           className='max-w-sm'
         />
         <Input
@@ -263,7 +266,7 @@ export function Groups() {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={posts.length} className='h-24 text-center'>
+                <TableCell colSpan={groups.length} className='h-24 text-center'>
                   {t('admin.noDataAvailable')}
                 </TableCell>
               </TableRow>

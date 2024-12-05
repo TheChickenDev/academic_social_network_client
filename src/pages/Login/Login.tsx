@@ -61,7 +61,7 @@ export default function Login() {
     }
   })
 
-  const { setIsAuthenticated, setUserId, setEmail, setFullName, setAvatar } = useContext(AppContext)
+  const { setIsAuthenticated, setUserId, setEmail, setFullName, setAvatar, setIsAdmin } = useContext(AppContext)
   const [googleResponse, setGoogleResponse] = useState<{
     access_token: string
     expires_in: number
@@ -90,6 +90,7 @@ export default function Login() {
           setEmail?.(user?.email ?? '')
           setFullName?.(user?.fullName ?? '')
           setAvatar?.(user?.avatar ?? '')
+          setIsAdmin?.(user?.isAdmin ?? false)
           saveAccessTokenToLocalStorage(response.data.data?.access_token)
           saveRefreshTokenToLocalStorage(response.data.data?.refresh_token)
           navigate(paths.home)
@@ -157,7 +158,10 @@ export default function Login() {
       <Helmet>
         <title>{t('login.title')}</title>
       </Helmet>
-      <div className='md:w-1/2 w-full bg-black dark:bg-white text-white dark:text-black lg:p-8 p-4 flex flex-col justify-between'>
+      <div
+        className='md:w-1/2 w-full bg-black dark:bg-white text-white dark:text-black lg:p-8 p-4
+        flex flex-col justify-between bg-[url("src/assets/images/authBG.png")] bg-cover bg-left'
+      >
         <div className='w-fit'>
           <Link to={paths.home}>
             <Logo className='fill-white dark:fill-black' />

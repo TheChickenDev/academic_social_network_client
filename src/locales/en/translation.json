@@ -430,6 +430,7 @@
     "rank": "Rank",
     "title": "Title",
     "owner": "Owner",
+    "name": "Name",
     "createdAt": "Created at",
     "ownerEmail": "Owner email",
     "actions": "Actions",

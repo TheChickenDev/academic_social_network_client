@@ -15,6 +15,10 @@ export const updateGroup = (body: FormData) => {
   return http.patch<SuccessResponse<GroupProps>>('groups', body)
 }
 
+export const deleteGroup = (id: string) => {
+  return http.delete<SuccessResponse<GroupProps>>(`groups/${id}`)
+}
+
 export const getMembers = (params: GroupQuery) => {
   return http.get<SuccessResponse<GroupMemberProps[]>>('groups/members', { params })
 }

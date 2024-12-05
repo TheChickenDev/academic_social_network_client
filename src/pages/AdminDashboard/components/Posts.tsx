@@ -39,20 +39,21 @@ import { useNavigate } from 'react-router-dom'
 import Loading from '@/components/Loading'
 import { getPosts } from '@/apis/post.api'
 import { PostProps } from '@/types/post.type'
+import { convertISODateToLocaleString } from '@/utils/utils'
 
 export function Posts() {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
-  const [posts, setUsers] = React.useState<PostProps[]>([])
+  const [posts, setPosts] = React.useState<PostProps[]>([])
   const [isLoading, setIsLoading] = React.useState(true)
   const { t } = useTranslation()
   const navigate = useNavigate()
 
   React.useEffect(() => {
     getPosts({ page: 1, limit: 0 })
-      .then((response) => setUsers(response.data.data))
+      .then((response) => setPosts(response.data.data))
       .finally(() => setIsLoading(false))
   }, [])
 
@@ -60,7 +61,7 @@ export function Posts() {
     setIsLoading(true)
     deletePost(id)
       .then(() => {
-        setUsers(posts.filter((post) => post._id !== id))
+        setPosts(posts.filter((post) => post._id !== id))
       })
       .finally(() => setIsLoading(false))
   }
@@ -89,27 +90,20 @@ export function Posts() {
       // },
       {
         accessorKey: 'title',
-        header: ({ column }) => {
-          return (
-            <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-              {t('admin.title')}
-              <ArrowUpDown size='20px' className='ml-1' />
-            </Button>
-          )
-        },
+        header: t('admin.title'),
         cell: ({ row }) => row.getValue('title')
       },
       {
-        accessorKey: 'updatedAt',
+        accessorKey: 'createdAt',
         header: ({ column }) => {
           return (
             <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-              {t('admin.updatedAt')}
+              {t('admin.createdAt')}
               <ArrowUpDown size='20px' className='ml-1' />
             </Button>
           )
         },
-        cell: ({ row }) => row.getValue('updatedAt')
+        cell: ({ row }) => convertISODateToLocaleString(row.getValue('createdAt'))
       },
       {
         accessorKey: 'ownerName',
