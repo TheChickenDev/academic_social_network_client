@@ -11,6 +11,7 @@ const paths = {
   postDetails: '/posts/:id',
   groupDetails: '/groups/:id',
   search: '/search',
+  notifications: '/notifications',
   admin: '/admin'
 } as const
 

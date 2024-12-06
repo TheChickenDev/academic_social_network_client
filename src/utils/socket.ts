@@ -4,10 +4,10 @@ const URL = import.meta.env.NODE_ENV === 'production' ? undefined : import.meta.
 
 let socket: Socket | null = null
 
-const initializeSocket = (userEmail: string): Socket => {
+const initializeSocket = (userId: string): Socket => {
   if (!socket) {
     socket = io(URL, {
-      query: { userEmail }
+      query: { userId }
     })
   }
   return socket

@@ -32,7 +32,7 @@
     "home": "Home",
     "community": "Community",
     "message": "Message",
-    "notification": "Notification",
+    "notifications": "Notifications",
     "contributeIdeas": "Contribute ideas",
     "post": "Post",
     "group": "Group",
@@ -445,5 +445,19 @@
     "filterName": "Filter by name",
     "filterTitle": "Filter by title",
     "filterOwner": "Filter by owner"
+  },
+  "notifications": {
+    "noNotification": "No notification",
+    "markAllAsRead": "Mark all as read",
+    "markAllAsReadSuccessful": "All notifications have been marked as read!",
+    "markAllAsReadFailed": "An error occurred while marking all notifications as read. Please try again later.",
+    "sendFriendRequest": " sent you a friend request",
+    "acceptFriendRequest": " accepted your friend request",
+    "rejectFriendRequest": " rejected your friend request",
+    "unfriend": " unfriended you",
+    "joinGroup": " joined your group ",
+    "leaveGroup": " left your group ",
+    "createPost": " have a new post",
+    "commentPost": " have a new comment on your post"
   }
 }

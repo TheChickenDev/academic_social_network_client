@@ -177,8 +177,6 @@ function Item({ friend, setData }: ItemProps) {
     })
   }
 
-  console.log(friend)
-
   return (
     <div className='flex gap-4'>
       <Avatar className='w-12 h-12'>

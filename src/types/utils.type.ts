@@ -32,3 +32,23 @@ export interface SearchAllData {
   users: Friend[]
   groups: GroupProps[]
 }
+
+export interface Notification {
+  _id: string
+  type:
+    | 'sendFriendRequest'
+    | 'acceptFriendRequest'
+    | 'rejectFriendRequest'
+    | 'unfriend'
+    | 'joinGroup'
+    | 'leaveGroup'
+    | 'createPost'
+    | 'commentPost'
+  groupId?: string
+  groupName?: string
+  userId: string
+  userName: string
+  avatarImg: string
+  isRead: boolean
+  time: string
+}

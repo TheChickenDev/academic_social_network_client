@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
+import { getSocket, initializeSocket } from '@/utils/socket'
+import { Message as MessageProps } from '@/types/message.type'
 
 export default function Message() {
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null)
@@ -19,21 +21,82 @@ export default function Message() {
   const [conversations, setConversations] = useState<Conversation[]>([])
   const { userId: currentUserId } = useContext(AppContext)
 
+  let socket = getSocket()
+  if (!socket && currentUserId) {
+    socket = initializeSocket(currentUserId)
+  }
+
   useEffect(() => {
     getConversations({
       userId: currentUserId ?? '',
       page: 1,
       limit: 10
-    }).then((response) => {
-      const status = response.status
-      if (status === 200) {
-        setConversations(
-          response.data.data?.filter(({ userName }) => userName?.toLowerCase().includes(search.trim().toLowerCase()))
-        )
-      }
-      // setSelectedConversation(response.data.data[0])
-      // setMobileSelectedConversation(response.data.data[0])
     })
+      .then((response) => {
+        const status = response.status
+        if (status === 200) {
+          setConversations(
+            response.data.data?.filter(({ userName }) => userName?.toLowerCase().includes(search.trim().toLowerCase()))
+          )
+        }
+        // setSelectedConversation(response.data.data[0])
+        // setMobileSelectedConversation(response.data.data[0])
+      })
+      .finally(() => {
+        if (currentUserId && socket) {
+          socket.on('chat message', (response) => {
+            const msg: MessageProps = response
+            if (!msg) {
+              return
+            }
+            setConversations((prev) => {
+              const temp = [...prev]
+              const index = temp.findIndex((conv) => conv._id === msg.conversationId)
+              if (index > -1) {
+                temp[index].lastMessage = { ...msg.message, senderId: msg.senderId }
+              }
+              return temp
+            })
+            setSelectedConversation((prev) =>
+              prev
+                ? {
+                    ...prev,
+                    lastMessage: { ...msg.message, senderId: msg.senderId },
+                    _id: msg.conversationId,
+                    userId: prev.userId,
+                    userRank: prev.userRank,
+                    userName: prev.userName,
+                    avatarImg: prev.avatarImg
+                  }
+                : null
+            )
+            setSelectedConversation((prev) => {
+              if (prev) {
+                return {
+                  ...prev,
+                  lastMessage: { ...msg.message, senderId: msg.senderId },
+                  _id: msg.conversationId
+                }
+              }
+              return prev
+            })
+            setMobileSelectedConversation((prev) => {
+              if (prev) {
+                return {
+                  ...prev,
+                  lastMessage: { ...msg.message, senderId: msg.senderId },
+                  _id: msg.conversationId
+                }
+              }
+              return prev
+            })
+          })
+
+          return () => {
+            socket.off('chat message')
+          }
+        }
+      })
   }, [])
 
   const filteredConversations = conversations.filter(({ userName }) =>
@@ -125,6 +188,7 @@ export default function Message() {
           setSelectedConversation={setSelectedConversation}
           mobileSelectedConversation={mobileSelectedConversation}
           setMobileSelectedConversation={setMobileSelectedConversation}
+          socket={socket}
         />
       ) : (
         <div

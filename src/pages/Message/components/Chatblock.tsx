@@ -16,10 +16,10 @@ import { Button } from '@/components/ui/button'
 import { Conversation } from '@/types/conversation.type'
 import { useTranslation } from 'react-i18next'
 import { AppContext } from '@/contexts/app.context'
-import { getSocket, initializeSocket } from '@/utils/socket'
 import { getMessages } from '@/apis/message.api'
 import { Message as MessageProps } from '@/types/message.type'
 import dayjs from 'dayjs'
+import { Socket } from 'socket.io-client'
 
 interface ChatBlockProps {
   setConversations: Dispatch<SetStateAction<Conversation[]>>
@@ -27,6 +27,7 @@ interface ChatBlockProps {
   setSelectedConversation: Dispatch<SetStateAction<Conversation | null>>
   mobileSelectedConversation: Conversation | null
   setMobileSelectedConversation: Dispatch<SetStateAction<Conversation | null>>
+  socket: Socket | null
 }
 
 export default function Chatblock({
@@ -34,7 +35,8 @@ export default function Chatblock({
   selectedConversation,
   setSelectedConversation,
   mobileSelectedConversation,
-  setMobileSelectedConversation
+  setMobileSelectedConversation,
+  socket
 }: ChatBlockProps) {
   const { t } = useTranslation()
   const [messages, setMessages] = useState<Record<string, MessageProps[]>>({})
@@ -45,8 +47,8 @@ export default function Chatblock({
   const observer = useRef<IntersectionObserver | null>(null)
   const loadMoreRef = useRef<HTMLDivElement | null>(null)
 
-  const fetchMessages = async (page: number) => {
-    await getMessages({
+  const fetchMessages = (page: number) => {
+    getMessages({
       userId: userId ?? '',
       conversationId: selectedConversation?._id ?? '',
       page,
@@ -82,7 +84,6 @@ export default function Chatblock({
   )
 
   useEffect(() => {
-    console.log('page', page)
     fetchMessages(page)
   }, [page])
 
@@ -95,7 +96,6 @@ export default function Chatblock({
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault()
     if (selectedConversation && input) {
-      const socket = getSocket()
       if (socket) {
         const message = {
           conversationId: selectedConversation?._id,
@@ -111,14 +111,12 @@ export default function Chatblock({
   }
 
   useEffect(() => {
-    if (userId) {
-      let socket = getSocket()
-      if (!socket) {
-        socket = initializeSocket(userId)
-      }
-
+    if (userId && socket) {
       socket.on('chat message', (response) => {
-        const msg: MessageProps = response.data
+        const msg: MessageProps = response
+        if (!msg) {
+          return
+        }
         setConversations((prev) => {
           const temp = [...prev]
           const index = temp.findIndex((conv) => conv._id === msg.conversationId)

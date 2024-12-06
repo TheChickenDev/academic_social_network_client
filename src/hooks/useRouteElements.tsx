@@ -19,6 +19,7 @@ import GroupDetails from '@/pages/GroupDetails'
 import Search from '@/pages/Search'
 import NotFoundError from '@/pages/Errors/NotFound'
 import AdminDashboard from '@/pages/AdminDashboard'
+import Notifications from '@/pages/Notifications'
 
 const ProtectedRoute = () => {
   const { isAuthenticated } = useContext(AppContext)
@@ -123,6 +124,14 @@ const routes: RouteObject[] = [
         element: (
           <DefaultLayout>
             <Search />
+          </DefaultLayout>
+        )
+      },
+      {
+        path: paths.notifications,
+        element: (
+          <DefaultLayout>
+            <Notifications />
           </DefaultLayout>
         )
       }
