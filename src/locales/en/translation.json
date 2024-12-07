@@ -454,10 +454,8 @@
     "sendFriendRequest": " sent you a friend request",
     "acceptFriendRequest": " accepted your friend request",
     "rejectFriendRequest": " rejected your friend request",
-    "unfriend": " unfriended you",
-    "joinGroup": " joined your group ",
-    "leaveGroup": " left your group ",
     "createPost": " have a new post",
-    "commentPost": " have a new comment on your post"
+    "commentPost": " have a new comment on your post",
+    "replyComment": " replied to your comment"
   }
 }
