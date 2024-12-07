@@ -18,13 +18,15 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import LanguageToggle from '../LanguageToggle'
 import { useTranslation } from 'react-i18next'
 import { removeDataFromLocalStorage } from '@/utils/auth'
-import { ChevronDown, Search, Menu } from 'lucide-react'
+import { ChevronDown, Search, Menu, Bell } from 'lucide-react'
 import classNames from 'classnames'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { useTheme } from '@/hooks/useTheme'
 import { useLanguage } from '@/hooks/useLanguage'
 import useWindowDimensions from '@/hooks/useWindowDimensions'
 import { toast } from 'sonner'
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
+import Notifications from '@/components/Notifications'
 
 export default function Header() {
   const navigate = useNavigate()
@@ -140,6 +142,16 @@ export default function Header() {
         <div className='md:flex items-center gap-2 hidden'>
           <ModeToggle />
           <LanguageToggle />
+          <Popover>
+            <PopoverTrigger asChild>
+              <button className='h-10 w-10 rounded-full border flex justify-center items-center outline-none'>
+                <Bell className='h-[1.2rem] w-[1.2rem]' />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className='w-fit max-w-96' align='end' side='bottom'>
+              <Notifications />
+            </PopoverContent>
+          </Popover>
           {isAuthenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger className='h-10 outline-none flex justify-center items-center border rounded-full p-1'>

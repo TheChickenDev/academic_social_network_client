@@ -19,7 +19,7 @@ import GroupDetails from '@/pages/GroupDetails'
 import Search from '@/pages/Search'
 import NotFoundError from '@/pages/Errors/NotFound'
 import AdminDashboard from '@/pages/AdminDashboard'
-import Notifications from '@/pages/Notifications'
+import Notifications from '@/components/Notifications'
 
 const ProtectedRoute = () => {
   const { isAuthenticated } = useContext(AppContext)
