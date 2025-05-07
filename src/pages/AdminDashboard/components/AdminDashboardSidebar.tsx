@@ -1,4 +1,4 @@
-import { FileUser, LayoutList, ContactRound, Settings } from 'lucide-react'
+import { FileUser, LayoutList, ContactRound, Settings, Swords } from 'lucide-react'
 import {
   Sidebar,
   SidebarContent,
@@ -26,8 +26,10 @@ import { useState, ComponentProps } from 'react'
 import { Users } from './Users'
 import { Posts } from './Posts'
 import { Groups } from './Groups'
+import { Contests } from './Contests'
+import { Problems } from './Problems'
 
-type SidebarItem = 'Users' | 'Posts' | 'Groups' | 'Settings'
+type SidebarItem = 'Users' | 'Posts' | 'Groups' | 'Contests' | 'Problems' | 'Settings'
 
 export function AdminDashboardSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   const [activeItem, setActiveItem] = useState<SidebarItem>('Users')
@@ -123,6 +125,40 @@ export function AdminDashboardSidebar({ ...props }: ComponentProps<typeof Sideba
                 <SidebarMenuItem>
                   <SidebarMenuButton
                     tooltip={{
+                      children: t('admin.contests'),
+                      hidden: false
+                    }}
+                    onClick={() => {
+                      setActiveItem('Contests')
+                      setOpen(true)
+                    }}
+                    isActive={activeItem === 'Contests'}
+                    className='px-2.5 md:px-2'
+                  >
+                    <Swords />
+                    <span>{t('admin.contests')}</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    tooltip={{
+                      children: t('admin.problems'),
+                      hidden: false
+                    }}
+                    onClick={() => {
+                      setActiveItem('Problems')
+                      setOpen(true)
+                    }}
+                    isActive={activeItem === 'Problems'}
+                    className='px-2.5 md:px-2'
+                  >
+                    <Swords />
+                    <span>{t('admin.problems')}</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    tooltip={{
                       children: t('admin.settings'),
                       hidden: false
                     }}
@@ -167,6 +203,10 @@ export function AdminDashboardSidebar({ ...props }: ComponentProps<typeof Sideba
             <Posts />
           ) : activeItem === 'Groups' ? (
             <Groups />
+          ) : activeItem === 'Contests' ? (
+            <Contests />
+          ) : activeItem === 'Problems' ? (
+            <Problems />
           ) : activeItem === 'Settings' ? (
             <div>Settings</div>
           ) : null}

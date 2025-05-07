@@ -220,7 +220,10 @@
     "approve": "Approve",
     "leave": "Leave",
     "send": "Send",
-    "signOutSuccessful": "You have been signed out successfully!"
+    "signOutSuccessful": "You have been signed out successfully!",
+    "reset": "Reset",
+    "submitCode": "Submit code",
+    "runCode": "Run code"
   },
   "myAccount": {
     "createAPost": "Create a post",
@@ -422,6 +425,8 @@
     "users": "Users",
     "posts": "Posts",
     "groups": "Groups",
+    "contests": "Contests",
+    "problems": "Problems",
     "settings": "Settings",
     "fullName": "Full name",
     "dateOfBirth": "Date of birth",
@@ -444,7 +449,43 @@
     "filterEmail": "Filter by email",
     "filterName": "Filter by name",
     "filterTitle": "Filter by title",
-    "filterOwner": "Filter by owner"
+    "filterOwner": "Filter by owner",
+    "contest": {
+      "title": "Contest name",
+      "titleMessage": "Contest name is required and must not exceed 255 characters",
+      "description": "Contest description",
+      "startDate": "Start date",
+      "startDateRequired": "Start date is required",
+      "endDate": "End date",
+      "endDateRequired": "End date is required",
+      "createContest": "Create contest",
+      "createContestDescription": "Create a contest to challenge users and test their skills."
+    },
+    "problem": {
+      "title": "Problem name",
+      "titleMessage": "Problem name is required and must not exceed 255 characters",
+      "description": "Problem description",
+      "descriptionRequired": "Problem description is required",
+      "testcase": "Test case",
+      "testcaseDescription": "Add test case to test your problem",
+      "testcaseMessage": "Test case is required",
+      "input": "Input",
+      "sampleInput": "Sample input",
+      "inputMessage": "Input is required",
+      "output": "Output",
+      "sampleOutput": "Sample output",
+      "outputMessage": "Output is required",
+      "addTestcase": "Add test case",
+      "difficulty": "Difficulty level",
+      "difficultyEasy": "Easy",
+      "difficultyMedium": "Medium",
+      "difficultyHard": "Hard",
+      "difficultyMessage": "Difficulty level is required",
+      "createProblem": "Create problem",
+      "createProblemDescription": "Create a problem to challenge users and test their skills.",
+      "score": "Score",
+      "order": "Order"
+    }
   },
   "notifications": {
     "noNotification": "No notification",

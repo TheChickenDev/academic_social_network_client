@@ -20,6 +20,7 @@ import Search from '@/pages/Search'
 import NotFoundError from '@/pages/Errors/NotFound'
 import AdminDashboard from '@/pages/AdminDashboard'
 import Notifications from '@/components/Notifications'
+import Contest from '@/pages/Contest'
 
 const ProtectedRoute = () => {
   const { isAuthenticated } = useContext(AppContext)
@@ -62,6 +63,14 @@ const routes: RouteObject[] = [
     element: (
       <DefaultLayout>
         <MyAccount />
+      </DefaultLayout>
+    )
+  },
+  {
+    path: paths.contest,
+    element: (
+      <DefaultLayout>
+        <Contest />
       </DefaultLayout>
     )
   },

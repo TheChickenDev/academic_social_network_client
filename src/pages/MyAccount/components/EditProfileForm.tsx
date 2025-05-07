@@ -40,7 +40,7 @@ interface EditProfileFormProps {
 export default function EditProfileForm({ userDetails, setUserDetails, setEditMode }: EditProfileFormProps) {
   const { t } = useTranslation()
   const [avatar, setAvatar] = useState<string>(userDetails?.avatarImg ?? '')
-  const [dob, setDob] = useState<Date | null>(userDetails?.dateOfBirth ?? null)
+  const [dob, setDob] = useState<Date | null>((userDetails?.dateOfBirth as Date) ?? null)
   const [educationData, setEducationData] = useState<Education[]>(
     userDetails?.introduction?.educations ? [...userDetails.introduction.educations] : []
   )

@@ -12,6 +12,7 @@ const paths = {
   groupDetails: '/groups/:id',
   search: '/search',
   notifications: '/notifications',
+  contest: '/contest/:id',
   admin: '/admin'
 } as const
 
