@@ -32,9 +32,19 @@ export interface ContestProblem {
     input: string
     output: string
   }>
+  sampleCode?: {
+    javascript: string
+    python: string
+    java: string
+    c: string
+    cpp: string
+  }
   createdBy: string
   createdAt?: Date
   updatedAt?: Date
+
+  isSolved?: boolean
+  submitedCode?: string
 }
 
 export interface ContestSubmission {
@@ -59,4 +69,5 @@ export interface ContestQuery {
   createdBy?: string
   problemId?: string
   contestId?: string
+  userId?: string
 }

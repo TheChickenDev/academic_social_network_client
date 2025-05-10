@@ -76,7 +76,7 @@ export function Contests() {
 
     getProblems({ page: 1, limit: 0 })
       .then((response) => {
-        setProblems(response.data.data)
+        setProblems(Array.isArray(response.data.data) ? response.data.data : [response.data.data])
       })
       .finally(() => setIsLoading(false))
   }, [])
@@ -111,20 +111,14 @@ export function Contests() {
       // },
       {
         id: 'select',
+        header: t('action.select'),
         cell: ({ row }) => (
           <Checkbox
             checked={row.getIsSelected()}
             onCheckedChange={(value) => row.toggleSelected(!!value)}
             aria-label='Select row'
           />
-        ),
-        enableSorting: true,
-        sortingFn: (rowA, rowB) => {
-          const isSelectedA = rowA.getIsSelected() ? 1 : 0
-          const isSelectedB = rowB.getIsSelected() ? 1 : 0
-          return isSelectedA - isSelectedB // Sort by selection status
-        },
-        enableHiding: false
+        )
       }
     ],
     onSortingChange: setSorting,

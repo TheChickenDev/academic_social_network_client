@@ -67,14 +67,6 @@ const routes: RouteObject[] = [
     )
   },
   {
-    path: paths.contest,
-    element: (
-      <DefaultLayout>
-        <Contest />
-      </DefaultLayout>
-    )
-  },
-  {
     path: paths.admin,
     element: <AdminDashboard />
   },
@@ -141,6 +133,14 @@ const routes: RouteObject[] = [
         element: (
           <DefaultLayout>
             <Notifications />
+          </DefaultLayout>
+        )
+      },
+      {
+        path: paths.contest,
+        element: (
+          <DefaultLayout>
+            <Contest />
           </DefaultLayout>
         )
       }

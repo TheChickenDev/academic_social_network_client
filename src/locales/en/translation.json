@@ -38,7 +38,8 @@
     "group": "Group",
     "profile": "Profile",
     "search": "Search",
-    "dashboard": "Dashboard"
+    "dashboard": "Dashboard",
+    "contest": "Contest"
   },
   "components": {
     "popularTags": "Popular tags",
@@ -222,8 +223,11 @@
     "send": "Send",
     "signOutSuccessful": "You have been signed out successfully!",
     "reset": "Reset",
+    "select": "Select",
     "submitCode": "Submit code",
-    "runCode": "Run code"
+    "runCode": "Run code",
+    "joinContest": "Join Contest",
+    "showResult": "Show result"
   },
   "myAccount": {
     "createAPost": "Create a post",
@@ -459,7 +463,9 @@
       "endDate": "End date",
       "endDateRequired": "End date is required",
       "createContest": "Create contest",
-      "createContestDescription": "Create a contest to challenge users and test their skills."
+      "createContestDescription": "Create a contest to challenge users and test their skills.",
+      "ranking": "Ranking",
+      "rankingDescription": "User ranking in the contest"
     },
     "problem": {
       "title": "Problem name",
@@ -484,7 +490,14 @@
       "createProblem": "Create problem",
       "createProblemDescription": "Create a problem to challenge users and test their skills.",
       "score": "Score",
-      "order": "Order"
+      "order": "Order",
+      "wrongAnswer": "Wrong answer",
+      "correctAnswer": "Congratulations!",
+      "correctAnswerDescription": "You have passed the sample test cases. Click the submit button to save the result.",
+      "challengeSolved": "You have solved the challenge!",
+      "correctTestCases": "Correct test cases",
+      "executionTime": "Execution time",
+      "accepted": "Accepted!"
     }
   },
   "notifications": {

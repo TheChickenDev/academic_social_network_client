@@ -10,7 +10,7 @@ import {
   getSortedRowModel,
   useReactTable
 } from '@tanstack/react-table'
-import { ChevronDown, Eye, CircleFadingPlus, ArrowLeft, Trash2, Save } from 'lucide-react'
+import { ChevronDown, Eye, CircleFadingPlus, ArrowLeft, Trash2, Save, FileCode } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -49,6 +49,8 @@ import { createProblem, getProblems, updateProblem } from '@/apis/problem.api'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Textarea } from '@/components/ui/textarea'
 import { AppContext } from '@/contexts/app.context'
+import { Editor } from '@monaco-editor/react'
+import { cppSample, cSample, javaSample, javascriptSample, pythonSample } from '@/constants/code'
 
 export function Problems() {
   const { userId } = React.useContext(AppContext)
@@ -74,14 +76,32 @@ export function Problems() {
   const [testCaseOutput, setTestCaseOutput] = React.useState<string>('')
   const testCaseOutputMessageRef = React.useRef<HTMLParagraphElement>(null)
   const [selectedProblem, setSelectedProblem] = React.useState<ContestProblem>({} as ContestProblem)
+  const [sampleCodes, setSampleCodes] = React.useState<{
+    javascript: string
+    python: string
+    java: string
+    c: string
+    cpp: string
+  }>()
 
   const [open, setOpen] = React.useState<boolean>(false)
   const [openTestcases, setOpenTestcases] = React.useState<boolean>(false)
+  const [openSampleCodes, setOpenSampleCodes] = React.useState<boolean>(false)
+
+  const handleEditorChange = (value: string | undefined, language: string) => {
+    setSampleCodes(
+      (prev) =>
+        ({
+          ...prev,
+          [language]: value ?? ''
+        }) as { javascript: string; python: string; java: string; c: string; cpp: string }
+    )
+  }
 
   React.useEffect(() => {
     getProblems({ page: 1, limit: 0 })
       .then((response) => {
-        setProblems(response.data.data)
+        setProblems(Array.isArray(response.data.data) ? response.data.data : [response.data.data])
       })
       .finally(() => setIsLoading(false))
   }, [])
@@ -186,7 +206,7 @@ export function Problems() {
           const problem = row.original
 
           return (
-            <div className='flex'>
+            <div className='flex justify-center items-center space-x-2'>
               <Button
                 variant='ghost'
                 onClick={() => {
@@ -203,6 +223,19 @@ export function Problems() {
                 }}
               >
                 <Eye size='20px' />
+              </Button>
+              <Button
+                variant='ghost'
+                onClick={() => {
+                  setSampleCodes(problem.sampleCode ?? { javascript: '', python: '', java: '', c: '', cpp: '' })
+
+                  if (problem._id) {
+                    setSelectedProblem(problem)
+                  }
+                  setOpenSampleCodes(true)
+                }}
+              >
+                <FileCode size='20px' />
               </Button>
             </div>
           )
@@ -263,6 +296,9 @@ export function Problems() {
       })
       .finally(() => {
         setIsLoading(false)
+        setTitle('')
+        setDescription('')
+        setDifficulty('easy')
       })
   }
 
@@ -303,6 +339,30 @@ export function Problems() {
           prev.map((problem) => (problem._id === response.data.data._id ? response.data.data : problem))
         )
         setOpenTestcases(false)
+      })
+      .catch((error) => {
+        console.error('Error updating test cases', error)
+      })
+      .finally(() => {
+        setIsLoading(false)
+      })
+  }
+
+  const handleSaveSampleCodes = () => {
+    setIsLoading(true)
+    updateProblem({
+      _id: selectedProblem._id,
+      sampleCode: sampleCodes,
+      title: selectedProblem.title,
+      description: selectedProblem.description,
+      difficulty: selectedProblem.difficulty,
+      createdBy: selectedProblem.createdBy
+    })
+      .then((response) => {
+        setProblems((prev) =>
+          prev.map((problem) => (problem._id === response.data.data._id ? response.data.data : problem))
+        )
+        setOpenSampleCodes(false)
       })
       .catch((error) => {
         console.error('Error updating test cases', error)
@@ -426,6 +486,57 @@ export function Problems() {
             )}
           </TableBody>
         </Table>
+      </div>
+    )
+
+  if (openSampleCodes)
+    return (
+      <div>
+        <div className='flex space-x-2'>
+          <Button onClick={() => setOpenSampleCodes(false)} variant='outline'>
+            <ArrowLeft />
+          </Button>
+          <Button onClick={handleSaveSampleCodes}>
+            <Save />
+          </Button>
+        </div>
+        <div className='my-2'>
+          <p className='text-nowrap font-semibold'>JavaScript</p>
+          <Editor
+            height='360px'
+            language={'javascript'}
+            defaultValue={sampleCodes?.javascript ? sampleCodes.javascript : javascriptSample}
+            onChange={(value) => handleEditorChange(value, 'javascript')}
+          />
+          <p className='text-nowrap font-semibold'>Python</p>
+          <Editor
+            height='360px'
+            language={'python'}
+            defaultValue={sampleCodes?.python ? sampleCodes.python : pythonSample}
+            onChange={(value) => handleEditorChange(value, 'python')}
+          />
+          <p className='text-nowrap font-semibold'>Java</p>
+          <Editor
+            height='360px'
+            language={'java'}
+            defaultValue={sampleCodes?.java ? sampleCodes.java : javaSample}
+            onChange={(value) => handleEditorChange(value, 'java')}
+          />
+          <p className='text-nowrap font-semibold'>C</p>
+          <Editor
+            height='360px'
+            language={'c'}
+            defaultValue={sampleCodes?.c ? sampleCodes.c : cSample}
+            onChange={(value) => handleEditorChange(value, 'c')}
+          />
+          <p className='text-nowrap font-semibold'>C++</p>
+          <Editor
+            height='360px'
+            language={'cpp'}
+            defaultValue={sampleCodes?.cpp ? sampleCodes.cpp : cppSample}
+            onChange={(value) => handleEditorChange(value, 'cpp')}
+          />
+        </div>
       </div>
     )
 
