@@ -28,7 +28,7 @@ export default function FriendsSuggestion() {
   }, [])
 
   return (
-    <div className='relative'>
+    <div className='relative bg-white dark:bg-dark-secondary'>
       <div className='border rounded-md p-2 space-y-2'>
         {isLoading ? (
           <div className='flex flex-col space-y-3'>

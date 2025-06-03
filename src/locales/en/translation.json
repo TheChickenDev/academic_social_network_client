@@ -108,7 +108,12 @@
   },
   "home": {
     "postATopic": "Post a topic",
-    "readingFocus": "Reading focus"
+    "readingFocus": "Reading focus",
+    "challenge": "Challenge",
+    "challengeDescription": "Join the Eurekas challenge, improve your specified skills, boost your rank and more.",
+    "noChallenge": "No current challenge",
+    "noChallengeDescription": "Check back later for upcoming challenge.",
+    "viewDetails": "View details"
   },
   "post": {
     "title": "Title",

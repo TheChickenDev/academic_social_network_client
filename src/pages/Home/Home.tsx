@@ -13,6 +13,7 @@ import { Helmet } from 'react-helmet-async'
 import paths from '@/constants/paths'
 import { AppContext } from '@/contexts/app.context'
 import FriendsSuggestion from '@/components/FriendsSuggestion'
+import ChallengeList from '@/components/ChallengeList'
 
 export default function Home() {
   const { t } = useTranslation()
@@ -52,7 +53,17 @@ export default function Home() {
             <Posts />
           </div>
           <div className='md:block hidden w-1/4'>
-            {readingFocus ? '' : isAuthenticated ? <FriendsSuggestion /> : <Introduction />}
+            {readingFocus ? (
+              ''
+            ) : isAuthenticated ? (
+              <>
+                <ChallengeList />
+                <div className='p-2'></div>
+                <FriendsSuggestion />
+              </>
+            ) : (
+              <Introduction />
+            )}
           </div>
         </div>
       </div>
