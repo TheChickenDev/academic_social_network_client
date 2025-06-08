@@ -21,6 +21,7 @@ import { Editor } from '@monaco-editor/react'
 import { ArrowLeft, ArrowRight, CheckCheck, CircleCheck, CircleX, CodeXml, RotateCcw, Sparkles } from 'lucide-react'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useParams } from 'react-router-dom'
 
 interface Result {
   correctTestCases: number
@@ -45,6 +46,7 @@ export default function Problem({ problemIds }: { problemIds: Array<string> }) {
   const [problemIndex, setProblemIndex] = useState<number>(0)
 
   const { userId } = useContext(AppContext)
+  const { id: contestId } = useParams()
 
   useEffect(() => {
     setIsLoading(true)
@@ -74,6 +76,7 @@ export default function Problem({ problemIds }: { problemIds: Array<string> }) {
     submitProblem({
       userId: userId || '',
       problemId: problem._id || '',
+      contestId: contestId || '',
       code,
       language
     })

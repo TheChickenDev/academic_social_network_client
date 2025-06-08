@@ -21,6 +21,7 @@ import NotFoundError from '@/pages/Errors/NotFound'
 import AdminDashboard from '@/pages/AdminDashboard'
 import Notifications from '@/components/Notifications'
 import Contest from '@/pages/Contest'
+import ChallangeList from '@/pages/ChallangeList'
 
 const ProtectedRoute = () => {
   const { isAuthenticated } = useContext(AppContext)
@@ -141,6 +142,14 @@ const routes: RouteObject[] = [
         element: (
           <DefaultLayout>
             <Contest />
+          </DefaultLayout>
+        )
+      },
+      {
+        path: paths.challangeList,
+        element: (
+          <DefaultLayout>
+            <ChallangeList />
           </DefaultLayout>
         )
       }

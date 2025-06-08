@@ -13,6 +13,7 @@ const paths = {
   search: '/search',
   notifications: '/notifications',
   contest: '/contest/:id',
+  challangeList: '/contest',
   admin: '/admin'
 } as const
 

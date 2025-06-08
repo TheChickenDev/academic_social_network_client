@@ -63,6 +63,9 @@ export default function ChallengeList() {
             </div>
           ))
       )}
+      <Button variant='ghost' onClick={() => navigate(`/contest`)} className='text-gray-500 text-sm w-full mt-2'>
+        {t('home.showAll')}
+      </Button>
     </div>
   )
 }

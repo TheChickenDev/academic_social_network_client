@@ -8,15 +8,9 @@ import { useParams } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import Problem from './components/Problem'
 import { isExpiredDate } from '@/utils/utils'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger
-} from '@/components/ui/dialog'
-import { Trophy } from 'lucide-react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Separator } from '@/components/ui/separator'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 export default function Contest() {
   const { t } = useTranslation()
@@ -26,18 +20,13 @@ export default function Contest() {
 
   const [openContest, setOpenContest] = useState<boolean>(false)
   const [openRanking, setOpenRanking] = useState<boolean>(false)
-  const [ranking, setRanking] = useState<{
-    userId: string
-    score: number
-    userName: string
-  }>()
 
   useEffect(() => {
     setIsLoading(true)
     getContests({ contestId })
       .then((res) => {
-        console.log(res.data.data)
-        setContest(Array.isArray(res.data.data) ? res.data.data[0] : res.data.data)
+        const c = Array.isArray(res.data.data) ? res.data.data[0] : res.data.data
+        setContest(c)
       })
       .catch((err) => {
         console.error('Error fetching contest:', err)
@@ -75,14 +64,51 @@ export default function Contest() {
                   <DialogTrigger asChild>
                     <Button>{t('admin.contest.ranking')}</Button>
                   </DialogTrigger>
-                  <DialogContent className='sm:max-w-[475px]'>
+                  <DialogContent>
                     <DialogHeader>
                       <DialogTitle>
-                        <Trophy size='48px' />
+                        {}
+                        {t('admin.contest.leaderboard')}
                       </DialogTitle>
-                      <DialogDescription>{t('admin.contest.rankingDescription')}</DialogDescription>
                     </DialogHeader>
-                    <div>hello world</div>
+                    <div>
+                      <Separator className='my-2' />
+                      <table className='min-w-full divide-y divide-gray-200 text-sm'>
+                        <thead className='bg-gray-50'>
+                          <tr>
+                            <th className='px-6 py-3 text-left font-semibold text-gray-700'>No</th>
+                            <th className='px-6 py-3 text-left font-semibold text-gray-700'>Contestant</th>
+                            <th className='px-6 py-3 text-left font-semibold text-gray-700'>Problems Solved</th>
+                          </tr>
+                        </thead>
+                        <tbody className='bg-white divide-y divide-gray-200'>
+                          {contest?.participants?.map((participant, index) => (
+                            <tr key={participant.userId} className='hover:bg-gray-50'>
+                              <td className='px-6 py-4'>{index + 1}</td>
+                              <td className='px-6 py-4'>
+                                <div className='flex items-center gap-4'>
+                                  <Avatar className='w-12 h-12'>
+                                    <AvatarImage src={participant?.userAvatar} />
+                                    <AvatarFallback />
+                                  </Avatar>
+                                  <div>
+                                    <p className='font-semibold text-gray-900'>
+                                      {participant?.userName ?? participant?.userEmail}
+                                    </p>
+                                    <p className='text-sm text-gray-500'>
+                                      {participant?.userRank ? participant.userRank : t('myAccount.noRank')}
+                                    </p>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className='px-6 py-4 font-medium text-center'>
+                                {participant.score}/{contest?.problems?.length}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </DialogContent>
                 </Dialog>
               ) : (

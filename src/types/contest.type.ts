@@ -13,6 +13,10 @@ export interface ContestProps {
   participants?: [
     {
       userId?: string
+      userName?: string
+      userAvatar?: string
+      userEmail?: string
+      userRank?: number
       score?: number
     }
   ]

@@ -113,7 +113,8 @@
     "challengeDescription": "Join the Eurekas challenge, improve your specified skills, boost your rank and more.",
     "noChallenge": "No current challenge",
     "noChallengeDescription": "Check back later for upcoming challenge.",
-    "viewDetails": "View details"
+    "viewDetails": "View details",
+    "showAll": "Show all"
   },
   "post": {
     "title": "Title",
@@ -470,7 +471,8 @@
       "createContest": "Create contest",
       "createContestDescription": "Create a contest to challenge users and test their skills.",
       "ranking": "Ranking",
-      "rankingDescription": "User ranking in the contest"
+      "rankingDescription": "User ranking in the contest",
+      "leaderboard": "Leaderboard"
     },
     "problem": {
       "title": "Problem name",

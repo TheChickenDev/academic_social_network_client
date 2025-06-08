@@ -14,6 +14,12 @@ export const updateProblem = (body: ContestProblem) => {
   return http.patch<SuccessResponse<ContestProblem>>(`problems`, body)
 }
 
-export const submitProblem = (body: { problemId: string; userId: string; code: string; language: string }) => {
+export const submitProblem = (body: {
+  problemId: string
+  contestId: string
+  userId: string
+  code: string
+  language: string
+}) => {
   return http.post<SuccessResponse<ContestProblem>>('problems/submit', body)
 }
