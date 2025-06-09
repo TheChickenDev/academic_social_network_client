@@ -1,5 +1,4 @@
 User-agent: *
-Disallow: /
-Allow: /posts/
+Allow: /
 
 Sitemap: https://eurekas.vercel.app/sitemap.xml
