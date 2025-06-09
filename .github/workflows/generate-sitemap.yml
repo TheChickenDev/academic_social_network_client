@@ -22,7 +22,10 @@ jobs:
           cache: 'yarn'
 
       - name: Install dependencies
-        run: yarn install
+        run: yarn install --frozen-lockfile --production=false
+
+      - name: Build project
+        run: yarn build
 
       - name: Generate sitemap
         run: yarn generate-sitemap
