@@ -1,5 +1,0 @@
-User-agent: *
-Disallow: /
-Allow: /posts/
-
-Sitemap: https://localhost:5173/sitemap.xml
