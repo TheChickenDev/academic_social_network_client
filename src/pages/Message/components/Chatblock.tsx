@@ -20,6 +20,7 @@ import { getMessages } from '@/apis/message.api'
 import { Message as MessageProps } from '@/types/message.type'
 import dayjs from 'dayjs'
 import { Socket } from 'socket.io-client'
+import { toast } from 'sonner'
 
 interface ChatBlockProps {
   setConversations: Dispatch<SetStateAction<Conversation[]>>
@@ -40,7 +41,7 @@ export default function Chatblock({
 }: ChatBlockProps) {
   const { t } = useTranslation()
   const [messages, setMessages] = useState<Record<string, MessageProps[]>>({})
-  const { userId } = useContext(AppContext)
+  const { userId, fullName, avatar, localStream, setLocalStream, setSocketCallInfo } = useContext(AppContext)
   const [input, setInput] = useState<string>('')
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
@@ -82,6 +83,68 @@ export default function Chatblock({
     },
     [hasMore]
   )
+
+  const getMediaStream = useCallback(
+    async (faceMode?: string) => {
+      if (localStream) return localStream
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices()
+        const videoDevices = devices.filter((device) => device.kind === 'videoinput')
+
+        const st = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+          video: {
+            deviceId: videoDevices.length > 0 ? videoDevices[0].deviceId : undefined,
+            width: { ideal: 1280, min: 640, max: 1920 },
+            height: { ideal: 720, min: 360, max: 1080 },
+            frameRate: { ideal: 30, min: 15, max: 60 },
+            facingMode: videoDevices.length > 0 ? faceMode : undefined
+          }
+        })
+        if (setLocalStream) {
+          setLocalStream(st)
+        }
+        return st
+      } catch (error) {
+        toast.error(`Calling failed`, {
+          position: 'bottom-right',
+          description: 'Permission denied or error getting media stream.'
+        })
+        if (setLocalStream) {
+          setLocalStream(null)
+        }
+        return null
+      }
+    },
+    [localStream, setLocalStream]
+  )
+
+  const handleVideoCall = useCallback(async () => {
+    if (socket && selectedConversation) {
+      const stream = await getMediaStream()
+
+      if (stream) {
+        socket.emit('video call', {
+          conversationId: selectedConversation?._id,
+          senderId: userId,
+          isVideoCall: true,
+          receiverId: selectedConversation?.userId,
+          receiverName: fullName,
+          receiverAvatar: avatar,
+          stream
+        })
+        if (setSocketCallInfo) {
+          setSocketCallInfo({
+            isVideoCall: true,
+            receiverId: selectedConversation?.userId ?? '',
+            receiverName: selectedConversation?.userName ?? '',
+            receiverAvatar: selectedConversation?.avatarImg ?? '',
+            senderId: userId ?? ''
+          })
+        }
+      }
+    }
+  }, [socket])
 
   useEffect(() => {
     fetchMessages(page)
@@ -125,19 +188,19 @@ export default function Chatblock({
           }
           return temp
         })
-        setSelectedConversation((prev) =>
-          prev
-            ? {
-                ...prev,
-                lastMessage: { ...msg.message, senderId: msg.senderId },
-                _id: msg.conversationId,
-                userId: prev.userId,
-                userRank: prev.userRank,
-                userName: prev.userName,
-                avatarImg: prev.avatarImg
-              }
-            : null
-        )
+        // setSelectedConversation((prev) =>
+        //   prev
+        //     ? {
+        //         ...prev,
+        //         lastMessage: { ...msg.message, senderId: msg.senderId },
+        //         _id: msg.conversationId,
+        //         userId: prev.userId,
+        //         userRank: prev.userRank,
+        //         userName: prev.userName,
+        //         avatarImg: prev.avatarImg
+        //       }
+        //     : null
+        // )
         setMessages((prev) => {
           const temp = { ...prev }
           const key = dayjs(msg.createdAt).format('D MMM, YYYY')
@@ -229,7 +292,12 @@ export default function Chatblock({
 
         {/* Right */}
         <div className='-mr-1 flex items-center gap-1 lg:gap-2'>
-          <Button size='icon' variant='ghost' className='hidden size-8 rounded-full sm:inline-flex lg:size-10'>
+          <Button
+            size='icon'
+            variant='ghost'
+            className='hidden size-8 rounded-full sm:inline-flex lg:size-10'
+            onClick={handleVideoCall}
+          >
             <Video size={22} className='stroke-muted-foreground' />
           </Button>
           <Button size='icon' variant='ghost' className='hidden size-8 rounded-full sm:inline-flex lg:size-10'>

@@ -29,6 +29,25 @@ interface AppContextInterface {
   setTheme: (theme: Theme) => void
   language: Language
   setLanguage: (language: Language) => void
+
+  localStream?: MediaStream | null
+  setLocalStream?: React.Dispatch<React.SetStateAction<MediaStream | null>>
+  socketCallInfo?: {
+    isVideoCall: boolean
+    receiverId: string
+    receiverName: string
+    receiverAvatar: string
+    senderId: string
+  } | null
+  setSocketCallInfo?: React.Dispatch<
+    React.SetStateAction<{
+      isVideoCall: boolean
+      receiverId: string
+      receiverName: string
+      receiverAvatar: string
+      senderId: string
+    } | null>
+  >
 }
 
 const initialAppContext: AppContextInterface = {
@@ -47,7 +66,11 @@ const initialAppContext: AppContextInterface = {
   theme: localStorage.getItem(themeStorageKey) as Theme,
   setTheme: () => null,
   language: localStorage.getItem(languageStorageKey) as Language,
-  setLanguage: () => null
+  setLanguage: () => null,
+  localStream: null,
+  setLocalStream: () => null,
+  socketCallInfo: null,
+  setSocketCallInfo: () => null
 }
 
 interface AppProviderProps {
@@ -67,6 +90,14 @@ const AppProvider = ({ children, defaultTheme = 'system', defaultLanguage = 'en'
   const [avatar, setAvatar] = useState<string>(initialAppContext.avatar ?? '')
   const [theme, setTheme] = useState<Theme>(() => initialAppContext.theme ?? defaultTheme)
   const [language, setLanguage] = useState<Language>(initialAppContext.language ?? defaultLanguage)
+  const [localStream, setLocalStream] = useState<MediaStream | null>(null)
+  const [socketCallInfo, setSocketCallInfo] = useState<{
+    isVideoCall: boolean
+    receiverId: string
+    receiverName: string
+    receiverAvatar: string
+    senderId: string
+  } | null>(null)
 
   useEffect(() => {
     const root = window.document.documentElement
@@ -104,7 +135,11 @@ const AppProvider = ({ children, defaultTheme = 'system', defaultLanguage = 'en'
         theme,
         setTheme,
         language,
-        setLanguage
+        setLanguage,
+        localStream,
+        setLocalStream,
+        socketCallInfo,
+        setSocketCallInfo
       }}
     >
       {children}

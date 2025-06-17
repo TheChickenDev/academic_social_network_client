@@ -6,7 +6,12 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src')
+      '@': path.resolve(__dirname, './src'),
+      stream: 'stream-browserify',
+      buffer: 'buffer',
+      util: 'util',
+      events: 'events',
+      process: 'process/browser'
     }
   },
   css: {
@@ -15,5 +20,11 @@ export default defineConfig({
         api: 'modern-compiler'
       }
     }
+  },
+  define: {
+    global: 'globalThis'
+  },
+  optimizeDeps: {
+    include: ['buffer', 'process', 'stream', 'events', 'util']
   }
 })

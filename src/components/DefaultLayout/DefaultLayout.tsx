@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useRef } from 'react'
 import Header from '../Header'
 import { AppContext } from '@/contexts/app.context'
 import { Link, useNavigate } from 'react-router-dom'
@@ -7,11 +7,19 @@ import { getSocket, initializeSocket } from '@/utils/socket'
 import { toast } from 'sonner'
 import { Notification } from '@/types/utils.type'
 import { useTranslation } from 'react-i18next'
+import CallingPopup from '../CallingPopup'
 
 export default function DefaultLayout({ children }: { children: React.ReactNode }) {
-  const { isAdmin, userId } = useContext(AppContext)
+  const { isAdmin, userId, localStream } = useContext(AppContext)
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const localStreamRef = useRef<MediaStream | null>(null)
+
+  useEffect(() => {
+    if (localStream !== undefined) {
+      localStreamRef.current = localStream ?? null
+    }
+  }, [localStream])
 
   useEffect(() => {
     if (isAdmin) {
@@ -51,6 +59,8 @@ export default function DefaultLayout({ children }: { children: React.ReactNode 
 
       return () => {
         socket.off('notify')
+        socket.off('incoming call')
+        socket.off('reject call')
       }
     }
   }, [isAdmin, location.pathname, navigate])
@@ -58,6 +68,7 @@ export default function DefaultLayout({ children }: { children: React.ReactNode 
   return (
     <>
       <Header />
+      <CallingPopup />
       {children}
     </>
   )
