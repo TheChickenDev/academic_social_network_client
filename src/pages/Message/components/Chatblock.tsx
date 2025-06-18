@@ -7,7 +7,8 @@ import {
   Plus,
   Send,
   Video,
-  MessageCircle
+  MessageCircle,
+  PhoneIcon
 } from 'lucide-react'
 import { Dispatch, Fragment, SetStateAction, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
@@ -21,6 +22,7 @@ import { Message as MessageProps } from '@/types/message.type'
 import dayjs from 'dayjs'
 import { Socket } from 'socket.io-client'
 import { toast } from 'sonner'
+import { Card, CardContent } from '@/components/ui/card'
 
 interface ChatBlockProps {
   setConversations: Dispatch<SetStateAction<Conversation[]>>
@@ -119,32 +121,48 @@ export default function Chatblock({
     [localStream, setLocalStream]
   )
 
-  const handleVideoCall = useCallback(async () => {
-    if (socket && selectedConversation) {
-      const stream = await getMediaStream()
+  const handleCall = useCallback(
+    async (isVideoCall: boolean) => {
+      if (socket && selectedConversation) {
+        const stream = await getMediaStream()
 
-      if (stream) {
-        socket.emit('video call', {
-          conversationId: selectedConversation?._id,
-          senderId: userId,
-          isVideoCall: true,
-          receiverId: selectedConversation?.userId,
-          receiverName: fullName,
-          receiverAvatar: avatar,
-          stream
-        })
-        if (setSocketCallInfo) {
-          setSocketCallInfo({
-            isVideoCall: true,
-            receiverId: selectedConversation?.userId ?? '',
-            receiverName: selectedConversation?.userName ?? '',
-            receiverAvatar: selectedConversation?.avatarImg ?? '',
-            senderId: userId ?? ''
+        if (stream) {
+          socket.emit('video call', {
+            conversationId: selectedConversation?._id,
+            senderId: userId,
+            isVideoCall,
+            receiverId: selectedConversation?.userId,
+            receiverName: fullName,
+            receiverAvatar: avatar,
+            stream
           })
+          if (selectedConversation) {
+            if (socket) {
+              const message = {
+                conversationId: selectedConversation?._id,
+                senderId: userId,
+                receiverId: selectedConversation?.userId,
+                type: 'video-call',
+                content: 'Call initiated'
+              }
+              socket.emit('chat message', message)
+              setInput('')
+            }
+          }
+          if (setSocketCallInfo) {
+            setSocketCallInfo({
+              isVideoCall,
+              receiverId: selectedConversation?.userId ?? '',
+              receiverName: selectedConversation?.userName ?? '',
+              receiverAvatar: selectedConversation?.avatarImg ?? '',
+              senderId: userId ?? ''
+            })
+          }
         }
       }
-    }
-  }, [socket])
+    },
+    [socket]
+  )
 
   useEffect(() => {
     fetchMessages(page)
@@ -296,11 +314,16 @@ export default function Chatblock({
             size='icon'
             variant='ghost'
             className='hidden size-8 rounded-full sm:inline-flex lg:size-10'
-            onClick={handleVideoCall}
+            onClick={() => handleCall(true)}
           >
             <Video size={22} className='stroke-muted-foreground' />
           </Button>
-          <Button size='icon' variant='ghost' className='hidden size-8 rounded-full sm:inline-flex lg:size-10'>
+          <Button
+            size='icon'
+            variant='ghost'
+            className='hidden size-8 rounded-full sm:inline-flex lg:size-10'
+            onClick={() => handleCall(false)}
+          >
             <Phone size={22} className='stroke-muted-foreground' />
           </Button>
           <Button size='icon' variant='ghost' className='h-10 rounded-md sm:h-8 sm:w-4 lg:h-10 lg:w-6'>
@@ -319,25 +342,52 @@ export default function Chatblock({
                   {Object.keys(messages).map((key) => (
                     <Fragment key={key}>
                       {messages[key].map((msg, index) => (
-                        <div
-                          key={`${msg.senderId}-${msg.createdAt}-${index}`}
-                          className={cn(
-                            'max-w-72 break-words px-3 py-2 shadow-lg',
-                            msg.senderId === 'You'
-                              ? 'self-end rounded-[16px_16px_0_16px] bg-primary/85 text-primary-foreground/75'
-                              : 'self-start rounded-[16px_16px_16px_0] bg-secondary'
+                        <>
+                          {msg?.message?.type === 'text' ? (
+                            <div
+                              key={`${msg.senderId}-${msg.createdAt}-${index}`}
+                              className={cn(
+                                'max-w-72 break-words px-3 py-2 shadow-lg',
+                                msg.senderId === 'You'
+                                  ? 'self-end rounded-[16px_16px_0_16px] bg-primary/85 text-primary-foreground/75'
+                                  : 'self-start rounded-[16px_16px_16px_0] bg-secondary'
+                              )}
+                            >
+                              {msg?.message?.content}{' '}
+                              <span
+                                className={cn(
+                                  'mt-1 block text-xs font-light italic text-muted-foreground',
+                                  msg.senderId === 'You' && 'text-right'
+                                )}
+                              >
+                                {dayjs(msg.createdAt).format('h:mm a')}
+                              </span>
+                            </div>
+                          ) : (
+                            <Card className='flex gap-3 p-4 items-start shadow-md rounded-2xl border'>
+                              <Avatar className='w-16 h-16'>
+                                <AvatarImage src={msg.senderId === 'You' ? avatar : selectedConversation?.avatarImg} />
+                                <AvatarFallback />
+                              </Avatar>
+
+                              <CardContent className='p-0 flex-1'>
+                                <div className='flex items-center gap-2 mb-1'>
+                                  <PhoneIcon className='w-5 h-5 text-green-600' />
+
+                                  <span className='font-medium text-gray-800'>
+                                    {msg.senderId === 'You'
+                                      ? t('chat.youHaveCalled')
+                                      : `${t('chat.callFrom')} ${selectedConversation?.userName ?? 'unknown'}`}
+                                  </span>
+                                </div>
+
+                                <p className='text-sm text-gray-500'>
+                                  {t('chat.callEnded')} • {dayjs(msg.createdAt).format('h:mm a')}
+                                </p>
+                              </CardContent>
+                            </Card>
                           )}
-                        >
-                          {msg?.message?.content}{' '}
-                          <span
-                            className={cn(
-                              'mt-1 block text-xs font-light italic text-muted-foreground',
-                              msg.senderId === 'You' && 'text-right'
-                            )}
-                          >
-                            {dayjs(msg.createdAt).format('h:mm a')}
-                          </span>
-                        </div>
+                        </>
                       ))}
                       <div className='text-center text-xs'>{key}</div>
                     </Fragment>

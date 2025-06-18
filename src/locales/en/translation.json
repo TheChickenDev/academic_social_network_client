@@ -397,7 +397,13 @@
     "searchPlaceholder": "Search for conversations...",
     "searchNoResult": "No conversation found",
     "messagePlaceholder": "Type a message...",
-    "selectAConversation": "Select a conversation to start chatting!"
+    "selectAConversation": "Select a conversation to start chatting!",
+    "youHaveCalled": "You have called",
+    "callFrom": "Call from",
+    "connecting": "Connecting...",
+    "callEnded": "Call ended",
+    "audioCalling": "Audio calling...",
+    "onAudioCall": "You are on an audio call with"
   },
   "search": {
     "search": "Search",
