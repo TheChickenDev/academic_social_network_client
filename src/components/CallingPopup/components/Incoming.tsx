@@ -20,7 +20,6 @@ export default function Incoming({
   onAccept,
   onReject
 }: CallingPopupProps) {
-  console.log('isVideoCall:', isVideoCall)
   return (
     <Card className='w-[350px] text-center shadow-xl rounded-2xl'>
       <CardContent className='p-6 flex flex-col items-center space-y-2'>
