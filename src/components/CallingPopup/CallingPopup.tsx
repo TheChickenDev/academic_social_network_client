@@ -16,16 +16,15 @@ export default function CallingPopup() {
   const peerRef = useRef<Peer.Instance | null>(null)
   const localStreamRef = useRef<MediaStream | null>(null)
 
-  useEffect(() => {
-    if (!socketCallInfo || !userId) return
+  // useEffect(() => {
+  //   if (!socketCallInfo || !userId) return
 
-    const isCaller = socketCallInfo.senderId === userId
-    if (isCaller && !peerRef.current && !onCall) {
-      createPeer(true, socketCallInfo.receiverId)
-    }
-  }, [socketCallInfo, userId])
+  //   const isCaller = socketCallInfo.senderId === userId
+  //   if (isCaller && !peerRef.current && !onCall) {
+  //     createPeer(true, socketCallInfo.receiverId)
+  //   }
+  // }, [socketCallInfo, userId])
 
-  // Lắng nghe cuộc gọi đến
   useEffect(() => {
     let socket = getSocket()
     if (!socket && userId) {
@@ -34,7 +33,6 @@ export default function CallingPopup() {
     if (!socket) return
 
     socket.on('incoming call', async (response) => {
-      console.log('Incoming call:', response)
       if (!setSocketCallInfo) return
 
       setSocketCallInfo({
@@ -47,6 +45,10 @@ export default function CallingPopup() {
     })
 
     socket.on('reject call', () => {
+      cleanupCall()
+    })
+
+    socket.on('hangup call', () => {
       cleanupCall()
     })
 
@@ -85,7 +87,6 @@ export default function CallingPopup() {
     })
 
     peer.on('signal', (data) => {
-      console.log('Sending signal to remote user:', data)
       if (!socket || !userId) return
       socket.emit('signal', {
         signal: data,
@@ -106,7 +107,7 @@ export default function CallingPopup() {
   const handleAcceptCall = async () => {
     if (!socketCallInfo) return
     setOnCall(true)
-    await createPeer(false, socketCallInfo.senderId)
+    await createPeer(true, socketCallInfo.senderId)
   }
 
   const handleRejectCall = () => {
@@ -121,6 +122,14 @@ export default function CallingPopup() {
 
   const handleHangupCall = () => {
     peerRef.current?.destroy()
+
+    const socket = getSocket()
+    if (!socketCallInfo || !socket) return
+    socket.emit('hangup call', {
+      senderId: userId,
+      receiverId: userId === socketCallInfo.senderId ? socketCallInfo.receiverId : socketCallInfo.senderId
+    })
+
     cleanupCall()
   }
 
